@@ -1,6 +1,5 @@
 package com.feedback.hafit.model;
 
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -41,6 +40,20 @@ public class User {
 
     @Column(name = "USER_STATUS", nullable = false)
     private String userStatus;
+
+    public User(Integer userNo, String userName, String userId, String userPw, String userNickname, String userTel, LocalDate userBirth, String userSex, String userRole, LocalDate userCreated, String userStatus) {
+        this.userNo = userNo;
+        this.userName = userName;
+        this.userId = userId;
+        this.userPw = userPw;
+        this.userNickname = userNickname;
+        this.userTel = userTel;
+        this.userBirth = userBirth;
+        this.userSex = userSex;
+        this.userRole = userRole;
+        this.userCreated = userCreated;
+        this.userStatus = userStatus;
+    }
 
     // Getter and Setter
 
