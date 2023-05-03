@@ -3,15 +3,13 @@ package com.feedback.hafit.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feedback.hafit.entity.ScoreDTO;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class UserController {
     final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";

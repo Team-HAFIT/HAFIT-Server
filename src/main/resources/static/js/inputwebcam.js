@@ -187,8 +187,6 @@ function drawKeypoints() {
 
 // Draws lines between the keypoints
 function drawSkeleton() {
-
-
   const currentTime = new Date().getTime();
   const timeSinceLastMessage = currentTime - lastSpokenTimestamp;
 
