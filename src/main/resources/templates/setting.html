@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Title</title>
+</head>
+<body>
+<h1>스쿼트 설정</h1>
+<form method="POST" action="setexec" enctype="multipart/form-data">
+  <label>목표 개수 : </label>
+  <input id="repsPerSet" name="repsPerSet" type="number" min="1"><br>
+  <label>세트 수 : </label>
+  <input id="totalSets" name="totalSets" type="number" min="1"><br>
+  <label>중량(kg) : </label>
+  <input id="weight" name="weight" type="number" min="1"><br>
+  <label>휴식 시간(초) : </label>
+  <input id="restTime" name="restTime" type="number" min="1"><br>
+  <input type="submit" value="시작">
+</form>
+</body>
+</html>

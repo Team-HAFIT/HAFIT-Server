@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <!-- Require the peer dependencies of pose-detection. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+
+  <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+  <!-- Alternatively you can use the WASM backend: <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
+  <meta charset="utf-8"/>
+</head>
+<body>
+<button id="end-button">end button</button>
+<h1>목표 개수 : [[${repsPerSet}]]</h1>
+<h1>세트 수 : [[${totalSets}]]</h1>
+<h1>휴식 시간(초) : [[${restTime}]]</h1>
+<script>
+      window.addEventListener('load', function() {
+          let reps = [[${repsPerSet}]];
+          let ts = [[${totalSets}]];
+          let rt = [[${restTime}]];
+          reSetting(reps, ts, rt);
+      });
+      document.getElementById("end-button").addEventListener("click", function() {
+        exportCSV(keypointNames, keypointsData);
+        const data = {
+            'count' : (squatCount+((currentSet-1)*repsPerSet)),
+            'score' : score,
+            'bad' : bad
+        };
+        var form = document.createElement("form"); // form 요소 생성
+        form.method = "POST"; // 전송 방식을 POST로 설정
+        form.action = "submit"; // 전송할 페이지 URL을 지정
+        form.enctype = "multipart/form-data";
+
+        var input = document.createElement("input"); // input 요소 생성
+        input.type = "hidden"; // input 타입을 hidden으로 설정
+        input.name = "data"; // 전송할 데이터의 이름을 "data"로 지정
+        input.value = JSON.stringify(data); // 전송할 JSON 데이터를 value로 지정
+        form.appendChild(input); // input 요소를 form 요소에 추가
+
+        document.body.appendChild(form); // form 요소를 body 요소에 추가
+        form.submit(); // form 요소를 submit하여 페이지를 이동하고 데이터를 전송
+    });
+</script>
+<script src="/resources/js/inputwebcam.js"></script>
+</body>
+</html>
