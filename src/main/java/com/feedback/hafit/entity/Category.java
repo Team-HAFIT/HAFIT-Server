@@ -3,6 +3,7 @@ package com.feedback.hafit.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,7 +21,7 @@ public class Category {
     @Column(nullable = false, length = 30)
     private String cat_name; // 카테고리 이름
 
-    private LocalDateTime cat_created; // 카테고리 생성일 DB에만 저장
+    private @NotNull LocalDateTime cat_created; // 카테고리 생성일 DB에만 저장
 
     @PrePersist // DB insert 되기 직전에 실행
     public void setCat_created() {
