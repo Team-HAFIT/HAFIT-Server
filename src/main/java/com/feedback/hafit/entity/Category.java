@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 매핑
     private Long cat_num; // auto_increment
 
-    @Column(nullable = false, length = 30)
+    @Column(unique = true, nullable = false, length = 30)
     private String cat_name; // 카테고리 이름
 
     private @NotNull LocalDateTime cat_created; // 카테고리 생성일 DB에만 저장
