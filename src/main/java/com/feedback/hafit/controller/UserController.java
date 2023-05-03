@@ -1,7 +1,7 @@
 package com.feedback.hafit.controller;
 
-import com.feedback.hafit.Entity.User;
-import com.feedback.hafit.Entity.UserFormDTO;
+import com.feedback.hafit.entity.User;
+import com.feedback.hafit.entity.UserFormDTO;
 import com.feedback.hafit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

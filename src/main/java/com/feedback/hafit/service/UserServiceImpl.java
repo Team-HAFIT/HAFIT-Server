@@ -1,6 +1,6 @@
 package com.feedback.hafit.service;
 
-import com.feedback.hafit.Entity.User;
+import com.feedback.hafit.entity.User;
 import com.feedback.hafit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
