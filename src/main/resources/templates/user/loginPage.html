@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/user/login" method="post">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+
+    <h2>로그인</h2>
+    <div>
+        <input type="text" name="email" placeholder="Email"/>
+    </div>
+    <div>
+        <input type="password" name="password" placeholder="Password"/>
+    </div>
+
+    <button type="submit">로그인</button>
+    <button type="button" onclick="location.href='/user/signupPage'">회원가입</button>
+</form>
+</body>
+</html>
