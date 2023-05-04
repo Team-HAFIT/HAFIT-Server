@@ -240,12 +240,16 @@ function countSquats() {
       const rightKnee = poses[0].keypoints[14];
       const leftAnkle = poses[0].keypoints[15];
       const rightAnkle = poses[0].keypoints[16];
+      const back = poses[0].keypoints[18];
 
       const leftKneeAngle = angleBetweenThreePoints(leftHip, leftKnee, leftAnkle);
       const rightKneeAngle = angleBetweenThreePoints(rightHip, rightKnee, rightAnkle);
 
-      console.log(`Left knee angle: ${leftKneeAngle.toFixed(2)} degrees`);
-      console.log(`Right knee angle: ${rightKneeAngle.toFixed(2)} degrees`);
+      const rightbackAngle = angleBetweenThreePoints(back, rightHip, rightKnee);
+
+//      console.log(`Left knee angle: ${leftKneeAngle.toFixed(2)} degrees`);
+//      console.log(`Right knee angle: ${rightKneeAngle.toFixed(2)} degrees`);
+      console.log(`back angle: ${rightbackAngle.toFixed(2)} degrees`);
 
       // 스쿼트 동작 시작
       if (!squatStarted && leftKneeAngle <= kneeAngleThreshold && rightKneeAngle <= kneeAngleThreshold) {
