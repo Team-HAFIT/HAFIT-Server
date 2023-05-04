@@ -21,7 +21,7 @@ let restTime = 10;
 let keypointsData = [];                     // 좌표값을 저장
 let score = 100;
 let bad = 0;
-
+tf.setBackend('webgpu');
 const keypointNames = [                     // 키포인트 별 이름저장
   'nose_x', 'nose_y',
   'leftEye_x', 'leftEye_y',
