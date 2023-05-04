@@ -11,24 +11,24 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class CategoryDTO {
-    private Long cat_num;
+    private Long category_id;
 
-    private String cat_name;
+    private String category_name;
 
-    private LocalDateTime cat_created;
+    private LocalDateTime created_at;
 
     public Category toEntity() {
         Category category = Category.builder()
-                .cat_name(cat_name)
-                .cat_created(cat_created)
+                .category_name(category_name)
+                .created_at(created_at)
                 .build();
         return category;
     }
 
     @Builder
-    public CategoryDTO(Long cat_num, String cat_name, LocalDateTime cat_created) {
-        this.cat_num = cat_num;
-        this.cat_name = cat_name;
-        this.cat_created = cat_created;
+    public CategoryDTO(Long category_id, String category_name, LocalDateTime created_at) {
+        this.category_id = getCategory_id();
+        this.category_name = getCategory_name();
+        this.created_at = created_at;
     }
 }

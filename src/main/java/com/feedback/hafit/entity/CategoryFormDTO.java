@@ -12,16 +12,16 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CategoryFormDTO {
     @NotNull
-    private String cat_name;
+    private String category_name;
 
     public Category toEntity() {
         Category category = Category.builder()
-                .cat_name(cat_name)
+                .category_name(category_name)
                 .build();
         return category;
     }
     @Builder
-    public CategoryFormDTO(String cat_name) {
-        this.cat_name = cat_name;
+    public CategoryFormDTO(String category_name) {
+        this.category_name = category_name;
     }
 }
