@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -37,24 +35,23 @@ public class UserController {
     }
 
     @PostMapping("/signup")
+    @CrossOrigin(origins = "http://172.26.12.239:3000")
     public ResponseEntity<String> signup(@RequestBody UserFormDTO userFormDTO) {
         userService.userJoin(userFormDTO);
-        System.out.println(userFormDTO.getEmail());
         return ResponseEntity.ok("/user/loginPage");
     }
 
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://172.26.12.239:3000")
     public ResponseEntity<String> login(@RequestBody UserLoginDTO userLoginDTO) {
-        Optional<UserLoginDTO> userOptional = userRepository.findUserByEmail(userLoginDTO.getEmail());
-        if (userOptional.isPresent()) {
-            UserLoginDTO user = userOptional.get();
-            if (user.getPassword().equals(userLoginDTO.getPassword())) {
-                System.out.println("로그인 성공시");
-                return ResponseEntity.ok("로그인 성공");
-            }
+        // UserLoginDTO authenticatedUser = userService.login(userLoginDTO);
+        boolean authenticatedUser = userService.login(userLoginDTO);
+        if (authenticatedUser == false) {
+            System.out.println("실패");
+            return ResponseEntity.badRequest().body("/user/loginPage");
         }
-                System.out.println("로그인 실패시");
-        return ResponseEntity.badRequest().body("로그인 실패");
+        System.out.println("성공");
+        return ResponseEntity.ok("Redirect:/");
     }
 
 }
