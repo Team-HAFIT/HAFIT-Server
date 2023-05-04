@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserDTO {
-    private Long num; //sequence, auto_increment
+
     private Long user_num; //sequence, auto_increment
 
     private String email; //아이디

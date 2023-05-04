@@ -13,10 +13,10 @@ public class UserLoginDTO {
     private String password;
 
     public User toEntity() {
-        com.feedback.hafit.entity.User user = com.feedback.hafit.entity.User.builder()
+        User user = User.builder()
                 .email(email)
                 .password(password)
-                .role(com.feedback.hafit.entity.Role.USER)
+                .role(Role.USER)
                 .build();
         return user;
     }
