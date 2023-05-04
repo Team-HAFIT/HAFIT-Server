@@ -37,7 +37,6 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-
     public ResponseEntity<String> signup(@RequestBody UserFormDTO userFormDTO) {
         userService.userJoin(userFormDTO);
         System.out.println(userFormDTO.getEmail());
@@ -49,7 +48,6 @@ public class UserController {
         Optional<UserLoginDTO> userOptional = userRepository.findUserByEmail(userLoginDTO.getEmail());
         if (userOptional.isPresent()) {
             UserLoginDTO user = userOptional.get();
-
             if (user.getPassword().equals(userLoginDTO.getPassword())) {
                 return ResponseEntity.ok("로그인 성공");
             }

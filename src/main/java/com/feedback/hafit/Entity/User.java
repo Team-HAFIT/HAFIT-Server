@@ -14,7 +14,6 @@ public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long num; //sequence, auto_increment
     private Long user_num; //sequence, auto_increment
 
     @Column(nullable = false, unique = true, length = 30)
