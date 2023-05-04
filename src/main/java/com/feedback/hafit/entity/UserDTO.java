@@ -49,8 +49,6 @@ public class UserDTO {
     }
 
     @Builder
-    public UserDTO(Long num, String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
-        this.num = num;
     public UserDTO(Long user_num, String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
         this.user_num = user_num;
         this.email = email;
@@ -64,8 +62,4 @@ public class UserDTO {
         this.created_at = created_at;
     }
 
-}
-    public void passwordEncoding(String encodingPassword) {
-        this.password = encodingPassword;
-    }
 }

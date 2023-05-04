@@ -37,15 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String createUser(@Valid UserFormDTO userFormDTO, BindingResult bindingResult, Model model) {
-//        userService.signupUser(userFormDTO);
-//        return "redirect:/user/loginPage";
-        try {
-            User user = User.createUser(userFormDTO, passwordEncoder);
-            userService.signupUser(user);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "/user/signupPage";
+
     public ResponseEntity<String> signup(@RequestBody UserFormDTO userFormDTO) {
         userService.userJoin(userFormDTO);
         System.out.println(userFormDTO.getEmail());

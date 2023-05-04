@@ -1,9 +1,6 @@
 package com.feedback.hafit.entity;
 
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
-package com.feedback.hafit.entity;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -42,7 +39,6 @@ public class User{
     private String nickname; //닉네임
 
     @Enumerated(EnumType.STRING)
-    // @Column(columnDefinition = "String default ROLE_USER")
     private Role role; // 권한
 
     private LocalDateTime created_at; // 날짜
@@ -65,16 +61,6 @@ public class User{
         this.created_at = created_at;
     }
 
-    public static User createUser(UserFormDTO userFormDTO, PasswordEncoder passwordEncoder) {
-        User user = User.builder()
-                .email(userFormDTO.getEmail())
-                .password(passwordEncoder.encode(userFormDTO.getPassword()))
-                .name(userFormDTO.getName())
-                .phone(userFormDTO.getPhone())
-                .role(Role.USER)
-                .build();
-        return user;
-    }
 //    public static User createUser(UserFormDTO userFormDTO, PasswordEncoder passwordEncoder) {
 //        User user = User.builder()
 //                .email(userFormDTO.getEmail())
