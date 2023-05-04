@@ -1,4 +1,4 @@
-package com.feedback.hafit.Entity;
+package com.feedback.hafit.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDTO {
     private Long num; //sequence, auto_increment
+    private Long user_num; //sequence, auto_increment
 
     private String email; //아이디
 
@@ -31,6 +32,7 @@ public class UserDTO {
 
     private LocalDateTime created_at;
 
+
     public User toEntity() {
         User user = User.builder()
                 .email(email)
@@ -49,6 +51,8 @@ public class UserDTO {
     @Builder
     public UserDTO(Long num, String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
         this.num = num;
+    public UserDTO(Long user_num, String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
+        this.user_num = user_num;
         this.email = email;
         this.password = password;
         this.birth = birth;
@@ -60,4 +64,8 @@ public class UserDTO {
         this.created_at = created_at;
     }
 
+}
+    public void passwordEncoding(String encodingPassword) {
+        this.password = encodingPassword;
+    }
 }

@@ -1,4 +1,4 @@
-package com.feedback.hafit.Entity;
+package com.feedback.hafit.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +7,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum Role {
     USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
-
     private final String value;
 }
