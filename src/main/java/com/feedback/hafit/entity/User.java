@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_num; //sequence, auto_increment

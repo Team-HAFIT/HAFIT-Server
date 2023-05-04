@@ -15,7 +15,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://172.26.17.167:3000")
+@CrossOrigin(origins = "http://172.26.12.239:3000")
 public class UserController {
 
     @Autowired
@@ -49,9 +49,11 @@ public class UserController {
         if (userOptional.isPresent()) {
             UserLoginDTO user = userOptional.get();
             if (user.getPassword().equals(userLoginDTO.getPassword())) {
+                System.out.println("로그인 성공시");
                 return ResponseEntity.ok("로그인 성공");
             }
         }
+                System.out.println("로그인 실패시");
         return ResponseEntity.badRequest().body("로그인 실패");
     }
 
