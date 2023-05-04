@@ -1,10 +1,13 @@
 package com.feedback.hafit.service;
 
-import com.feedback.hafit.entity.UserDTO;
+import com.feedback.hafit.entity.User;
 import com.feedback.hafit.entity.UserFormDTO;
+import com.feedback.hafit.entity.UserLoginDTO;
 import com.feedback.hafit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,7 +19,25 @@ public class UserService {
         userRepository.save(userFormDTO.toEntity());
     }
 
-    public UserDTO login(UserDTO userDTO) {
-        return null;
+    public boolean login(UserLoginDTO userLoginDTO) {
+        Optional<User> userOptional = userRepository.findUserByEmail(userLoginDTO.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getPassword().equals(userLoginDTO.getPassword())) {
+                return true;
+            }
+        }
+        return false;
     }
+    /*
+    public UserLoginDTO login(UserLoginDTO userLoginDTO) {
+        Optional<User> userOptional = userRepository.findUserByEmail(userLoginDTO.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getPassword().equals(userLoginDTO.getPassword())) {
+                return user.toLoginDTO();
+            }
+        }
+        return null;
+    }**/
 }

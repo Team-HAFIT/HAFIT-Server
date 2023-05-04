@@ -59,6 +59,13 @@ public class User{
         this.created_at = created_at;
     }
 
+    public UserLoginDTO toLoginDTO() {
+        return UserLoginDTO.builder()
+                .email(this.email)
+                .password(this.password)
+                .build();
+    }
+
 //    public static User createUser(UserFormDTO userFormDTO, PasswordEncoder passwordEncoder) {
 //        User user = User.builder()
 //                .email(userFormDTO.getEmail())
