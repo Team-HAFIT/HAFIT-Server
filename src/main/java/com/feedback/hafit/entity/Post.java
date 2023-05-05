@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Builder
 @Table(name = "post")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long post_id;
 
-    @Column(nullable = false, length = 8000)
+    @Column(length = 8000)
     private String post_content;
 
     private @NotNull LocalDateTime post_created;
@@ -38,11 +37,29 @@ public class Post {
     @Column(length = 500)
     private String post_img;
 
-    private String hierarchy; // 계층, 대댓글
+    @Column(length = 11)
+    private int hierarchy; // 계층, 대댓글
 
-    @Column(name = "category_id")
+    @Column(nullable = false, name = "category_id")
     private int category_id;
 
-    @Column(name = "user_id")
+    @Column(nullable = false, name = "user_id")
     private int user_id;
+
+    @Builder
+    public Post(String post_content, LocalDateTime post_created, LocalDateTime post_modified, String post_img, int hierarchy, int category_id, int user_id) {
+        this.post_content = post_content;
+        this.post_created = post_created;
+        this.post_modified = post_modified;
+        this.post_img = post_img;
+        this.hierarchy = hierarchy;
+        this.category_id = category_id;
+        this.user_id = user_id;
+    }
+    public PostDTO toPostDTO() {
+        return PostDTO.builder()
+                .post_content(this.post_content)
+                .post_img(this.post_img)
+                .build();
+    }
 }
