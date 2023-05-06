@@ -6,7 +6,6 @@ import com.feedback.hafit.repository.UserRepository;
 import com.feedback.hafit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,22 +35,22 @@ public class UserController {
 
     @PostMapping("/signup")
     @CrossOrigin(origins = "http://172.26.12.239:3000")
-    public ResponseEntity<String> signup(@RequestBody UserFormDTO userFormDTO) {
+    public boolean signup(@RequestBody UserFormDTO userFormDTO) {
         userService.userJoin(userFormDTO);
-        return ResponseEntity.ok("/user/loginPage");
+        return true;
     }
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://172.26.12.239:3000")
-    public ResponseEntity<String> login(@RequestBody UserLoginDTO userLoginDTO) {
+    public boolean login(@RequestBody UserLoginDTO userLoginDTO) {
         // UserLoginDTO authenticatedUser = userService.login(userLoginDTO);
         boolean authenticatedUser = userService.login(userLoginDTO);
         if (authenticatedUser == false) {
             System.out.println("실패");
-            return ResponseEntity.badRequest().body("/user/loginPage");
+            return false;
         }
         System.out.println("성공");
-        return ResponseEntity.ok("Redirect:/");
+        return true;
     }
 
 }
