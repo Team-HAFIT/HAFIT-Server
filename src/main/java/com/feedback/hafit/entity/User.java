@@ -1,8 +1,10 @@
 package com.feedback.hafit.entity;
 
 import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -45,6 +47,9 @@ public class User{
     public void setCreated_at() {
         this.created_at = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts;
 
     @Builder
     public User(String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,6 +28,9 @@ public class Category {
     public void setCreated_at() {
         this.created_at = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Post> posts;
 
     @Builder
     public Category(String category_name, LocalDateTime created_at) {
