@@ -41,7 +41,7 @@ public class Post {
     private int hierarchy; // 계층, 대댓글
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_num", foreignKey = @ForeignKey(name = "fk_post_user"))
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_user"))
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -12,13 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long user_num; //sequence, auto_increment
+    private Long user_id; //sequence, auto_increment
 
     private String email; //아이디
 
     private String password;
-
-    private String birth; //생일
 
     private String phone; // 전화
 
@@ -26,22 +24,35 @@ public class UserDTO {
 
     private String name; // 이름
 
-    private String nickname; //닉네임
-
     private Role role; // 권한
 
     private LocalDateTime created_at;
 
+    private int birth_year;
+
+    private int birth_month;
+
+    private int birth_day;
+
+    private int height;
+
+    private int weight;
+
+    private String user_img;
 
     public User toEntity() {
         User user = User.builder()
                 .email(email)
                 .password(password)
-                .birth(birth)
                 .phone(phone)
                 .sex(sex)
                 .name(name)
-                .nickname(nickname)
+                .birth_year(birth_year)
+                .birth_month(birth_month)
+                .birth_day(birth_day)
+                .height(height)
+                .weight(weight)
+                .user_img(user_img)
                 .role(Role.USER)
                 .created_at(created_at)
                 .build();
@@ -49,15 +60,19 @@ public class UserDTO {
     }
 
     @Builder
-    public UserDTO(Long user_num, String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
-        this.user_num = user_num;
+    public UserDTO(Long user_id, String email, String password, String phone, String sex, String name, String user_img, int height, int weight, int birth_year, int birth_month, int birth_day, Role role, LocalDateTime created_at) {
+        this.user_id = user_id;
         this.email = email;
         this.password = password;
-        this.birth = birth;
         this.phone = phone;
         this.sex = sex;
         this.name = name;
-        this.nickname = nickname;
+        this.user_img = user_img;
+        this.height = height;
+        this.weight = weight;
+        this.birth_year = birth_year;
+        this.birth_month = birth_month;
+        this.birth_day = birth_day;
         this.role = role;
         this.created_at = created_at;
     }

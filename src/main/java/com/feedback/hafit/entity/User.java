@@ -15,16 +15,13 @@ import java.util.List;
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_num; //sequence, auto_increment
+    private Long user_id; //sequence, auto_increment
 
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(nullable = false, unique = true, length = 50)
     private String email; //아이디
 
     @Column(nullable = false, length = 100)
     private String password;
-
-    @Column(length = 30)
-    private String birth; //생일
 
     @Column(nullable = false, unique = true, length = 30)
     private String phone; // 전화
@@ -35,8 +32,35 @@ public class User{
     @Column(nullable = false, length = 50)
     private String name; // 이름
 
-    @Column(length = 50)
-    private String nickname; //닉네임
+    @Column
+    private int weight;
+
+    @Column
+    private int height;
+
+    @Column
+    private String user_img;
+
+    @Column
+    private Character easy_login;
+
+    @Column
+    private String token;
+
+    @Column
+    private Character payment;
+
+    @Column
+    private int birth_year;
+
+    @Column
+    private int birth_month;
+
+    @Column
+    private int birth_day;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus user_status;
 
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
@@ -52,14 +76,24 @@ public class User{
     private List<Post> posts;
 
     @Builder
-    public User(String email, String password, String birth, String phone, String sex, String name, String nickname, Role role, LocalDateTime created_at) {
+    public User(String email, String password, String phone, String sex, String name, int weight, int height,
+                      String user_img, Character easy_login, String token, Character payment, int birth_year, int birth_month,
+                      int birth_day, UserStatus user_status, Role role, LocalDateTime created_at) {
         this.email = email;
         this.password = password;
-        this.birth = birth;
         this.phone = phone;
         this.sex = sex;
         this.name = name;
-        this.nickname = nickname;
+        this.weight = weight;
+        this.height = height;
+        this.user_img = user_img;
+        this.easy_login = easy_login;
+        this.token = token;
+        this.payment = payment;
+        this.birth_year = birth_year;
+        this.birth_month = birth_month;
+        this.birth_day = birth_day;
+        this.user_status = user_status;
         this.role = role;
         this.created_at = created_at;
     }
@@ -70,17 +104,6 @@ public class User{
                 .password(this.password)
                 .build();
     }
-
-//    public static User createUser(UserFormDTO userFormDTO, PasswordEncoder passwordEncoder) {
-//        User user = User.builder()
-//                .email(userFormDTO.getEmail())
-//                .password(passwordEncoder.encode(userFormDTO.getPassword()))
-//                .name(userFormDTO.getName())
-//                .phone(userFormDTO.getPhone())
-//                .role(Role.USER)
-//                .build();
-//        return user;
-//    }
 
 //    // override
 //    @Override

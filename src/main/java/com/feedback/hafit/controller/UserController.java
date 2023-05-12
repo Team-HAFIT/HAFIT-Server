@@ -1,5 +1,6 @@
 package com.feedback.hafit.controller;
 
+import com.feedback.hafit.entity.UserDTO;
 import com.feedback.hafit.entity.UserFormDTO;
 import com.feedback.hafit.entity.UserLoginDTO;
 import com.feedback.hafit.repository.UserRepository;
@@ -7,7 +8,6 @@ import com.feedback.hafit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,36 +21,25 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/signupPage")
-    public ModelAndView signupPage() {  // 회원 가입 페이지
-        ModelAndView mav = new ModelAndView("/user/signupPage");
-        return mav;
-    }
-
-    @GetMapping("/loginPage")
-    public ModelAndView loginPage() {
-        ModelAndView mav = new ModelAndView("/user/loginPage");
-        return mav;
-    }
-
     @PostMapping("/signup")
     @CrossOrigin(origins = "http://172.26.12.239:3000")
     public boolean signup(@RequestBody UserFormDTO userFormDTO) {
-        userService.userJoin(userFormDTO);
-        return true;
+        return  userService.signup(userFormDTO);
     }
 
     @PostMapping("/login")
     @CrossOrigin(origins = "http://172.26.12.239:3000")
     public boolean login(@RequestBody UserLoginDTO userLoginDTO) {
-        // UserLoginDTO authenticatedUser = userService.login(userLoginDTO);
-        boolean authenticatedUser = userService.login(userLoginDTO);
-        if (authenticatedUser == false) {
-            System.out.println("실패");
-            return false;
-        }
-        System.out.println("성공");
-        return true;
+        return userService.login(userLoginDTO);
     }
 
+    @PostMapping("/update")
+    public boolean update(@RequestBody UserDTO userDTO) {
+        return userService.updateUser(userDTO);
+    }
+
+    @PostMapping("/delete")
+    public boolean delete(@RequestBody UserDTO userDTO) {
+        return userService.deleteAccount(userDTO);
+    }
 }

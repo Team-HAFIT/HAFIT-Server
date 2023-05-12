@@ -26,7 +26,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	//implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation group: 'org.python', name: 'jython-standalone', version: '2.7.2'
-	implementation 'com.google.code.gson:gson:2.8.9'
+	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.json:json:20230227'
 }
