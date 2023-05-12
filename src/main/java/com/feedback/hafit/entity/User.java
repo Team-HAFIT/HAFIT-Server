@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_id; //sequence, auto_increment
