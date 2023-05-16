@@ -28,11 +28,7 @@ public class UserDTO {
 
     private LocalDateTime created_at;
 
-    private int birth_year;
-
-    private int birth_month;
-
-    private int birth_day;
+    private int birth;
 
     private int height;
 
@@ -47,9 +43,7 @@ public class UserDTO {
                 .phone(phone)
                 .sex(sex)
                 .name(name)
-                .birth_year(birth_year)
-                .birth_month(birth_month)
-                .birth_day(birth_day)
+                .birth(birth)
                 .height(height)
                 .weight(weight)
                 .user_img(user_img)
@@ -60,7 +54,7 @@ public class UserDTO {
     }
 
     @Builder
-    public UserDTO(Long user_id, String email, String password, String phone, String sex, String name, String user_img, int height, int weight, int birth_year, int birth_month, int birth_day, Role role, LocalDateTime created_at) {
+    public UserDTO(Long user_id, String email, String password, String phone, String sex, String name, String user_img, int height, int weight, int birth, Role role, LocalDateTime created_at) {
         this.user_id = user_id;
         this.email = email;
         this.password = password;
@@ -70,9 +64,7 @@ public class UserDTO {
         this.user_img = user_img;
         this.height = height;
         this.weight = weight;
-        this.birth_year = birth_year;
-        this.birth_month = birth_month;
-        this.birth_day = birth_day;
+        this.birth = birth;
         this.role = role;
         this.created_at = created_at;
     }

@@ -52,13 +52,7 @@ public class User{
     private Character payment;
 
     @Column
-    private int birth_year;
-
-    @Column
-    private int birth_month;
-
-    @Column
-    private int birth_day;
+    private int birth;
 
     @Enumerated(EnumType.STRING)
     private UserStatus user_status;
@@ -76,10 +70,12 @@ public class User{
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
+    @OneToMany(mappedBy = "user")
+    private List<Goal> goals;
+
     @Builder
     public User(String email, String password, String phone, String sex, String name, int weight, int height,
-                      String user_img, Character easy_login, String token, Character payment, int birth_year, int birth_month,
-                      int birth_day, UserStatus user_status, Role role, LocalDateTime created_at) {
+                      String user_img, Character easy_login, String token, Character payment, int birth, UserStatus user_status, Role role, LocalDateTime created_at) {
         this.email = email;
         this.password = password;
         this.phone = phone;
@@ -91,9 +87,7 @@ public class User{
         this.easy_login = easy_login;
         this.token = token;
         this.payment = payment;
-        this.birth_year = birth_year;
-        this.birth_month = birth_month;
-        this.birth_day = birth_day;
+        this.birth = birth;
         this.user_status = user_status;
         this.role = role;
         this.created_at = created_at;
