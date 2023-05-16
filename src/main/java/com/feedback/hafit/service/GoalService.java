@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class GoalService {
@@ -39,5 +40,9 @@ public class GoalService {
         goalRepository.save(goal);
 
         return true;
+    }
+
+    public List<Goal> getGoalsByUser(User user) {
+        return goalRepository.findByUser(user);
     }
 }

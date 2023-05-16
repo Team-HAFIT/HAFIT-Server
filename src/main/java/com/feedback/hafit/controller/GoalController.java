@@ -1,17 +1,19 @@
 package com.feedback.hafit.controller;
 
+import com.feedback.hafit.entity.Goal;
 import com.feedback.hafit.entity.GoalDTO;
+import com.feedback.hafit.entity.User;
 import com.feedback.hafit.repository.GoalRepository;
 import com.feedback.hafit.service.GoalService;
+import com.feedback.hafit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +22,9 @@ public class GoalController {
 
     @Autowired
     private GoalService goalService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private GoalRepository goalRepository;
@@ -34,4 +39,22 @@ public class GoalController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/read")
+    public List<GoalDTO> getUserGoals(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        List<Goal> goals = goalRepository.findByUser(user);
+        return goals.stream()
+                .map(goal -> GoalDTO.builder()
+                        .goal_id(goal.getGoal_id())
+                        .goal_content(goal.getGoal_content())
+                        .goal_date(goal.getGoal_date())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }

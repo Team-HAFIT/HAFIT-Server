@@ -35,6 +35,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpSession session) {
         User user = userService.login(userLoginDTO);
         if (user != null) {
@@ -50,12 +51,14 @@ public class UserController {
 
 
     @PostMapping("/logout")
+    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/session")
+    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public Object session(HttpSession session) {
         System.out.println(session.getAttribute("userId"));
         return session.getAttribute("loginState");
@@ -74,6 +77,7 @@ public class UserController {
     }
 
     @PostMapping("/changePassword")
+    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public boolean changePassword(@RequestBody UserChangePasswordDTO userChangePasswordDTO) {
         return userService.changePassword(userChangePasswordDTO);
     }

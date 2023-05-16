@@ -1,5 +1,6 @@
 package com.feedback.hafit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.feedback.hafit.repository.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 public class GoalDTO {
 
     @Autowired
+    @JsonIgnore
     UserRepository userRepository;
 
     private Long goal_id;
@@ -23,6 +25,7 @@ public class GoalDTO {
 
     private LocalDate goal_date;
 
+    @JsonIgnore
     private Long user_id;
 
     @Builder
