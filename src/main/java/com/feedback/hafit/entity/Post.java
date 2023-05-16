@@ -28,6 +28,7 @@ public class Post {
     @PrePersist
     public void setPost_created() {
         this.post_created = LocalDateTime.now();
+        this.post_modified = this.post_created;
     }
 
     @PreUpdate
@@ -36,7 +37,7 @@ public class Post {
     }
 
     @Column(length = 500)
-    private String post_img;
+    private String post_file;
 
     private int hierarchy; // 계층, 대댓글
 
@@ -49,11 +50,11 @@ public class Post {
     private Category category;
 
     @Builder
-    public Post(String post_content, LocalDateTime post_created, LocalDateTime post_modified, String post_img, int hierarchy, User user, Category category) {
+    public Post(String post_content, LocalDateTime post_created, LocalDateTime post_modified, String post_file, int hierarchy, User user, Category category) {
         this.post_content = post_content;
         this.post_created = post_created;
         this.post_modified = post_modified;
-        this.post_img = post_img;
+        this.post_file = post_file;
         this.hierarchy = hierarchy;
         this.user = user;
         this.category = category;
@@ -62,7 +63,7 @@ public class Post {
     public PostDTO toPostDTO() {
         return PostDTO.builder()
                 .post_content(this.post_content)
-                .post_img(this.post_img)
+                .post_file(this.post_file)
                 .build();
     }
 
