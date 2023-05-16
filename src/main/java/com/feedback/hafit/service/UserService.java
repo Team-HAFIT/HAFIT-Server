@@ -33,6 +33,11 @@ public class UserService {
         return (User) httpSession.getAttribute("loggedInUser");
     }
 
+    public User getUserById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        return userOptional.orElse(null);
+    }
+
     public boolean signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -45,19 +50,19 @@ public class UserService {
         }
     }
 
-    public boolean login(UserLoginDTO userLoginDTO) {
-        Optional<User> userOptional = userRepository.findUserByEmail(userLoginDTO.getEmail());
+    public User login(UserLoginDTO userLoginDTO) {
+        Optional<User> userOptional = userRepository.findByEmail(userLoginDTO.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoder.matches(userLoginDTO.getPassword(), user.getPassword()) && user.getUser_status() == UserStatus.ACTIVE) {
-                return true;
+                return user;
             }
         }
-        return false;
+        return null;
     }
 
     public boolean deleteAccount(UserDTO userDTO) {
-        Optional<User> userOptional = userRepository.findUserByEmail(userDTO.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
         if (userOptional.isPresent()) { // Optional에서 User를 가져올 수 있는지 확인
             User user = userOptional.get();
             user.setUser_status(UserStatus.DELETED); // user_status 값을 DELETED로 변경
@@ -69,16 +74,14 @@ public class UserService {
     }
 
     public boolean updateUser(UserDTO userDTO) {
-        Optional<User> userOptional = userRepository.findUserByEmail(userDTO.getEmail());
+        Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setPhone(userDTO.getPhone());
             user.setHeight(userDTO.getHeight());
             user.setWeight(userDTO.getWeight());
             user.setSex(userDTO.getSex());
-            user.setBirth_year(userDTO.getBirth_year());
-            user.setBirth_month(userDTO.getBirth_month());
-            user.setBirth_day(userDTO.getBirth_day());
+            user.setBirth(userDTO.getBirth());
             user.setUser_img(userDTO.getUser_img());
             userRepository.save(user);
             return true;
@@ -88,14 +91,18 @@ public class UserService {
     }
 
     public boolean changePassword(UserChangePasswordDTO changePasswordDTO) {
-        User user = userRepository.findByEmail(changePasswordDTO.getEmail());
-        if (user != null && passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
-            String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
-            user.setPassword(encodedNewPassword);
-            userRepository.save(user);
-            return true;
-        } else {
-            return false;
+        Optional<User> userOptional = userRepository.findByEmail(changePasswordDTO.getEmail());
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+                String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
+                // 비밀번호 유효성 검사 이후에 암호화 및 저장을 수행합니다.
+                user.setPassword(encodedNewPassword);
+                userRepository.save(user);
+                return true;
+            }
         }
+        return false;
     }
+
 }

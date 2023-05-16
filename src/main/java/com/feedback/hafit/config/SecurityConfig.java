@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 // 로그인 권한은 누구나
-                .antMatchers("/user/loginPage", "/user/signupPage", "/user/**").permitAll()
+                .antMatchers("/user/loginPage", "/user/signupPage", "/user/**", "/goal/**").permitAll()
                 // admin 권한
                 .antMatchers("/admin/**").access("hasRole('ADMIN')")
                 // "/" 도메인 접근 허용
@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .logout()
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/");
-                // 인증에 실패했을 때 보여주는 화면 url, 로그인 form으로 파라미터값 error=true로 보낸다.
+        // 인증에 실패했을 때 보여주는 화면 url, 로그인 form으로 파라미터값 error=true로 보낸다.
         return http.build();
     }
 

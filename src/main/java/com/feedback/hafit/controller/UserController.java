@@ -1,14 +1,15 @@
 package com.feedback.hafit.controller;
 
-import com.feedback.hafit.entity.UserChangePasswordDTO;
-import com.feedback.hafit.entity.UserDTO;
-import com.feedback.hafit.entity.UserFormDTO;
-import com.feedback.hafit.entity.UserLoginDTO;
+import com.feedback.hafit.entity.*;
 import com.feedback.hafit.repository.UserRepository;
 import com.feedback.hafit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +23,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/loginPage")
-    public String loginPage() {
-        return "redirect:/user/loginPage";
-    }
+//    @GetMapping("/loginPage")
+//    public String loginPage() {
+//        return "user/loginPage";
+//    }
+
     @PostMapping("/signup")
     @CrossOrigin(origins = "http://172.26.9.191:3000")
     public boolean signup(@RequestBody UserFormDTO userFormDTO) {
@@ -33,9 +35,30 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
-    public boolean login(@RequestBody UserLoginDTO userLoginDTO) {
-        return userService.login(userLoginDTO);
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpSession session) {
+        User user = userService.login(userLoginDTO);
+        if (user != null) {
+            session.setAttribute("loginState", "login");
+            session.setAttribute("userId", user.getUser_id());
+            session.setAttribute("email", user.getEmail());
+            session.setAttribute("role", user.getRole());
+            System.out.println(session.getAttribute("loginState") + " " + session.getAttribute("role")+ " " + session.getAttribute("email"));
+            return ResponseEntity.ok(Map.of("userId", user.getUser_id()));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        session.invalidate();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/session")
+    public Object session(HttpSession session) {
+        System.out.println(session.getAttribute("userId"));
+        return session.getAttribute("loginState");
     }
 
     @PostMapping("/update")
@@ -54,4 +77,6 @@ public class UserController {
     public boolean changePassword(@RequestBody UserChangePasswordDTO userChangePasswordDTO) {
         return userService.changePassword(userChangePasswordDTO);
     }
+
+
 }
