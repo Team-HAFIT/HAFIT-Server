@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 // 로그인 권한은 누구나
-                .antMatchers("/user/loginPage", "/user/signupPage", "/user/**", "/goal/**").permitAll()
+                .antMatchers("/user/loginPage", "/user/signupPage", "/user/**", "/goal/**", "/post/**").permitAll()
                 // admin 권한
                 .antMatchers("/admin/**").access("hasRole('ADMIN')")
                 // "/" 도메인 접근 허용
