@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "#")
 public class PostController {
 
     @Autowired
@@ -24,9 +24,9 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/upload")   // 피드 등록
-    @CrossOrigin(origins = "#")
-    public boolean upload(@RequestBody PostFormDTO postFormDTO) {
-        boolean isPostCreated = postService.upload(postFormDTO);
+    public boolean upload(@RequestBody PostFormDTO postFormDTO, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        boolean isPostCreated = postService.upload(postFormDTO, userId);
         if (!isPostCreated) {
             System.out.println("업로드 실패");
             return false;
@@ -36,7 +36,6 @@ public class PostController {
     }
 
     @PostMapping("/update") // 피드 수정
-    @CrossOrigin(origins = "#")
     public boolean update(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostUpdated = postService.update(postFormDTO);
         if (!isPostUpdated) {
@@ -48,7 +47,6 @@ public class PostController {
     }
 
     @DeleteMapping("/delete") // 피드 삭제
-    @CrossOrigin(origins = "#")
     public boolean delete(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostDeleted = postService.delete(postFormDTO);
         if (!isPostDeleted) {
@@ -60,7 +58,6 @@ public class PostController {
     }
 
     @GetMapping("/list") // 전체 피드 조회
-    @CrossOrigin(origins = "#")
     public ResponseEntity<List<Post>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         if (!posts.isEmpty()) {
@@ -69,6 +66,5 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }

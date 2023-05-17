@@ -125,7 +125,6 @@ public class UserService {
                 .weight(user.getWeight())
                 .height(user.getHeight())
                 .birthday(user.getBirthday())
-                .created_at(user.getCreated_at())
                 .build();
     }
 
