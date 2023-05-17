@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,6 +19,7 @@ public class UserDTO {
 
     private String password;
 
+    private String carrier;
     private String phone; // 전화
 
     private String sex;
@@ -28,7 +30,7 @@ public class UserDTO {
 
     private LocalDateTime created_at;
 
-    private int birth;
+    private LocalDate birthday;
 
     private int height;
 
@@ -40,10 +42,11 @@ public class UserDTO {
         User user = User.builder()
                 .email(email)
                 .password(password)
+                .carrier(carrier)
                 .phone(phone)
                 .sex(sex)
                 .name(name)
-                .birth(birth)
+                .birthday(birthday)
                 .height(height)
                 .weight(weight)
                 .user_img(user_img)
@@ -54,17 +57,18 @@ public class UserDTO {
     }
 
     @Builder
-    public UserDTO(Long user_id, String email, String password, String phone, String sex, String name, String user_img, int height, int weight, int birth, Role role, LocalDateTime created_at) {
+    public UserDTO(Long user_id, String email, String password, String carrier, String phone, String sex, String name, String user_img, int height, int weight, LocalDate birthday, Role role, LocalDateTime created_at) {
         this.user_id = user_id;
         this.email = email;
         this.password = password;
+        this.carrier = carrier;
         this.phone = phone;
         this.sex = sex;
         this.name = name;
         this.user_img = user_img;
         this.height = height;
         this.weight = weight;
-        this.birth = birth;
+        this.birthday = birthday;
         this.role = role;
         this.created_at = created_at;
     }
