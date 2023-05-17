@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PostFormDTO {
+    private Long post_id;
     private String post_content;
     private String post_file;
 

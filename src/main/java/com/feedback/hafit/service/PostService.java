@@ -23,14 +23,31 @@ public class PostService {
         return false;
     }
 
-public boolean update(PostFormDTO postFormDTO) {
+    public boolean update(PostFormDTO postFormDTO) {
+        try {
+            Optional<Post> optionalPost = postRepository.findById(postFormDTO.getPost_id());
+            if (optionalPost.isPresent()) {
+                Post post = optionalPost.get();
+                post.setPost_content(postFormDTO.getPost_content());
+                post.setPost_file(postFormDTO.getPost_file());
+                postRepository.save(post);
+                return true;
+            } else {
+                System.out.println("해당하는 게시물을 찾을 수 없습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean delete(PostFormDTO postFormDTO) {
     try {
         Optional<Post> optionalPost = postRepository.findById(postFormDTO.getPost_id());
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            post.setPost_content(postFormDTO.getPost_content());
-            post.setPost_file(postFormDTO.getPost_file());
-            postRepository.save(post);
+            postRepository.delete(post);
             return true;
         } else {
             System.out.println("해당하는 게시물을 찾을 수 없습니다.");
@@ -38,10 +55,9 @@ public boolean update(PostFormDTO postFormDTO) {
         }
     } catch (Exception e) {
         e.printStackTrace();
+        return false;
     }
-    return false;
 }
-
 
 
 

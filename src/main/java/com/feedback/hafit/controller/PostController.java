@@ -19,7 +19,7 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("/upload")   // 글쓰기
+    @PostMapping("/upload")   // 피드 등록
     @CrossOrigin(origins = "#")
     public boolean upload(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostCreated = postService.upload(postFormDTO);
@@ -31,15 +31,28 @@ public class PostController {
         return true;
     }
 
-    @PostMapping("/update")
+    @PostMapping("/update") // 피드 수정
     @CrossOrigin(origins = "#")
     public boolean update(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostUpdated = postService.update(postFormDTO);
-        if(!isPostUpdated) {
+        if (!isPostUpdated) {
             System.out.println("수정 실패");
             return false;
         }
         System.out.println("수정 성공");
         return true;
     }
+
+    @DeleteMapping("/delete") // 피드 삭제
+    @CrossOrigin(origins = "#")
+    public boolean delete(@RequestBody PostFormDTO postFormDTO) {
+        boolean isPostDeleted = postService.delete(postFormDTO);
+        if (!isPostDeleted) {
+            System.out.println("삭제 실패");
+            return false;
+        }
+        System.out.println("삭제 성공");
+        return true;
+    }
+
 }
