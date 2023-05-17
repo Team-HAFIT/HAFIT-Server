@@ -3,6 +3,7 @@ package com.feedback.hafit.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class User{
 
     @Column(nullable = false, length = 100)
     private String password;
+
+    @Column
+    private String carrier;
 
     @Column(nullable = false, unique = true, length = 30)
     private String phone; // 전화
@@ -52,7 +56,7 @@ public class User{
     private Character payment;
 
     @Column
-    private int birth;
+    private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
     private UserStatus user_status;
@@ -74,10 +78,11 @@ public class User{
     private List<Goal> goals;
 
     @Builder
-    public User(String email, String password, String phone, String sex, String name, int weight, int height,
-                      String user_img, Character easy_login, String token, Character payment, int birth, UserStatus user_status, Role role, LocalDateTime created_at) {
+    public User(String email, String password, String carrier, String phone, String sex, String name, int weight, int height,
+                      String user_img, Character easy_login, String token, Character payment, LocalDate birthday, UserStatus user_status, Role role, LocalDateTime created_at) {
         this.email = email;
         this.password = password;
+        this.carrier = carrier;
         this.phone = phone;
         this.sex = sex;
         this.name = name;
@@ -87,7 +92,7 @@ public class User{
         this.easy_login = easy_login;
         this.token = token;
         this.payment = payment;
-        this.birth = birth;
+        this.birthday = birthday;
         this.user_status = user_status;
         this.role = role;
         this.created_at = created_at;

@@ -27,6 +27,7 @@ public class UserFormDTO {
     @NotNull
     private String name;
 
+    private String carrier;
     @NotNull
     private String phone;
 
@@ -38,6 +39,7 @@ public class UserFormDTO {
         User user = User.builder()
                 .email(email)
                 .password(password)
+                .carrier(carrier)
                 .phone(phone)
                 .name(name)
                 .user_status(UserStatus.ACTIVE)
@@ -47,10 +49,11 @@ public class UserFormDTO {
     }
 
     @Builder
-    public UserFormDTO(String email, String password, String name, String phone, UserStatus user_status, Role role) {
+    public UserFormDTO(String email, String password, String name, String carrier, String phone, UserStatus user_status, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.carrier = carrier;
         this.phone = phone;
         this.user_status = user_status;
         this.role = role;

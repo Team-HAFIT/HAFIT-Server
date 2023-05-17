@@ -29,13 +29,11 @@ public class UserController {
 //    }
 
     @PostMapping("/signup")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public boolean signup(@RequestBody UserFormDTO userFormDTO) {
         return  userService.signup(userFormDTO);
     }
 
     @PostMapping("/login")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userLoginDTO, HttpSession session) {
         User user = userService.login(userLoginDTO);
         if (user != null) {
@@ -51,36 +49,37 @@ public class UserController {
 
 
     @PostMapping("/logout")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public ResponseEntity<?> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/session")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public Object session(HttpSession session) {
         System.out.println(session.getAttribute("userId"));
         return session.getAttribute("loginState");
     }
 
     @PostMapping("/update")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public boolean update(@RequestBody UserDTO userDTO) {
         return userService.updateUser(userDTO);
     }
 
     @PostMapping("/delete")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
-    public boolean delete(@RequestBody UserDTO userDTO) {
-        return userService.deleteAccount(userDTO);
+    public boolean delete(@RequestParam String userId) {
+        Long id = Long.parseLong(userId);
+        return userService.deleteAccount(id);
     }
 
     @PostMapping("/changePassword")
-    @CrossOrigin(origins = "http://172.26.9.191:3000")
     public boolean changePassword(@RequestBody UserChangePasswordDTO userChangePasswordDTO) {
         return userService.changePassword(userChangePasswordDTO);
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<UserDTO> getUserInfo(@RequestParam Long userId) {
+        UserDTO userDTO = userService.getUserInfoById(userId);
+        return ResponseEntity.ok(userDTO);
+    }
 
 }
