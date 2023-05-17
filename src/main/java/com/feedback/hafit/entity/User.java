@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,7 +12,7 @@ import java.util.List;
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User{
+public class User extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,13 +63,6 @@ public class User{
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
 
-    private LocalDateTime created_at; // 날짜
-
-    @PrePersist // DB에 INSERT 되기 직전에 실행. 즉 DB에 값을 넣으면 자동으로 실행됨
-    public void setCreated_at() {
-        this.created_at = LocalDateTime.now();
-    }
-
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
@@ -79,7 +71,7 @@ public class User{
 
     @Builder
     public User(String email, String password, String carrier, String phone, String sex, String name, int weight, int height,
-                      String user_img, Character easy_login, String token, Character payment, LocalDate birthday, UserStatus user_status, Role role, LocalDateTime created_at) {
+                      String user_img, Character easy_login, String token, Character payment, LocalDate birthday, UserStatus user_status, Role role) {
         this.email = email;
         this.password = password;
         this.carrier = carrier;
@@ -95,7 +87,6 @@ public class User{
         this.birthday = birthday;
         this.user_status = user_status;
         this.role = role;
-        this.created_at = created_at;
     }
 
     public UserLoginDTO toLoginDTO() {

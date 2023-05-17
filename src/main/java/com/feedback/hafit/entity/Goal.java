@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Goal {
+public class Goal extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -21,7 +21,6 @@ public class Goal {
     @Column(length = 300)
     private String goal_content; //아이디
 
-    @Column
     private LocalDate goal_date;
 
     @ManyToOne(fetch = FetchType.LAZY)

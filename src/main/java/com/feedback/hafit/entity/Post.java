@@ -3,8 +3,6 @@ package com.feedback.hafit.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -12,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "post")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,21 +18,6 @@ public class Post {
 
     @Column(length = 8000)
     private String post_content;
-
-    private @NotNull LocalDateTime post_created;
-
-    private @NotNull LocalDateTime post_modified;
-
-    @PrePersist
-    public void setPost_created() {
-        this.post_created = LocalDateTime.now();
-        this.post_modified = this.post_created;
-    }
-
-    @PreUpdate
-    public void setPost_Modified() {
-        this.post_modified = LocalDateTime.now();
-    }
 
     @Column(length = 500)
     private String post_file;
@@ -50,10 +33,8 @@ public class Post {
     private Category category;
 
     @Builder
-    public Post(String post_content, LocalDateTime post_created, LocalDateTime post_modified, String post_file, int hierarchy, User user, Category category) {
+    public Post(String post_content, String post_file, int hierarchy, User user, Category category) {
         this.post_content = post_content;
-        this.post_created = post_created;
-        this.post_modified = post_modified;
         this.post_file = post_file;
         this.hierarchy = hierarchy;
         this.user = user;
