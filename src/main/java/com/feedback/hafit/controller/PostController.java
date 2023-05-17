@@ -1,11 +1,15 @@
 package com.feedback.hafit.controller;
 
+import com.feedback.hafit.entity.Post;
 import com.feedback.hafit.entity.PostFormDTO;
 import com.feedback.hafit.repository.PostRepository;
 import com.feedback.hafit.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -54,5 +58,17 @@ public class PostController {
         System.out.println("삭제 성공");
         return true;
     }
+
+    @GetMapping("/list") // 전체 피드 조회
+    @CrossOrigin(origins = "#")
+    public ResponseEntity<List<Post>> getAllPosts() {
+        List<Post> posts = postService.getAllPosts();
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }
