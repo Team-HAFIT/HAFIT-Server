@@ -15,20 +15,17 @@ public class CategoryDTO {
 
     private String category_name;
 
-    private LocalDateTime created_at;
 
     public Category toEntity() {
         Category category = Category.builder()
                 .category_name(category_name)
-                .created_at(created_at)
                 .build();
         return category;
     }
 
     @Builder
-    public CategoryDTO(Long category_id, String category_name, LocalDateTime created_at) {
+    public CategoryDTO(Long category_id, String category_name) {
         this.category_id = getCategory_id();
         this.category_name = getCategory_name();
-        this.created_at = created_at;
     }
 }

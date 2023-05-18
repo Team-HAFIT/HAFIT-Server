@@ -3,17 +3,15 @@ package com.feedback.hafit.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "category")
+@Table(name = "categorys")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class Category extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 매핑
@@ -22,20 +20,12 @@ public class Category {
     @Column(unique = true, nullable = false, length = 30)
     private String category_name; // 카테고리 이름
 
-    private @NotNull LocalDateTime created_at; // 카테고리 생성일 DB에만 저장
-
-    @PrePersist // DB insert 되기 직전에 실행
-    public void setCreated_at() {
-        this.created_at = LocalDateTime.now();
-    }
-
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Post> posts;
 
     @Builder
-    public Category(String category_name, LocalDateTime created_at) {
+    public Category(String category_name) {
         this.category_name = category_name;
-        this.created_at = created_at;
     }
 
     public static Category createCategory(CategoryFormDTO categoryFormDTO) {
