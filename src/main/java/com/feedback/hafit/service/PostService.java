@@ -15,7 +15,7 @@ public class PostService {
     @Autowired
     PostRepository postRepository;
 
-    public boolean upload(PostFormDTO postFormDTO, Long userId, Long category_id) {
+    public boolean upload(PostFormDTO postFormDTO) {
         try {
             postRepository.save(postFormDTO.toEntity());
             return true;

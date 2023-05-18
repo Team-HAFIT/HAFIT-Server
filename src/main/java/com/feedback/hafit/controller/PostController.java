@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +26,8 @@ public class PostController {
 
     @PostMapping("/upload") // 피드 등록
     @CrossOrigin(origins = "#")
-    public PostFormDTO upload(@RequestBody PostFormDTO postFormDTO, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        Long category_id = (Long) session.getAttribute("category_id");
-        boolean isPostCreated = postService.upload(postFormDTO, userId, category_id);
+    public PostFormDTO upload(@RequestBody PostFormDTO postFormDTO) {
+        boolean isPostCreated = postService.upload(postFormDTO);
         if (!isPostCreated) {
             System.out.println("업로드 실패");
             return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
