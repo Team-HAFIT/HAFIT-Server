@@ -57,6 +57,7 @@ public class UserController {
     @PostMapping("/session")
     public Object session(HttpSession session) {
         System.out.println(session.getAttribute("userId"));
+        session.setAttribute("categoryId", "1");
         return session.getAttribute("loginState");
     }
 

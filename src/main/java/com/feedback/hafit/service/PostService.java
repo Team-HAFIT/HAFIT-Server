@@ -1,8 +1,10 @@
 package com.feedback.hafit.service;
 
+import com.feedback.hafit.entity.Category;
 import com.feedback.hafit.entity.Post;
 import com.feedback.hafit.entity.PostFormDTO;
 import com.feedback.hafit.entity.User;
+import com.feedback.hafit.repository.CategoryRepository;
 import com.feedback.hafit.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,16 @@ public class PostService {
     @Autowired
     PostRepository postRepository;
 
-    public boolean upload(PostFormDTO postFormDTO, Long userId) {
+    @Autowired
+    CategoryRepository categoryRepository;
+
+    public boolean upload(PostFormDTO postFormDTO, Long userId, Long categoryId) {
         User user = userService.getUserById(userId);
         if (user == null) {
+            return false;
+        }
+        Category category = categoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
             return false;
         }
         try {
@@ -30,6 +39,7 @@ public class PostService {
             String postFile = postFormDTO.getPost_file();
             Post post = new Post();
             post.setUser(user);
+            post.setCategory(category);
             post.setPost_content(postContent);
             post.setPost_file(postFile);
             postRepository.save(post);
@@ -39,6 +49,7 @@ public class PostService {
         }
         return false;
     }
+
 
     public boolean update(PostFormDTO postFormDTO) {
         try {
@@ -84,6 +95,5 @@ public class PostService {
             return Collections.emptyList();
         }
     }
-
 
 }

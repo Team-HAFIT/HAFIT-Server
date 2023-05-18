@@ -8,6 +8,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "categorys")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,15 +24,15 @@ public class Category extends BaseEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Post> posts;
 
-    @Builder
-    public Category(String category_name) {
-        this.category_name = category_name;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_category_user"))
+    private User user;
 
-    public static Category createCategory(CategoryFormDTO categoryFormDTO) {
+    public static Category createCategory(CategoryDTO categoryFormDTO) {
         Category category = Category.builder()
                 .category_name(categoryFormDTO.getCategory_name())
                 .build();
         return category;
     }
+
 }

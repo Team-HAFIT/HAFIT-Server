@@ -23,10 +23,25 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    @PostMapping("/cat")
+    public boolean ca( HttpSession session) {
+        session.setAttribute("categoryId", "1");
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        System.out.println(session.getAttribute("categoryId"));
+        return true;
+    }
     @PostMapping("/upload")   // 피드 등록
     public boolean upload(@RequestBody PostFormDTO postFormDTO, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        boolean isPostCreated = postService.upload(postFormDTO, userId);
+        // TODO categoryId 세션 값 확인
+//        Long categoryId = (Long) session.getAttribute("categoryId");
+        Long categoryId = 1L;
+        boolean isPostCreated = postService.upload(postFormDTO, userId, categoryId);
         if (!isPostCreated) {
             System.out.println("업로드 실패");
             return false;
