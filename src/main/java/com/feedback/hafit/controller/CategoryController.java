@@ -1,11 +1,15 @@
 package com.feedback.hafit.controller;
 
+import com.feedback.hafit.entity.Category;
 import com.feedback.hafit.entity.CategoryFormDTO;
 import com.feedback.hafit.repository.CategoryRepository;
 import com.feedback.hafit.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/category")
@@ -53,5 +57,16 @@ public class CategoryController {
         }
         System.out.println("삭제 성공");
         return true;
+    }
+
+    @GetMapping("list")
+    @CrossOrigin(origins = "#")
+    public ResponseEntity<Object> geyAllCategorys() {
+        List<Category> categorys = categoryService.getAllCategorys();
+        if(!categorys.isEmpty()) {
+            return ResponseEntity.ok(categorys);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
