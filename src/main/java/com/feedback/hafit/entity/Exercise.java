@@ -1,9 +1,6 @@
 package com.feedback.hafit.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "exercises")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,22 +17,19 @@ public class Exercise extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exec_id;
+    private Long exec_id; //운동 번호
 
     @Column
-    private String name;
+    private String name; // 이름
 
     @Column
-    private String calorie;
+    private int calorie; // 칼로리
 
     @Column
-    private int part;
+    private String exec_description; // 설명
 
     @Column
-    private String exec_description;
-
-    @Column
-    private String exec_img;
+    private String exec_img; // 사진
 
     // Plan 참조
     @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)

@@ -41,7 +41,7 @@ public class CategoryController {
         boolean isCategoryUpdated = categoryService.update(categoryFormDTO);
         if (!isCategoryUpdated) {
             System.out.println("수정 실패");
-            return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
+            return null;
         }
         System.out.println("수정 성공");
         return categoryFormDTO;
