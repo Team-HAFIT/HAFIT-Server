@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,28 +24,28 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("/upload")   // 피드 등록
+    @PostMapping("/upload") // 피드 등록
     @CrossOrigin(origins = "#")
-    public boolean upload(@RequestBody PostFormDTO postFormDTO) {
+    public PostFormDTO upload(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostCreated = postService.upload(postFormDTO);
         if (!isPostCreated) {
             System.out.println("업로드 실패");
-            return false;
+            return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
         }
         System.out.println("업로드 성공");
-        return true;
+        return postFormDTO;
     }
 
     @PostMapping("/update") // 피드 수정
     @CrossOrigin(origins = "#")
-    public boolean update(@RequestBody PostFormDTO postFormDTO) {
+    public PostFormDTO update(@RequestBody PostFormDTO postFormDTO) {
         boolean isPostUpdated = postService.update(postFormDTO);
         if (!isPostUpdated) {
             System.out.println("수정 실패");
-            return false;
+            return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
         }
         System.out.println("수정 성공");
-        return true;
+        return postFormDTO;
     }
 
     @DeleteMapping("/delete") // 피드 삭제
@@ -61,10 +62,21 @@ public class PostController {
 
     @GetMapping("/list") // 전체 피드 조회
     @CrossOrigin(origins = "#")
-    public ResponseEntity<List<Post>> getAllPosts() {
+    public ResponseEntity<List<PostFormDTO>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
-        if (!posts.isEmpty()) {
-            return ResponseEntity.ok(posts);
+        List<PostFormDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            PostFormDTO postDTO = new PostFormDTO();
+            postDTO.setPost_id(post.getPost_id());
+            postDTO.setPost_content(post.getPost_content());
+            postDTO.setPost_file(post.getPost_file());
+
+            postDTOs.add(postDTO);
+        }
+
+        if (!postDTOs.isEmpty()) {
+            return ResponseEntity.ok(postDTOs);
         } else {
             return ResponseEntity.notFound().build();
         }

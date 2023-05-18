@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -25,33 +26,33 @@ public class CategoryController {
 
     @PostMapping("create") // 카테고리 추가
     @CrossOrigin(origins = "#")
-    public boolean create(@RequestBody CategoryFormDTO categoryFormDTO) {
+    public CategoryFormDTO create(@RequestBody CategoryFormDTO categoryFormDTO) {
         boolean isCategoryCreated = categoryService.create(categoryFormDTO);
-        if(!isCategoryCreated) {
+        if (!isCategoryCreated) {
             System.out.println("카테고리 추가 실패");
-            return false;
+            return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
         }
         System.out.println("카테고리 추가 성공");
-        return true;
+        return categoryFormDTO;
     }
 
     @PostMapping("update") // 카테고리 수정
     @CrossOrigin(origins = "#")
-    public boolean update(@RequestBody CategoryFormDTO categoryFormDTO) {
+    public CategoryFormDTO update(@RequestBody CategoryFormDTO categoryFormDTO) {
         boolean isCategoryUpdated = categoryService.update(categoryFormDTO);
-        if(!isCategoryUpdated) {
+        if (!isCategoryUpdated) {
             System.out.println("수정 실패");
-            return false;
+            return null; // 또는 실패 시에 적절한 응답을 반환할 수 있는 방법으로 변경
         }
         System.out.println("수정 성공");
-        return true;
+        return categoryFormDTO;
     }
 
     @DeleteMapping("/delete") // 카테고리 삭제
     @CrossOrigin(origins = "#")
     public boolean delete(@RequestBody CategoryFormDTO categoryFormDTO) {
         boolean isCategoryDeleted = categoryService.delete(categoryFormDTO);
-        if(!isCategoryDeleted) {
+        if (!isCategoryDeleted) {
             System.out.println("삭제 실패");
             return false;
         }
@@ -59,14 +60,25 @@ public class CategoryController {
         return true;
     }
 
-    @GetMapping("list")
+    @GetMapping("list") // 카테고리 목록 조회
     @CrossOrigin(origins = "#")
-    public ResponseEntity<Object> geyAllCategorys() {
-        List<Category> categorys = categoryService.getAllCategorys();
-        if(!categorys.isEmpty()) {
-            return ResponseEntity.ok(categorys);
+    public ResponseEntity<List<CategoryFormDTO>> getAllCategory() {
+        List<Category> categoryList = categoryService.getAllCategorys();
+        List<CategoryFormDTO> categoryDTOList = new ArrayList<>();
+
+        for (Category category : categoryList) {
+            CategoryFormDTO categoryDTO = new CategoryFormDTO();
+            categoryDTO.setCategory_id(category.getCategory_id());
+            categoryDTO.setCategory_name(category.getCategory_name());
+
+            categoryDTOList.add(categoryDTO);
+        }
+
+        if (!categoryDTOList.isEmpty()) {
+            return ResponseEntity.ok(categoryDTOList);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 }
