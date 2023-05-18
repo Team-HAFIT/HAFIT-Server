@@ -4,11 +4,13 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@Table(name = "goal")
+@Table(name = "goals")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,5 +28,9 @@ public class Goal extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
     private User user;
+
+    // Plan 참조
+    @OneToMany(mappedBy = "goal", fetch = FetchType.LAZY)
+    private List<Plan> plans = new ArrayList<>();
 
 }

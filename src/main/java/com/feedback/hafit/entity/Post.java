@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "post")
+@Table(name = "posts")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Post extends BaseEntity{
