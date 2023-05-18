@@ -1,8 +1,10 @@
 package com.feedback.hafit.service;
 
 import com.feedback.hafit.entity.Category;
-import com.feedback.hafit.entity.CategoryFormDTO;
+import com.feedback.hafit.entity.CategoryDTO;
+import com.feedback.hafit.entity.User;
 import com.feedback.hafit.repository.CategoryRepository;
+import com.feedback.hafit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +14,33 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
+
     @Autowired
     CategoryRepository categoryRepository;
-    public boolean create(CategoryFormDTO categoryFormDTO) {
+
+    private final UserRepository userRepository;
+    @Autowired
+    public CategoryService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Autowired
+    UserService userService;
+
+    public boolean createCategory(CategoryDTO categoryFormDTO, Long userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return false;
+        }
+
         try {
-            categoryRepository.save(categoryFormDTO.toEntity());
+            Category category = Category.builder()
+                    .category_name(categoryFormDTO.getCategory_name())
+                    .user(user)
+                    .build();
+
+            // Category 저장 또는 처리 로직 작성
+            Category savedCategory = categoryRepository.save(category);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -24,7 +48,7 @@ public class CategoryService {
         return false;
     }
 
-    public boolean update(CategoryFormDTO categoryFormDTO) {
+    public boolean update(CategoryDTO categoryFormDTO) {
         try {
             Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategory_id());
             if (optionalCategory.isPresent()) {
@@ -42,7 +66,7 @@ public class CategoryService {
         }
     }
 
-    public boolean delete(CategoryFormDTO categoryFormDTO) {
+    public boolean delete(CategoryDTO categoryFormDTO) {
         try {
             Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategory_id());
             if (optionalCategory.isPresent()) {
