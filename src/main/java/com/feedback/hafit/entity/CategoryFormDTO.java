@@ -1,11 +1,7 @@
 package com.feedback.hafit.entity;
 
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
+import lombok.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -13,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CategoryFormDTO {
     @NotNull
+    private Long category_id;
     private String category_name;
 
     public Category toEntity() {
