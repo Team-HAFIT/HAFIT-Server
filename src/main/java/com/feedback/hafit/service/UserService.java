@@ -22,6 +22,9 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+//    @Autowired
+//    UserMapper mapper;
+
     public void loginUser(User user) {
         httpSession.setAttribute("loggedInUser", user);
     }
@@ -126,6 +129,11 @@ public class UserService {
                 .height(user.getHeight())
                 .birthday(user.getBirthday())
                 .build();
+    }
+
+    public int emailCheck(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.isPresent() ? 1 : 0;
     }
 
 }

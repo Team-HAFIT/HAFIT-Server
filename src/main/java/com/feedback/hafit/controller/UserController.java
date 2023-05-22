@@ -14,7 +14,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://172.26.9.191:3000")
 public class UserController {
 
     @Autowired
@@ -83,4 +82,10 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    @PostMapping("/emailCheck")
+    @ResponseBody
+    public int idCheck(@RequestParam("email") String email) {
+        int cnt = userService.emailCheck(email);
+        return cnt;
+    }
 }
