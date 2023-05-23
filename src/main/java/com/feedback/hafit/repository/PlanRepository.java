@@ -1,6 +1,6 @@
 package com.feedback.hafit.repository;
 
-import com.feedback.hafit.entity.Plan;
+import com.feedback.hafit.domain.Plan;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

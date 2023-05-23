@@ -1,8 +1,8 @@
 package com.feedback.hafit.controller;
 
-import com.feedback.hafit.entity.Goal;
-import com.feedback.hafit.entity.GoalDTO;
-import com.feedback.hafit.entity.User;
+import com.feedback.hafit.domain.Goal;
+import com.feedback.hafit.dto.GoalDTO;
+import com.feedback.hafit.domain.User;
 import com.feedback.hafit.repository.GoalRepository;
 import com.feedback.hafit.service.GoalService;
 import com.feedback.hafit.service.UserService;

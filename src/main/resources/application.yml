@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: root
+    url: jdbc:mariadb://localhost:3306/HAFIT_DB
+    password: '001016'
+  jpa:
+    open-in-view: 'true'
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: 'true'
+    hibernate:
+      ddl-auto: update
+    show-sql: 'true'
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: 'true'
+      force: 'true'

@@ -1,6 +1,8 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.feedback.hafit.domain.Goal;
+import com.feedback.hafit.domain.User;
 import com.feedback.hafit.repository.UserRepository;
 import lombok.Builder;
 import lombok.Getter;

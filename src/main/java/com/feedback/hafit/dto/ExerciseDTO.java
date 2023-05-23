@@ -1,6 +1,7 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.dto;
 
 
+import com.feedback.hafit.domain.Exercise;
 import com.feedback.hafit.repository.ExerciseRepository;
 import lombok.Builder;
 import lombok.Getter;

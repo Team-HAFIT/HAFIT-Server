@@ -1,7 +1,7 @@
 package com.feedback.hafit.controller;
 
-import com.feedback.hafit.entity.Post;
-import com.feedback.hafit.entity.PostFormDTO;
+import com.feedback.hafit.domain.Post;
+import com.feedback.hafit.dto.PostFormDTO;
 import com.feedback.hafit.repository.PostRepository;
 import com.feedback.hafit.service.PostService;
 import lombok.RequiredArgsConstructor;
