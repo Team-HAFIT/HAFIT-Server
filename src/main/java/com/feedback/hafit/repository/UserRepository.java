@@ -1,6 +1,6 @@
 package com.feedback.hafit.repository;
 
-import com.feedback.hafit.entity.User;
+import com.feedback.hafit.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

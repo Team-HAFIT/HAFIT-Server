@@ -1,4 +1,4 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

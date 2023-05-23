@@ -1,8 +1,8 @@
 package com.feedback.hafit.service;
 
-import com.feedback.hafit.entity.Category;
-import com.feedback.hafit.entity.CategoryDTO;
-import com.feedback.hafit.entity.User;
+import com.feedback.hafit.domain.Category;
+import com.feedback.hafit.dto.CategoryDTO;
+import com.feedback.hafit.domain.User;
 import com.feedback.hafit.repository.CategoryRepository;
 import com.feedback.hafit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

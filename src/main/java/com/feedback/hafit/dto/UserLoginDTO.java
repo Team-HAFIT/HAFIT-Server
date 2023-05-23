@@ -1,5 +1,7 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.dto;
 
+import com.feedback.hafit.domain.Role;
+import com.feedback.hafit.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

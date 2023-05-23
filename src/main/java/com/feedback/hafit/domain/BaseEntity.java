@@ -1,4 +1,4 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
