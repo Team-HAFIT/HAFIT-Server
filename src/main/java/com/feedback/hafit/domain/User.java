@@ -1,5 +1,6 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.domain;
 
+import com.feedback.hafit.dto.UserLoginDTO;
 import lombok.*;
 
 import javax.persistence.*;

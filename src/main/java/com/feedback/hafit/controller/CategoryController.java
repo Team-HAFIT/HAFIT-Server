@@ -1,7 +1,7 @@
 package com.feedback.hafit.controller;
 
-import com.feedback.hafit.entity.Category;
-import com.feedback.hafit.entity.CategoryDTO;
+import com.feedback.hafit.domain.Category;
+import com.feedback.hafit.dto.CategoryDTO;
 import com.feedback.hafit.repository.CategoryRepository;
 import com.feedback.hafit.service.CategoryService;
 import lombok.RequiredArgsConstructor;

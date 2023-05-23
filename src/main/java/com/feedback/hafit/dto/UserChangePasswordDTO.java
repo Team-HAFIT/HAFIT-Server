@@ -1,4 +1,4 @@
-package com.feedback.hafit.entity;
+package com.feedback.hafit.dto;
 
 import lombok.*;
 
