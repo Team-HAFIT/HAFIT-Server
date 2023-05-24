@@ -1,7 +1,7 @@
 package com.feedback.hafit.controller;
 
 import com.feedback.hafit.domain.Post;
-import com.feedback.hafit.dto.PostFormDTO;
+import com.feedback.hafit.dto.PostDTO;
 import com.feedback.hafit.repository.PostRepository;
 import com.feedback.hafit.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class PostController {
         return true;
     }
     @PostMapping("/upload")   // 피드 등록
-    public boolean upload(@RequestBody PostFormDTO postFormDTO, HttpSession session) {
+    public boolean upload(@RequestBody PostDTO postFormDTO, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         // TODO categoryId 세션 값 확인
 //        Long categoryId = (Long) session.getAttribute("categoryId");
@@ -51,7 +51,7 @@ public class PostController {
     }
 
     @PostMapping("/update") // 피드 수정
-    public boolean update(@RequestBody PostFormDTO postFormDTO) {
+    public boolean update(@RequestBody PostDTO postFormDTO) {
         boolean isPostUpdated = postService.update(postFormDTO);
         if (!isPostUpdated) {
             System.out.println("수정 실패");
@@ -62,7 +62,7 @@ public class PostController {
     }
 
     @DeleteMapping("/delete") // 피드 삭제
-    public boolean delete(@RequestBody PostFormDTO postFormDTO) {
+    public boolean delete(@RequestBody PostDTO postFormDTO) {
         boolean isPostDeleted = postService.delete(postFormDTO);
         if (!isPostDeleted) {
             System.out.println("삭제 실패");

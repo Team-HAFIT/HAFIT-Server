@@ -59,5 +59,4 @@ public class Set extends BaseEntity {
     @JoinColumn(name = "plan_id", foreignKey = @ForeignKey(name = "fk_set_plan"))
     private Plan plan;
 
-
 }

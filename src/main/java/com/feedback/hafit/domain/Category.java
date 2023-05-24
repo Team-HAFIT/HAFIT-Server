@@ -22,7 +22,7 @@ public class Category extends BaseEntity {
     @Column(unique = true, nullable = false, length = 30)
     private String category_name; // 카테고리 이름
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category")
     private List<Post> posts;
 
     @ManyToOne(fetch = FetchType.LAZY)

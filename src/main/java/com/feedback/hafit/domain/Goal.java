@@ -25,12 +25,12 @@ public class Goal extends BaseEntity {
 
     private LocalDate goal_date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
-    private User user;
-
     // Plan 참조
     @OneToMany(mappedBy = "goal", fetch = FetchType.LAZY)
     private List<Plan> plans = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
+    private User user;
 
 }
