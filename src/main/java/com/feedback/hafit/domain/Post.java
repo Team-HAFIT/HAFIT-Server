@@ -4,6 +4,8 @@ import com.feedback.hafit.dto.PostDTO;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,10 +22,20 @@ public class Post extends BaseEntity{
     @Column(length = 8000)
     private String post_content;
 
-    @Column(length = 500)
-    private String post_file;
+    @Column(name = "view_count")
+    private int viewCount;
 
-    private int hierarchy; // 계층, 대댓글
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostHashtag> postHashtags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<File> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_user"))
@@ -34,10 +46,8 @@ public class Post extends BaseEntity{
     private Category category;
 
     @Builder
-    public Post(String post_content, String post_file, int hierarchy, User user, Category category) {
+    public Post(String post_content,User user, Category category) {
         this.post_content = post_content;
-        this.post_file = post_file;
-        this.hierarchy = hierarchy;
         this.user = user;
         this.category = category;
     }
@@ -45,8 +55,11 @@ public class Post extends BaseEntity{
     public PostDTO toPostDTO() {
         return PostDTO.builder()
                 .post_content(this.post_content)
-                .post_file(this.post_file)
                 .build();
+    }
+
+    public void addViewCount() {
+        this.viewCount++;
     }
 
 }

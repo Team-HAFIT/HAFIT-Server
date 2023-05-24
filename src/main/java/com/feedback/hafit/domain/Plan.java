@@ -27,6 +27,10 @@ public class Plan extends BaseEntity {
     @Column(name = "acctime")
     private int accTime;
 
+    // Set 참조
+    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
+    private List<Set> sets = new ArrayList<>();
+
     // Goal 참조
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goal_id", foreignKey = @ForeignKey(name = "fk_plan_goal"))
@@ -36,8 +40,4 @@ public class Plan extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exec_id", foreignKey = @ForeignKey(name = "fk_plan_exec"))
     private Exercise exercise;
-
-    // Set 참조
-    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
-    private List<Set> sets = new ArrayList<>();
 }

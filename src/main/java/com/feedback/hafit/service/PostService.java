@@ -2,8 +2,8 @@ package com.feedback.hafit.service;
 
 import com.feedback.hafit.domain.Category;
 import com.feedback.hafit.domain.Post;
-import com.feedback.hafit.dto.PostFormDTO;
 import com.feedback.hafit.domain.User;
+import com.feedback.hafit.dto.PostDTO;
 import com.feedback.hafit.repository.CategoryRepository;
 import com.feedback.hafit.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class PostService {
     @Autowired
     CategoryRepository categoryRepository;
 
-    public boolean upload(PostFormDTO postFormDTO, Long userId, Long categoryId) {
+    public boolean upload(PostDTO postDTO, Long userId, Long categoryId) {
         User user = userService.getUserById(userId);
         if (user == null) {
             return false;
@@ -35,13 +35,11 @@ public class PostService {
             return false;
         }
         try {
-            String postContent = postFormDTO.getPost_content();
-            String postFile = postFormDTO.getPost_file();
+            String postContent = postDTO.getPost_content();
             Post post = new Post();
             post.setUser(user);
             post.setCategory(category);
             post.setPost_content(postContent);
-            post.setPost_file(postFile);
             postRepository.save(post);
             return true;
         } catch (Exception e) {
@@ -51,13 +49,12 @@ public class PostService {
     }
 
 
-    public boolean update(PostFormDTO postFormDTO) {
+    public boolean update(PostDTO postDTO) {
         try {
-            Optional<Post> optionalPost = postRepository.findById(postFormDTO.getPost_id());
+            Optional<Post> optionalPost = postRepository.findById(postDTO.getPost_id());
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
-                post.setPost_content(postFormDTO.getPost_content());
-                post.setPost_file(postFormDTO.getPost_file());
+                post.setPost_content(postDTO.getPost_content());
                 postRepository.save(post);
                 return true;
             } else {
@@ -70,9 +67,9 @@ public class PostService {
         }
     }
 
-    public boolean delete(PostFormDTO postFormDTO) {
+    public boolean delete(PostDTO postDTO) {
         try {
-            Optional<Post> optionalPost = postRepository.findById(postFormDTO.getPost_id());
+            Optional<Post> optionalPost = postRepository.findById(postDTO.getPost_id());
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
                 postRepository.delete(post);

@@ -71,8 +71,16 @@ public class User extends BaseEntity{
     @OneToMany(mappedBy = "user")
     private List<Goal> goals;
 
-    // Category와의 관계 설정
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> PostLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommentLike> commentLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
     private List<Category> categories = new ArrayList<>();
 
     @Builder
