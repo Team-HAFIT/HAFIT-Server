@@ -74,7 +74,7 @@ public class CategoryService {
                 categoryRepository.delete(category);
                 return true;
             } else {
-                System.out.println("해당하는 카테고리를 찾을 수 없습니다.");
+                System.out.println("해당하는 카테고리를 삭제할 수 없습니다.");
                 return false;
             }
         } catch (Exception e) {
