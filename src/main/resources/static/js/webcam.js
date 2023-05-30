@@ -22,6 +22,8 @@ let keypointsData = [];                     // 좌표값을 저장
 let score = 100;
 let bad = 0;
 
+tf.setBackend('webgpu');
+
 const keypointNames = [                     // 키포인트 별 이름저장
   'nose_x', 'nose_y',
   'leftEye_x', 'leftEye_y',
@@ -43,7 +45,8 @@ const keypointNames = [                     // 키포인트 별 이름저장
   'neck_x','neck_y',                        // 17 keypoint
   'Back_x','Back_y',                        // 18 keypoint
   'Waist_x','Waist_y',                      // 19 keypoint
-  'midhip_x','midhid_y'                     // 20 keypoint
+  'midhip_x','midhid_y',                    // 20 keypoint
+  'root_x', 'root_y',                       // 21 keypoint
 ];
 
 
@@ -65,7 +68,10 @@ async function init() {
     '18,19': 'c',
     '19,20': 'c',
     '12,20': 'c',
-    '11,20': 'c'
+    '11,20': 'c',
+    '12,18' : 'c',
+    '12,21' : 'c',
+    '6,12' : 'c',
   };
   await getPoses();
 }
@@ -75,12 +81,10 @@ async function videoReady() {
 }
 
 async function setup() {
-  koreanspeakMessage("로딩중입니다")
   createCanvas(640, 480);
   video = createCapture(VIDEO, videoReady);
   //video.size(960, 720);
   video.hide()
-
   await init();
 }
 
@@ -101,6 +105,7 @@ async function getPoses() {
 
     const middleShoulder = { x: midShoulderX, y: midShoulderY, score: Math.min(leftShoulder.score, rightShoulder.score) };
     poses[0].keypoints[20] = { x: midHipX, y: midHipY, score: Math.min(leftHip.score, rightHip.score) };
+    poses[0].keypoints[21] = { x: rightHip.x, y:rightShoulder.y, score: Math.min(leftHip.score, rightHip.score) };
 
     const x1 = middleShoulder.x;
     const y1 = middleShoulder.y;
@@ -173,7 +178,6 @@ function drawKeypoints() {
 
     if (count < 17 && timeSinceLastMessage > 300000) { // 300000ms = 5분
       // Whole body not fully visible, asking the user to move away from the camera
-      koreanspeakMessage("카메라로부터 떨어져주세요");
       lastSpokenTimestamp = currentTime;
     }
   }
@@ -181,8 +185,6 @@ function drawKeypoints() {
 
 // Draws lines between the keypoints
 function drawSkeleton() {
-
-
   const currentTime = new Date().getTime();
   const timeSinceLastMessage = currentTime - lastSpokenTimestamp;
 
@@ -207,12 +209,6 @@ function drawSkeleton() {
   }
 }
 
-function koreanspeakMessage(message) {
-  const msg = new SpeechSynthesisUtterance(message);
-  msg.lang = 'ko-KR';
-  window.speechSynthesis.speak(msg);
-}
-
 function countSquats() {
   if (poses && poses.length > 0) {
     // 휴식 중이면 함수에서 빠져나옴
@@ -220,28 +216,34 @@ function countSquats() {
       return;
     }
 
-    const allKeypointsConfident = poses[0].keypoints.every(kp => kp.score > confidence_threshold);
+    const KeypointsConfident = poses[0].keypoints.slice(10, 16).every(kp => kp.score > confidence_threshold);
 
-    if (allKeypointsConfident) {
-      // Save current keypoints' coordinates
-      let currentKeypoints = [];
-      for (let kp of poses[0].keypoints) {
-        currentKeypoints.push(kp.x, kp.y);
-      }
-      keypointsData.push(currentKeypoints);
+        if (KeypointsConfident) {
+          // Save current keypoints' coordinates
+          let currentKeypoints = [];
+          for (let kp of poses[0].keypoints) {
+            currentKeypoints.push(kp.x, kp.y);
+          }
+          keypointsData.push(currentKeypoints);
 
-      const leftHip = poses[0].keypoints[11];
-      const rightHip = poses[0].keypoints[12];
-      const leftKnee = poses[0].keypoints[13];
-      const rightKnee = poses[0].keypoints[14];
-      const leftAnkle = poses[0].keypoints[15];
-      const rightAnkle = poses[0].keypoints[16];
+          const leftHip = poses[0].keypoints[11];
+          const rightHip = poses[0].keypoints[12];
+          const leftKnee = poses[0].keypoints[13];
+          const rightKnee = poses[0].keypoints[14];
+          const leftAnkle = poses[0].keypoints[15];
+          const rightAnkle = poses[0].keypoints[16];
+
+      const root = poses[0].keypoints[21];
+      const middle = poses[0].keypoints[20];
+      const right = poses[0].keypoints[6];
 
       const leftKneeAngle = angleBetweenThreePoints(leftHip, leftKnee, leftAnkle);
       const rightKneeAngle = angleBetweenThreePoints(rightHip, rightKnee, rightAnkle);
+      const rootAngle = angleBetweenThreePoints(right, rightHip, leftHip);
 
-      console.log(`Left knee angle: ${leftKneeAngle.toFixed(2)} degrees`);
-      console.log(`Right knee angle: ${rightKneeAngle.toFixed(2)} degrees`);
+//      console.log(`Left knee angle: ${leftKneeAngle.toFixed(2)} degrees`);
+//      console.log(`Right knee angle: ${rightKneeAngle.toFixed(2)} degrees`);
+      console.log(`root angle: ${rootAngle.toFixed(2)} degrees`);
 
       // 스쿼트 동작 시작
       if (!squatStarted && leftKneeAngle <= kneeAngleThreshold && rightKneeAngle <= kneeAngleThreshold) {
@@ -281,8 +283,9 @@ function countSquats() {
             exportCSV(keypointNames, keypointsData);
             const data = {
                 'count' : (squatCount+((currentSet-1)*repsPerSet)),
-                'score' : score,
-                'bad' : bad
+                'set' : totalSets,
+                'realTime' : realTime,
+
             };
             var form = document.createElement("form"); // form 요소 생성
             form.method = "POST"; // 전송 방식을 POST로 설정

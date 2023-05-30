@@ -1,7 +1,7 @@
-let detector;                               // 포즈 감지 모델 인스턴스
-let detectorConfig;                         // 포즈 감지 모델에 대한 구성 개체
-let poses;                                  // 키포인트 및 해당 위치
-let video;                                  // 비디오 캡처
+export let detector;                               // 포즈 감지 모델 인스턴스
+export let detectorConfig;                         // 포즈 감지 모델에 대한 구성 개체
+export let poses;                                  // 키포인트 및 해당 위치
+export let video;                                  // 비디오 캡처
 let skeleton = true;                        // 연결선 여부
 let lastSpokenTimestamp = 0;                // 메세지의 시간 기본값
 const confidence_threshold = 0.5;           // 추적도
@@ -11,17 +11,31 @@ let squatStarted = false;                   // 스쿼트 동작 시작 여부
 let squatFinished = false;                  // 스쿼트 동작 종료 여부
 
 const kneeAngleThreshold = 145;             // 스쿼트 각도
+const hurryAngleThreshold = 80;             // 허리 각도
 
 let currentSet = 1;                         // 현재 세트
-let repsPerSet = 10;                      // 1세트당 개수
-let totalSets = 3;                        // 총 세트 수
+const repsPerSet = 10;                      // 1세트당 개수
+const totalSets = 3;                        // 총 세트 수
 let restStarted = false;                    // 휴식 중 여부
 let restTime = 10;
+let weight = 0;
+
+let righthurryAngle = 90;
+let hurrycheck= false;
 
 let keypointsData = [];                     // 좌표값을 저장
 let score = 100;
 let bad = 0;
 
+window.addEventListener('load', function() {
+    let reps = [[${repsPerSet}]];
+    let ts = [[${totalSets}]];
+    let rt = [[${restTime}]];
+    let we = [[${weight}]];
+    reSetting(reps, ts, rt, we);
+});
+
+tf.setBackend('webgl');
 const keypointNames = [                     // 키포인트 별 이름저장
   'nose_x', 'nose_y',
   'leftEye_x', 'leftEye_y',
@@ -65,21 +79,18 @@ async function init() {
     '18,19': 'c',
     '19,20': 'c',
     '12,20': 'c',
-    '11,20': 'c'
+    '11,20': 'c',
+    '12,21': 'c',
+    '6,12':'c',
   };
   await getPoses();
-}
-
-async function videoReady() {
-  //console.log('video ready');
 }
 
 async function setup() {
   koreanspeakMessage("로딩중입니다")
   createCanvas(640, 480);
   video = createCapture(VIDEO, videoReady);
-  //video.size(960, 720);
-  video.hide()
+  video.hide();
 
   await init();
 }
@@ -116,14 +127,17 @@ async function getPoses() {
     poses[0].keypoints[18] = { x: x1_3, y: y1_3, score: Math.min(leftShoulder.score, rightShoulder.score) };
     poses[0].keypoints[19] = { x: x2_3, y: y2_3, score: Math.min(leftHip.score, rightHip.score) };
 
-
+    const rightpointX = rightHip.x;
+    const rightpointY = rightShoulder.y;
+    poses[0].keypoints[21]= { x: rightpointX, y: rightpointY, score: Math.min(rightShoulder.score, rightHip.score) };
   }
 }
 
-function reSetting(reps, ts, restT) {
+function reSetting(reps, ts, restT, we) {
     repsPerSet = reps;
     totalSets = ts;
     restTime= restT;
+    weight = we;
 }
 
 function draw() {
@@ -202,10 +216,20 @@ function drawSkeleton() {
       const y2 = poses[0].keypoints[p2].y;
       const x2 = poses[0].keypoints[p2].x;
       const c2 = poses[0].keypoints[p2].score;
+      const x3 = poses[0].keypoints[17].x;
+      const y3 = poses[0].keypoints[17].y;
+      const x4 = poses[0].keypoints[20].x;
+      const y4 = poses[0].keypoints[20].y;
+
 
       if (c1 > confidence_threshold && c2 > confidence_threshold) {
         stroke('rgb(0, 255, 0)');
         line(x1, y1, x2, y2);
+      }
+
+      if (c1 > confidence_threshold && c2 > confidence_threshold && righthurryAngle < 80) {
+         stroke('rgb(255, 0, 0)');
+         line(x3, y3, x4, y4);
       }
     }
   }
@@ -223,10 +247,13 @@ function countSquats() {
     if (restStarted) {
       return;
     }
+    const kneeKeypointsConfident = poses[0].keypoints.slice(10, 16).every(kp => kp.score > confidence_threshold);
+    const rightcheckpointsConfident = poses[0].keypoints.slice(6, 7)
+                                    .concat(poses[0].keypoints.slice(12, 13))
+                                    .concat(poses[0].keypoints.slice(21, 22))
+                                    .every(kp => kp.score > confidence_threshold);
 
-    const allKeypointsConfident = poses[0].keypoints.every(kp => kp.score > confidence_threshold);
-
-    if (allKeypointsConfident) {
+    if (kneeKeypointsConfident && rightcheckpointsConfident) {
       // Save current keypoints' coordinates
       let currentKeypoints = [];
       for (let kp of poses[0].keypoints) {
@@ -240,16 +267,25 @@ function countSquats() {
       const rightKnee = poses[0].keypoints[14];
       const leftAnkle = poses[0].keypoints[15];
       const rightAnkle = poses[0].keypoints[16];
-      const back = poses[0].keypoints[18];
 
       const leftKneeAngle = angleBetweenThreePoints(leftHip, leftKnee, leftAnkle);
       const rightKneeAngle = angleBetweenThreePoints(rightHip, rightKnee, rightAnkle);
 
-      const rightbackAngle = angleBetweenThreePoints(back, rightHip, rightKnee);
+      const rightShoulder= poses[0].keypoints[6];
+      const righthurrycheck= poses[0].keypoints[21];
+
+      righthurryAngle = angleBetweenThreePoints(rightHip, rightShoulder, righthurrycheck);
+      console.log(`righthurryAngle: ${righthurryAngle.toFixed(2)} degrees`);
+
 
 //      console.log(`Left knee angle: ${leftKneeAngle.toFixed(2)} degrees`);
 //      console.log(`Right knee angle: ${rightKneeAngle.toFixed(2)} degrees`);
-      console.log(`back angle: ${rightbackAngle.toFixed(2)} degrees`);
+
+      // 허리가 굽혀졌을때
+      if (righthurryAngle < hurryAngleThreshold){
+          hurrycheck=true;
+      }
+
 
       // 스쿼트 동작 시작
       if (!squatStarted && leftKneeAngle <= kneeAngleThreshold && rightKneeAngle <= kneeAngleThreshold) {
@@ -289,8 +325,9 @@ function countSquats() {
             exportCSV(keypointNames, keypointsData);
             const data = {
                 'count' : (squatCount+((currentSet-1)*repsPerSet)),
-                'score' : score,
-                'bad' : bad
+                'set' : totalSets,
+                'realTime' : realTime,
+                'weight' : weight,
             };
             var form = document.createElement("form"); // form 요소 생성
             form.method = "POST"; // 전송 방식을 POST로 설정
@@ -307,8 +344,6 @@ function countSquats() {
             form.submit(); // form 요소를 submit하여 페이지를 이동하고 데이터를 전송
           }
       }
-
-
     }
   }
 }
@@ -343,8 +378,6 @@ function exportCSV(keypointNames, keypointsData) {
   link.click();
   document.body.removeChild(link);
 }
-
-
 
 function angleBetweenThreePoints(a, b, c) {
   const ab = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));

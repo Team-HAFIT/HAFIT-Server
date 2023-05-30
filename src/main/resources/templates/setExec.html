@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-  <!-- Require the peer dependencies of pose-detection. -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>-->
+<!--  &lt;!&ndash; Require the peer dependencies of pose-detection. &ndash;&gt;-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>-->
 
-  <!-- You must explicitly require a TF.js backend if you're not using the TF.js union bundle. -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
-  <!-- Alternatively you can use the WASM backend: <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
+<!--  &lt;!&ndash; You must explicitly require a TF.js backend if you're not using the TF.js union bundle. &ndash;&gt;-->
+<!--  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>-->
+<!--  &lt;!&ndash; Alternatively you can use the WASM backend: <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> &ndash;&gt;-->
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+<!--  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>-->
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="/resources/css/style.css">
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>-->
+<!--  <link rel="stylesheet" type="text/css" href="/resources/css/style.css">-->
   <meta charset="utf-8"/>
 </head>
 <body>
@@ -22,12 +22,12 @@
 <h1>세트 수 : [[${totalSets}]]</h1>
 <h1>휴식 시간(초) : [[${restTime}]]</h1>
 <script>
-      window.addEventListener('load', function() {
-          let reps = [[${repsPerSet}]];
-          let ts = [[${totalSets}]];
-          let rt = [[${restTime}]];
-          reSetting(reps, ts, rt);
-      });
+<!--      window.addEventListener('load', function() {-->
+<!--          let reps = [[${repsPerSet}]];-->
+<!--          let ts = [[${totalSets}]];-->
+<!--          let rt = [[${restTime}]];-->
+<!--          reSetting(reps, ts, rt);-->
+<!--      });-->
       document.getElementById("end-button").addEventListener("click", function() {
         exportCSV(keypointNames, keypointsData);
         const data = {

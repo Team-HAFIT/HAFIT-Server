@@ -2,6 +2,7 @@ package com.feedback.hafit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feedback.hafit.entity.ScoreDTO;
+import org.json.JSONObject;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -9,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"localhost:8080", "172.18.2.147:8080"})
 @RestController
 public class UserController {
     final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
@@ -20,6 +21,7 @@ public class UserController {
     ResultSet rs = null; // 쿼리결과셋 객체 변수
 
     @PostMapping("submit")
+    @CrossOrigin(origins= "http://172.26.17.167:3000")
     public ModelAndView submit(@RequestParam("data") String data) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -32,21 +34,28 @@ public class UserController {
         return mav;
     }
 
-    @PostMapping("setexec")
-    public ModelAndView set(@RequestParam("repsPerSet") int repsPerSet,
-                            @RequestParam("totalSets") int totalSets,
-                            @RequestParam("weight") int weight,
-                            @RequestParam("restTime") int restTime,
-                            Model model) {
-        model.addAttribute("repsPerSet", repsPerSet);
-        model.addAttribute("totalSets", totalSets);
-        model.addAttribute("weight", weight);
-        model.addAttribute("restTime", restTime);
-        ModelAndView mav = new ModelAndView("setExec");
-        return mav;
+    @PostMapping("/setexec")
+    @CrossOrigin(origins= "http://172.26.17.167:3000")
+    public boolean set(@RequestBody String jsonString, Model model) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+            int repsPerSet = jsonObject.getInt("repsPerSet");
+            int totalSets = jsonObject.getInt("totalSets");
+            int weight = jsonObject.getInt("weight");
+            int restTime = jsonObject.getInt("restTime");
+            model.addAttribute("repsPerSet", repsPerSet);
+            model.addAttribute("totalSets", totalSets);
+            model.addAttribute("weight", weight);
+            model.addAttribute("restTime", restTime);
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @GetMapping("exec")
+    @CrossOrigin(origins = {"localhost:8080/exec", "172.18.2.147:8080/exec"})
     public ModelAndView exec() {
         ModelAndView mav = new ModelAndView("exec");
         return mav;
