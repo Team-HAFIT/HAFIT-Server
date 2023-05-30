@@ -17,13 +17,13 @@ public class PostLike extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_like_id;
+    private Long post_like_id; // 게시글 좋아요
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_like_user"))
-    private User user;
+    private User user; // 유저 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_like_post"))
-    private Post post;
+    private Post post; // 게시글 ID
 }

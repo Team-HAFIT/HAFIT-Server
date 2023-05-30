@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain;
 
-import com.feedback.hafit.dto.CategoryDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,11 +28,11 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_category_user"))
     private User user;
 
-    public static Category createCategory(CategoryDTO categoryFormDTO) {
-        Category category = Category.builder()
-                .category_name(categoryFormDTO.getCategory_name())
-                .build();
-        return category;
-    }
+//    public static Category createCategory(CategoryDTO categoryFormDTO) {
+//        Category category = Category.builder()
+//                .category_name(categoryFormDTO.getCategory_name())
+//                .build();
+//        return category;
+//    }
 
 }
