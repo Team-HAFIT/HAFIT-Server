@@ -15,6 +15,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class ExerciseBodyPart { // 운동_부위 연결
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exec_id", foreignKey = @ForeignKey(name = "fk_exec"))
     private Exercise exec_id;
