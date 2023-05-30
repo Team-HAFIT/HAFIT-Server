@@ -35,6 +35,7 @@ window.addEventListener('load', function() {
     reSetting(reps, ts, rt, we);
 });
 
+
 tf.setBackend('webgl');
 const keypointNames = [                     // 키포인트 별 이름저장
   'nose_x', 'nose_y',
