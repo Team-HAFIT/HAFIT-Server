@@ -34,6 +34,12 @@ public class SetController {
         return "exec";
     }
 
+    @GetMapping("/execmodule")
+//    @CrossOrigin(origins= "http://172.18.3.18:3001")
+    public String Html() {
+        return "execmodule";
+    }
+
 //    @PostMapping("/ready")
 //    @CrossOrigin(origins= "http://172.18.3.18:3001")
 //    public boolean set(@RequestBody String jsonString, Model model) {
