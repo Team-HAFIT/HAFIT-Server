@@ -269,12 +269,20 @@ const drawSkeleton = () => {
         const c2 = kp2.score;
 
         if (c1 > confidence_threshold && c2 > confidence_threshold) {
-          ctx.strokeStyle = 'rgb(255, 0, 0)';
+          ctx.strokeStyle = 'rgb(255, 127, 0)';
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
           ctx.stroke();
         }
+
+//        if (c1 > confidence_threshold && c2 > confidence_threshold) {
+//          ctx.strokeStyle = 'rgb(255, 0, 0)';
+//          ctx.beginPath();
+//          ctx.moveTo(x1, y1);
+//          ctx.lineTo(x2, y2);
+//          ctx.stroke();
+//        }
       }
     }
     else{
