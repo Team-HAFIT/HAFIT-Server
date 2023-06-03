@@ -1,22 +1,23 @@
 package com.feedback.hafit.domain.user.entity;
 
-import com.feedback.hafit.domain.*;
+import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.commentlike.CommentLike;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.postlike.PostLike;
+import com.feedback.hafit.domain.user.dto.UserLoginDTO;
 import com.feedback.hafit.domain.user.enumerate.Role;
 import com.feedback.hafit.domain.user.enumerate.SocialType;
 import com.feedback.hafit.domain.user.enumerate.UserStatus;
-import com.feedback.hafit.domain.user.dto.UserLoginDTO;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -140,6 +141,12 @@ public class User extends BaseEntity {
                 .email(this.email)
                 .password(this.password)
                 .build();
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> roles = new HashSet<>();
+        roles.add(new SimpleGrantedAuthority(role.getValue()));
+       return roles;
     }
 
 //    // override
