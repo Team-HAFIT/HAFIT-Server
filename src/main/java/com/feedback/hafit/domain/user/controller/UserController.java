@@ -1,35 +1,29 @@
 package com.feedback.hafit.domain.user.controller;
 
-import com.feedback.hafit.domain.user.dto.UserFormDTO;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/my")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-//    @GetMapping("/loginPage")
-//    public String loginPage() {
-//        return "user/loginPage";
-//    }
+    @PostMapping("/emailCheck")
+    @ResponseBody
+    public int idCheck(@RequestParam("email") String email) {
+        int cnt = userService.emailCheck(email);
+        return cnt;
+    }
 
-    @PostMapping("/signup")
-    public String signup(@RequestBody UserFormDTO userFormDTO) {
-        userService.signup(userFormDTO);
-        return "회원가입 성공";
+    @PostMapping("hi")
+    public String hi() {
+        return "hi";
     }
 
     /*
@@ -55,12 +49,6 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @PostMapping("/emailCheck")
-    @ResponseBody
-    public int idCheck(@RequestParam("email") String email) {
-        int cnt = userService.emailCheck(email);
-        return cnt;
-    }
 
      */
 }
