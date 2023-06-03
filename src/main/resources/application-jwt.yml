@@ -1,6 +1,5 @@
 jwt:
-  secretKey: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxfQ.B9XWphE_QU5UZAT8jhKg_jYNGmZOfSL1gcl-3kZeuoI
-
+  secretKey: --
   access:
     expiration: 3600000 # 1시간(60분) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
     header: Authorization
