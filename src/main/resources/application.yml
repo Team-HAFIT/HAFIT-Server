@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: aws, jwt, oauth
+    active: aws, jwt, oauth
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
