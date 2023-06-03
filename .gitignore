@@ -14,6 +14,7 @@
 
 # yml
 #application-aws.properties
+application.yml
 application-aws.yml
 application-jwt.yml
 application-oauth.yml
