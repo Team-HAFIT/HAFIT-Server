@@ -12,11 +12,8 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
-# yml
-application-aws.yml
-application-jwt.yml
-application-oauth.yml
-application.yml
+# S3
+application-aws.properties
 
 # AWS User-specific
 .idea/**/aws.xml
