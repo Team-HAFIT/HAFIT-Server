@@ -1,8 +1,8 @@
 cloud:
   aws:
     credentials:
-      accessKey: AKIASTLRGDOBI3WVFT4G
-      secretKey: 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
+      accessKey: 
+      secretKey: 
     s3:
       bucket: feedback-file-bucket
     stack:
