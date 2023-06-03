@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/upload")
+@RequestMapping("/file")
 @RequiredArgsConstructor
 public class S3Controller {
     private final S3Service s3Service;
