@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeRequests()
                 // 로그인 권한은 누구나
-                .antMatchers("/user/**", "/goal/**", "/post/**", "/category/**", "/file/**").permitAll()
+                .antMatchers("/user/**", "/goal/**", "/post/**", "/category/**").permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger/**","/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs").permitAll()
                 // admin 권한
                 .antMatchers("/admin/**").access("hasRole('ADMIN')")
