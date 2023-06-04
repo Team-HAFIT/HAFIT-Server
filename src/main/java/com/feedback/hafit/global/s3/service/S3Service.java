@@ -42,7 +42,7 @@ public class S3Service {
         // 경로가 "//"인 경우 replace로 "/"로 변경
         String path = S3_BUCKET_DIRECTORY_NAME + "/" + dirName + "/" + UUID.randomUUID();
         path = path.replace("//", "/");
-        String fileName = path + "." + multipartFile.getOriginalFilename();
+        String fileName = path + "." + UUID.randomUUID();//multipartFile.getOriginalFilename();
 
         //        removeNewFile(multipartFile);
         return putS3(multipartFile, objectMetadata, fileName);

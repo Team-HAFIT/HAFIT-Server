@@ -5,7 +5,6 @@ import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.postlike.PostLike;
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.post.dto.PostDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,21 +21,21 @@ public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long post_id;
+    private Long postId;
 
     @Column(length = 8000)
-    private String post_content;
+    private String postContent;
 
     @Column(name = "view_count")
     private int viewCount;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<FileImage> fileImages = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -48,18 +47,11 @@ public class Post extends BaseEntity {
     private Category category;
 
     @Builder
-    public Post(String post_content,User user, Category category) {
-        this.post_content = post_content;
+    public Post(String postContent, User user, Category category) {
+        this.postContent = postContent;
         this.user = user;
         this.category = category;
     }
-
-    public PostDTO toPostDTO() {
-        return PostDTO.builder()
-                .post_content(this.post_content)
-                .build();
-    }
-
     public void addViewCount() {
         this.viewCount++;
     }

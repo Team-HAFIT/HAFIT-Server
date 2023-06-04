@@ -65,8 +65,8 @@ public class CategoryController {
 
         for (Category category : categoryList) {
             CategoryDTO categoryDTO = new CategoryDTO();
-            categoryDTO.setCategory_id(category.getCategory_id());
-            categoryDTO.setCategory_name(category.getCategory_name());
+            categoryDTO.setCategoryId(category.getCategoryId());
+            categoryDTO.setCategoryName(category.getCategoryName());
 
             categoryDTOList.add(categoryDTO);
         }

@@ -29,14 +29,11 @@ public class CategoryService {
     UserService userService;
 
     public boolean createCategory(CategoryDTO categoryFormDTO, Long userId) {
-        User user = userService.getUserById(userId);
-        if (user == null) {
-            return false;
-        }
+        User user = userService.getById(userId);
 
         try {
             Category category = Category.builder()
-                    .category_name(categoryFormDTO.getCategory_name())
+                    .categoryName(categoryFormDTO.getCategoryName())
                     .user(user)
                     .build();
 
@@ -49,12 +46,20 @@ public class CategoryService {
         return false;
     }
 
+    public Category getById(Long id) {
+        Optional<Category> optionalCategory = categoryRepository.findById(id);
+        if (optionalCategory.isEmpty()) {
+            throw new IllegalArgumentException("해당하는 카테고리가 없습니다.");
+        }
+        return optionalCategory.get();
+    }
+
     public boolean update(CategoryDTO categoryFormDTO) {
         try {
-            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategory_id());
+            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
             if (optionalCategory.isPresent()) {
                 Category category = optionalCategory.get();
-                category.setCategory_name(categoryFormDTO.getCategory_name());
+                category.setCategoryName(categoryFormDTO.getCategoryName());
                 categoryRepository.save(category);
                 return true;
             } else {
@@ -69,7 +74,7 @@ public class CategoryService {
 
     public boolean delete(CategoryDTO categoryFormDTO) {
         try {
-            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategory_id());
+            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
             if (optionalCategory.isPresent()) {
                 Category category = optionalCategory.get();
                 categoryRepository.delete(category);

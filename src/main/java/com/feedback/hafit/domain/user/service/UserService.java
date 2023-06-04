@@ -20,7 +20,13 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    public User getUserById(Long userId) {
+    public User getById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isEmpty())throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        return userOptional.get();
+    }
+
+    public User findById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         return userOptional.orElse(null);
     }
