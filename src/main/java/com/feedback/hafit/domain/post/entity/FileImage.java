@@ -18,14 +18,21 @@ public class FileImage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    private String s3Key;
+
     @Column(name = "image_id")
-    private Long image_id;
+    private Long imageId;
 
     @Column(name = "file_name")
-    private String file_name;
+    private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_file_post"))
     private Post post;
+
+//    public void uploadToS3(FileImage fileImage, String bucketName) {
+//        String key = generateUniqueKey(); // 고유한 키 생성 ( UUID.random )
+//    }
 
 }

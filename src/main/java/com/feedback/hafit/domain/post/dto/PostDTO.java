@@ -18,24 +18,24 @@ public class PostDTO {
     @JsonIgnore
     UserRepository userRepository;
 
-    private Long post_id;
-    private String post_content;
+    private Long postId;
+    private String postContent;
     @JsonIgnore
-    private Long user_id;
+    private Long userId;
 
     public Post toEntity() {
-        User user = userRepository.findById(user_id).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
 
         Post post = Post.builder()
-                .post_content(post_content)
+                .postContent(postContent)
                 .user(user)
                 .build();
         return post;
     }
 
     @Builder
-    public PostDTO(String post_content, Long user_id) {
-        this.post_content = post_content;
-        this.user_id = user_id;
+    public PostDTO(String postContent, Long userId) {
+        this.postContent = postContent;
+        this.userId = userId;
     }
 }

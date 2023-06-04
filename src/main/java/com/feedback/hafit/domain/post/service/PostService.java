@@ -36,11 +36,11 @@ public class PostService {
             return false;
         }
         try {
-            String postContent = postDTO.getPost_content();
+            String postContent = postDTO.getPostContent();
             Post post = new Post();
             post.setUser(user);
             post.setCategory(category);
-            post.setPost_content(postContent);
+            post.setPostContent(postContent);
             postRepository.save(post);
             return true;
         } catch (Exception e) {
@@ -52,10 +52,10 @@ public class PostService {
 
     public boolean update(PostDTO postDTO) {
         try {
-            Optional<Post> optionalPost = postRepository.findById(postDTO.getPost_id());
+            Optional<Post> optionalPost = postRepository.findById(postDTO.getPostId());
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
-                post.setPost_content(postDTO.getPost_content());
+                post.setPostContent(postDTO.getPostContent());
                 postRepository.save(post);
                 return true;
             } else {
@@ -70,7 +70,7 @@ public class PostService {
 
     public boolean delete(PostDTO postDTO) {
         try {
-            Optional<Post> optionalPost = postRepository.findById(postDTO.getPost_id());
+            Optional<Post> optionalPost = postRepository.findById(postDTO.getPostId());
             if (optionalPost.isPresent()) {
                 Post post = optionalPost.get();
                 postRepository.delete(post);
