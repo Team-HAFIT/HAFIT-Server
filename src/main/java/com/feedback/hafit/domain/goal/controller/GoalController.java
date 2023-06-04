@@ -43,7 +43,7 @@ public class GoalController {
     @GetMapping("/read")
     public List<GoalDTO> getUserGoals(HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
-        User user = userService.getUserById(userId);
+        User user = userService.getById(userId);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
