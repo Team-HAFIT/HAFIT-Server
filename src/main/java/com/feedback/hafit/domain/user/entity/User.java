@@ -29,7 +29,7 @@ public class User extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id; //sequence, auto_increment
+    private Long userId; //sequence, auto_increment
 
     @Column(unique = true)
     private String email; //아이디

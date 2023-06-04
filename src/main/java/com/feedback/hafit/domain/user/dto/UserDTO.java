@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class UserDTO {
 
-    private Long user_id; //sequence, auto_increment
+    private Long userId; //sequence, auto_increment
 
     private String email; //아이디
 
@@ -54,8 +54,8 @@ public class UserDTO {
 //    }
 
     @Builder
-    public UserDTO(Long user_id, String email, String password, String carrier, String phone, String sex, String name, String user_img, int height, int weight, LocalDate birthday, Role role) {
-        this.user_id = user_id;
+    public UserDTO(Long userId, String email, String password, String carrier, String phone, String sex, String name, String user_img, int height, int weight, LocalDate birthday, Role role) {
+        this.userId = userId;
         this.email = email;
         this.password = password;
         this.carrier = carrier;
