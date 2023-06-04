@@ -25,7 +25,7 @@ public class GoalService {
     GoalRepository goalRepository;
 
     public boolean write(GoalDTO goalDTO, Long userId) {
-        User user = userService.getUserById(userId);
+        User user = userService.getById(userId);
         if (user == null) {
             return false;
         }
