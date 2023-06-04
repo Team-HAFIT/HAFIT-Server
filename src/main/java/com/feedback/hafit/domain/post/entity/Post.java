@@ -56,7 +56,7 @@ public class Post extends BaseEntity {
 
     public PostDTO toPostDTO() {
         return PostDTO.builder()
-                .post_content(this.postContent)
+                .postContent(this.postContent)
                 .build();
     }
 
