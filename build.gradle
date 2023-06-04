@@ -37,6 +37,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.json:json:20230227'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {
