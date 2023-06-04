@@ -5,7 +5,6 @@ import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.postlike.PostLike;
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.post.dto.PostDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -53,13 +52,6 @@ public class Post extends BaseEntity {
         this.user = user;
         this.category = category;
     }
-
-    public PostDTO toPostDTO() {
-        return PostDTO.builder()
-                .postContent(this.postContent)
-                .build();
-    }
-
     public void addViewCount() {
         this.viewCount++;
     }
