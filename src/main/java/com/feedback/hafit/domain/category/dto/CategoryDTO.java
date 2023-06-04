@@ -14,13 +14,13 @@ import javax.validation.constraints.NotNull;
 public class CategoryDTO {
 
     @NotNull
-    private Long category_id;
-    private String category_name;
+    private Long categoryId;
+    private String categoryName;
     private Long user_id;
 
     @Builder
-    public CategoryDTO(String category_name, Long user_id) {
-        this.category_name = category_name;
+    public CategoryDTO(String categoryName, Long user_id) {
+        this.categoryName = categoryName;
         this.user_id = user_id;
     }
 
