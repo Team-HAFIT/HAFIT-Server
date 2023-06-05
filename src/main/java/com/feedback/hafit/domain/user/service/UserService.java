@@ -61,6 +61,11 @@ public class UserService {
         }
     }
 
+    public int emailCheck(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+        return userOptional.isPresent() ? 1 : 0;
+    }
+
     /*
     public boolean updateUser(UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
@@ -116,10 +121,6 @@ public class UserService {
                 .build();
     }
 
-    public int emailCheck(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        return userOptional.isPresent() ? 1 : 0;
-    }
 
      */
 
