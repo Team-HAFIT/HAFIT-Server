@@ -2,16 +2,19 @@ package com.feedback.hafit.domain.post.controller;
 
 import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
+import com.feedback.hafit.domain.post.dto.response.FileImageDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -19,45 +22,64 @@ import java.util.List;
 @Slf4j
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @PostMapping("")   // 피드 등록
-    public PostDTO upload(PostCreateDTO postFormDTO) {
-
-        postFormDTO.getFiles().forEach(file ->
-                log.info(file.getOriginalFilename())
-        );
-        return postService.upload(postFormDTO);
+    @PostMapping
+    public ResponseEntity<PostDTO> createPost(@RequestParam("files") List<MultipartFile> files,
+                                              @ModelAttribute PostCreateDTO postFormDTO,
+                                              Principal principal) {
+        PostDTO createdPost = postService.upload(postFormDTO, files, principal.getName());
+        return ResponseEntity.ok(createdPost);
     }
 
-    @PutMapping("") // 피드 수정
-    public boolean update(@RequestBody PostUpdateDTO postFormDTO) {
-        boolean isPostUpdated = postService.update(postFormDTO);
+    @PutMapping("/{postId}") // 피드 수정
+    public ResponseEntity<Boolean> updatePost(@PathVariable Long postId,
+                                              @RequestParam(value = "files", required = false) List<MultipartFile> files,
+                                              @ModelAttribute PostUpdateDTO postFormDTO) {
+        boolean isPostUpdated = postService.update(postId, postFormDTO, files);
         if (!isPostUpdated) {
             System.out.println("수정 실패");
-            return false;
+            return ResponseEntity.badRequest().body(false);
         }
         System.out.println("수정 성공");
-        return true;
+        return ResponseEntity.ok(true);
     }
 
     @DeleteMapping("/{postId}") // 피드 삭제
-    public boolean delete(@PathVariable Long postId) {
+    public ResponseEntity<Boolean> deletePost(@PathVariable Long postId) {
         boolean isPostDeleted = postService.deleteById(postId);
         if (!isPostDeleted) {
             System.out.println("삭제 실패");
-            return false;
+            return ResponseEntity.badRequest().body(false);
         }
         System.out.println("삭제 성공");
-        return true;
+        return ResponseEntity.ok(true);
     }
 
-    @GetMapping("/list") // 전체 피드 조회
-    public ResponseEntity<List<Post>> getAllPosts() {
+    // 게시글 하나 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable Long postId) {
+        PostDTO postDTO = postService.getPostById(postId);
+        if (postDTO != null) {
+            return ResponseEntity.ok(postDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping // 전체 피드 조회
+    public ResponseEntity<List<PostDTO>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         if (!posts.isEmpty()) {
-            return ResponseEntity.ok(posts);
+            List<PostDTO> postDTOs = posts.stream()
+                    .map(post -> new PostDTO(
+                            post,
+                            post.getFileImages().stream()
+                                    .map(FileImageDTO::new)
+                                    .collect(Collectors.toList())
+                    ))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(postDTOs);
         } else {
             return ResponseEntity.notFound().build();
         }

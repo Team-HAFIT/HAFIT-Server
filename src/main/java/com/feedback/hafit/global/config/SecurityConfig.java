@@ -1,6 +1,5 @@
 package com.feedback.hafit.global.config;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.jwt.filter.JwtAuthenticationProcessingFilter;
@@ -28,7 +27,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
- * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로 처리
+ * 인증은 CustomJsonUsernamePasswordAuthenticationFilter에서 authenticate()로 인증된 사용자로
+ * 처리
  * JwtAuthenticationProcessingFilter는 AccessToken, RefreshToken 재발급
  */
 @Configuration
@@ -44,12 +44,13 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
-
     private final JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors() // Enable CORS
+                .and()
                 .formLogin().disable() // FormLogin 사용 X
                 .httpBasic().disable() // httpBasic 사용 X
                 .csrf().disable() // csrf 보안 사용 X
@@ -61,20 +62,25 @@ public class SecurityConfig {
 
                 .and()
 
-                //== URL별 권한 관리 옵션 ==//
-                .authorizeRequests().antMatchers("/").permitAll()
-                .antMatchers("/api/my/**").hasRole("USER")
+                // == URL별 권한 관리 옵션 ==//
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .antMatchers("/api/my/**", "/api/posts/**").hasRole("USER")
                 .antMatchers("/api/category/**").hasRole("ADMIN")
 
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
-                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/file/**").permitAll()
-                .antMatchers("/swagger-ui.html", "/swagger/**", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs").permitAll()
+                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/file/**")
+                .permitAll()
+                .antMatchers("/swagger-ui.html", "/swagger/**", "/swagger-ui/**", "/swagger-resources/**",
+                        "/v2/api-docs")
+                .permitAll()
                 .antMatchers("/api/signup", "/index").permitAll() // 회원가입 접근 가능
+                .antMatchers("/api/**", "/login/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 
                 .and()
-                //== 소셜 로그인 설정 ==//
+                // == 소셜 로그인 설정 ==//
                 .oauth2Login()
                 .successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
                 .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
@@ -82,11 +88,13 @@ public class SecurityConfig {
 
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter ->
+        // CustomJsonUsernamePasswordAuthenticationFilter
         // http.addFilter(jwtAuthenticationProcessingFilter());
         http
                 .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
-                .addFilterBefore(jwtAuthenticationProcessingFilter, CustomJsonUsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationProcessingFilter,
+                        CustomJsonUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -98,10 +106,12 @@ public class SecurityConfig {
 
     /**
      * AuthenticationManager 설정 후 등록
-     * PasswordEncoder를 사용하는 AuthenticationProvider 지정 (PasswordEncoder는 위에서 등록한 PasswordEncoder 사용)
+     * PasswordEncoder를 사용하는 AuthenticationProvider 지정 (PasswordEncoder는 위에서 등록한
+     * PasswordEncoder 사용)
      * FormLogin(기존 스프링 시큐리티 로그인)과 동일하게 DaoAuthenticationProvider 사용
      * UserDetailsService는 커스텀 LoginService로 등록
-     * 또한, FormLogin과 동일하게 AuthenticationManager로는 구현체인 ProviderManager 사용(return ProviderManager)
+     * 또한, FormLogin과 동일하게 AuthenticationManager로는 구현체인 ProviderManager 사용(return
+     * ProviderManager)
      */
     @Bean
     public AuthenticationManager authenticationManager() {
@@ -130,13 +140,14 @@ public class SecurityConfig {
     /**
      * CustomJsonUsernamePasswordAuthenticationFilter 빈 등록
      * 커스텀 필터를 사용하기 위해 만든 커스텀 필터를 Bean으로 등록
-     * setAuthenticationManager(authenticationManager())로 위에서 등록한 AuthenticationManager(ProviderManager) 설정
+     * setAuthenticationManager(authenticationManager())로 위에서 등록한
+     * AuthenticationManager(ProviderManager) 설정
      * 로그인 성공 시 호출할 handler, 실패 시 호출할 handler로 위에서 등록한 handler 설정
      */
     @Bean
     public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
-        CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
-                = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
+        CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter = new CustomJsonUsernamePasswordAuthenticationFilter(
+                objectMapper);
         customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
         customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());

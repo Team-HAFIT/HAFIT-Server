@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.post.dto.reqeust;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PostCreateDTO {
-    private Long userId;
+    private String userEmail;
     private Long categoryId;
     private String postContent;
     private List<MultipartFile> files = Collections.emptyList();

@@ -26,9 +26,6 @@ public class Post extends BaseEntity {
     @Column(length = 8000)
     private String postContent;
 
-    @Column(name = "view_count")
-    private int viewCount;
-
     @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
@@ -42,7 +39,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_post_user"))
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,  cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_post_category"))
     private Category category;
 
@@ -51,9 +48,6 @@ public class Post extends BaseEntity {
         this.postContent = postContent;
         this.user = user;
         this.category = category;
-    }
-    public void addViewCount() {
-        this.viewCount++;
     }
 
 }

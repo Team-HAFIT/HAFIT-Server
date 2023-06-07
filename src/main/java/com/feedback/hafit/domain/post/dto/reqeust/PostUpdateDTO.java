@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostUpdateDTO {
     private Long postId;
-    private Long userId;
+    private String userEmail;
     private Long categoryId;
     private String postContent;
     private List<MultipartFile> files = Collections.emptyList();
