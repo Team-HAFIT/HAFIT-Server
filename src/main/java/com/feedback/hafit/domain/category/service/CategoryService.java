@@ -1,12 +1,12 @@
 package com.feedback.hafit.domain.category.service;
 
-import com.feedback.hafit.domain.category.entity.Category;
-import com.feedback.hafit.domain.user.service.UserService;
 import com.feedback.hafit.domain.category.dto.CategoryDTO;
-import com.feedback.hafit.domain.user.entity.User;
+import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
+import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.feedback.hafit.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -14,36 +14,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryService {
 
-    @Autowired
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     private final UserRepository userRepository;
-    @Autowired
-    public CategoryService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
-    @Autowired
-    UserService userService;
-
-    public boolean createCategory(CategoryDTO categoryFormDTO, Long userId) {
-        User user = userService.getById(userId);
-
+    public boolean createCategory(CategoryDTO categoryDTO, String email) {
         try {
-            Category category = Category.builder()
-                    .categoryName(categoryFormDTO.getCategoryName())
-                    .user(user)
-                    .build();
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            User user = userOptional.get();
+            if (user == null) {
+                // 사용자가 존재하지 않을 경우 처리
+                return false;
+            }
 
-            // Category 저장 또는 처리 로직 작성
+            Category category = new Category();
+            category.setCategoryName(categoryDTO.getCategoryName());
+            category.setUser(user);
+
             Category savedCategory = categoryRepository.save(category);
-            return true;
+            return savedCategory != null;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public Category getById(Long id) {
@@ -72,24 +68,25 @@ public class CategoryService {
         }
     }
 
-    public boolean delete(CategoryDTO categoryFormDTO) {
+    public boolean delete(Long categoryId) {
         try {
-            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
-            if (optionalCategory.isPresent()) {
-                Category category = optionalCategory.get();
-                categoryRepository.delete(category);
-                return true;
-            } else {
-                System.out.println("해당하는 카테고리를 삭제할 수 없습니다.");
+            Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
+            if (categoryOptional.isEmpty()) {
+                // 삭제할 카테고리가 존재하지 않을 경우 처리
                 return false;
             }
+
+            Category category = categoryOptional.get();
+            categoryRepository.delete(category);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public List<Category> getAllCategorys() {
+
+    public List<Category> getAllCategories() {
         try {
             return categoryRepository.findAll();
         } catch (Exception e) {

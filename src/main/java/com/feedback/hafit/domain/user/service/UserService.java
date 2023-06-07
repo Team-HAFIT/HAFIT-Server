@@ -99,6 +99,7 @@ public class UserService {
                 .weight(user.getWeight())
                 .height(user.getHeight())
                 .birthday(user.getBirthday())
+                .role(user.getRole())
                 .build();
     }
 
