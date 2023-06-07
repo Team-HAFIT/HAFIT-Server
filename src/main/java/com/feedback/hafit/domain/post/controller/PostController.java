@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,12 +60,19 @@ public class PostController {
         List<Post> posts = postService.getAllPosts();
         if (!posts.isEmpty()) {
             List<PostDTO> postDTOs = posts.stream()
-                    .map(post -> new PostDTO(post, Collections.emptyList()))
+                    .map(post -> new PostDTO(
+                            post.getPostId(),
+                            post.getFileImages(),
+                            post.getPostContent(),
+                            post.getCategory(),
+                            post.getUser()
+                    ))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(postDTOs);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
 
 }
