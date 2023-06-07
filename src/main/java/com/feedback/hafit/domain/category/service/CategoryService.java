@@ -34,7 +34,6 @@ public class CategoryService {
         try {
             Category category = Category.builder()
                     .categoryName(categoryFormDTO.getCategoryName())
-                    .user(user)
                     .build();
 
             // Category 저장 또는 처리 로직 작성
