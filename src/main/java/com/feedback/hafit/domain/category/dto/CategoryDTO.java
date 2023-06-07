@@ -16,12 +16,17 @@ public class CategoryDTO {
     @NotNull
     private Long categoryId;
     private String categoryName;
-    private Long user_id;
+    private String userEmail;
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
     @Builder
-    public CategoryDTO(String categoryName, Long user_id) {
+    public CategoryDTO(Long categoryId, String categoryName, String userEmail) {
+        this.categoryId = categoryId;
         this.categoryName = categoryName;
-        this.user_id = user_id;
+        this.userEmail = userEmail;
     }
 
 //    @Autowired
