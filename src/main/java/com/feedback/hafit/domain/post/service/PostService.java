@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -134,5 +135,27 @@ public class PostService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public PostDTO getPostById(Long postId) {
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            // Retrieve the list of FileImageDTO objects associated with the post
+            List<FileImageDTO> fileImageDTOs = getFileImageDTOsForPost(post);
+            // Create and return the PostDTO object
+            return new PostDTO(post, fileImageDTOs);
+        } else {
+            return null;
+        }
+    }
+
+    private List<FileImageDTO> getFileImageDTOsForPost(Post post) {
+        // Retrieve the list of FileImage objects associated with the post
+        List<FileImage> fileImages = post.getFileImages();
+        // Convert the list of FileImage objects to FileImageDTO objects
+        return fileImages.stream()
+                .map(FileImageDTO::new)
+                .collect(Collectors.toList());
     }
 }

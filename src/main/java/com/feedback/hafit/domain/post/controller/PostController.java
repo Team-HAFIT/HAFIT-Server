@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.post.controller;
 
 import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
+import com.feedback.hafit.domain.post.dto.response.FileImageDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.service.PostService;
@@ -55,17 +56,27 @@ public class PostController {
         return ResponseEntity.ok(true);
     }
 
+    // 게시글 하나 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO> getPostById(@PathVariable Long postId) {
+        PostDTO postDTO = postService.getPostById(postId);
+        if (postDTO != null) {
+            return ResponseEntity.ok(postDTO);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping // 전체 피드 조회
     public ResponseEntity<List<PostDTO>> getAllPosts() {
         List<Post> posts = postService.getAllPosts();
         if (!posts.isEmpty()) {
             List<PostDTO> postDTOs = posts.stream()
                     .map(post -> new PostDTO(
-                            post.getPostId(),
-                            post.getFileImages(),
-                            post.getPostContent(),
-                            post.getCategory(),
-                            post.getUser()
+                            post,
+                            post.getFileImages().stream()
+                                    .map(FileImageDTO::new)
+                                    .collect(Collectors.toList())
                     ))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(postDTOs);
@@ -73,6 +84,5 @@ public class PostController {
             return ResponseEntity.notFound().build();
         }
     }
-
 
 }
