@@ -10,10 +10,10 @@ import com.feedback.hafit.domain.postlike.PostLike;
 import com.feedback.hafit.domain.user.dto.UserLoginDTO;
 import com.feedback.hafit.domain.user.enumerate.Role;
 import com.feedback.hafit.domain.user.enumerate.SocialType;
-import com.feedback.hafit.domain.user.enumerate.UserStatus;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ import java.util.*;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class User extends BaseEntity  implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,9 +64,6 @@ public class User extends BaseEntity {
 
     @Column
     private LocalDate birthday;
-
-    @Enumerated(EnumType.STRING)
-    private UserStatus user_status;
 
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
@@ -114,10 +111,36 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
         roles.add(new SimpleGrantedAuthority(role.getValue()));
        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 
 }
