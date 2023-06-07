@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.goal.controller;
 
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.dto.GoalDTO;
+import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.service.GoalService;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/goal")
+@RequestMapping("/api/goals")
 public class GoalController {
 
     @Autowired
@@ -29,7 +30,7 @@ public class GoalController {
     @Autowired
     private GoalRepository goalRepository;
 
-    @PostMapping("/write")
+    @PostMapping("")
     public ResponseEntity<?> write(@RequestBody GoalDTO goalDTO, HttpSession session) {
         Long userId = (Long) session.getAttribute("userId");
         boolean result = goalService.write(goalDTO, userId);
@@ -57,4 +58,13 @@ public class GoalController {
                 .collect(Collectors.toList());
     }
 
+    @PutMapping("")
+    public boolean update(@RequestBody GoalDTO goalDTO) {
+        return true;
+    }
+
+    @DeleteMapping("/{goalId}")
+    public boolean delete(@PathVariable Long goalId) {
+        return true;
+    }
 }
