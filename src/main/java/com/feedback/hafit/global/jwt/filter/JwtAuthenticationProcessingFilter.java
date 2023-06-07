@@ -2,7 +2,7 @@ package com.feedback.hafit.global.jwt.filter;
 
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
-import com.feedback.hafit.global.jwt.service.JwtTokenProvider;
+import com.feedback.hafit.global.jwt.service.JwtService;
 import com.feedback.hafit.global.jwt.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,6 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -35,13 +34,12 @@ import java.io.IOException;
  *
  */
 @RequiredArgsConstructor
-@Component
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/api/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtService jwtService;
     private final UserRepository userRepository;
 
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
@@ -57,8 +55,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
         // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
         // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
-        String refreshToken = jwtTokenProvider.extractRefreshToken(request)
-                .filter(jwtTokenProvider::isTokenValid)
+        String refreshToken = jwtService.extractRefreshToken(request)
+                .filter(jwtService::isTokenValid)
                 .orElse(null);
 
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
@@ -80,26 +78,26 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     /**
      *  [리프레시 토큰으로 유저 정보 찾기 & 액세스 토큰/리프레시 토큰 재발급 메소드]
      *  파라미터로 들어온 헤더에서 추출한 리프레시 토큰으로 DB에서 유저를 찾고, 해당 유저가 있다면
-     *  JwtTokenProvider.createAccessToken()으로 AccessToken 생성,
+     *  JwtService.createAccessToken()으로 AccessToken 생성,
      *  reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
-     *  그 후 JwtTokenProvider.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
+     *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
      */
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtTokenProvider.sendAccessAndRefreshToken(response, jwtTokenProvider.createAccessToken(user.getEmail(), user.getAuthorities()),
+                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail(), user.getAuthorities()),
                             reIssuedRefreshToken);
                 });
     }
 
     /**
      * [리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드]
-     * jwtTokenProvider.createRefreshToken()으로 리프레시 토큰 재발급 후
+     * jwtService.createRefreshToken()으로 리프레시 토큰 재발급 후
      * DB에 재발급한 리프레시 토큰 업데이트 후 Flush
      */
     private String reIssueRefreshToken(User user) {
-        String reIssuedRefreshToken = jwtTokenProvider.createRefreshToken();
+        String reIssuedRefreshToken = jwtService.createRefreshToken();
         user.updateRefreshToken(reIssuedRefreshToken);
         userRepository.saveAndFlush(user);
         return reIssuedRefreshToken;
@@ -116,9 +114,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtTokenProvider.extractAccessToken(request)
-                .filter(jwtTokenProvider::isTokenValid)
-                .ifPresent(accessToken -> jwtTokenProvider.extractEmail(accessToken)
+        jwtService.extractAccessToken(request)
+                .filter(jwtService::isTokenValid)
+                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> userRepository.findByEmail(email)
                                 .ifPresent(this::saveAuthentication)));
 

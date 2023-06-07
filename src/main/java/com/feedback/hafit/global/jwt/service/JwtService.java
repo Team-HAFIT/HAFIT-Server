@@ -18,7 +18,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public class JwtTokenProvider {
+public class JwtService {
 
     @Value("${jwt.secretKey}")
     private String secretKey;

@@ -5,7 +5,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
     username: root
     url: jdbc:mariadb://localhost:3306/HAFIT_DB
-    password: '001016'
+    password: '4614'
 
   jpa:
     open-in-view: 'true'
@@ -22,6 +22,3 @@ spring:
       charset: UTF-8
       enabled: 'true'
       force: 'true'
-  mvc:
-    path match:
-      matching-strategy: ant_path_matcher # springboot 2.6 이상에서 swagger와 설정이슈
