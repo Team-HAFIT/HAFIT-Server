@@ -34,27 +34,10 @@ public class UserDTO {
 
     private int weight;
 
-    private String user_img;
-
-//    public User toEntity() {
-//        User user = User.builder()
-//                .email(email)
-//                .password(password)
-//                .carrier(carrier)
-//                .phone(phone)
-//                .sex(sex)
-//                .name(name)
-//                .birthday(birthday)
-//                .height(height)
-//                .weight(weight)
-//                .user_img(user_img)
-//                .role(Role.USER)
-//                .build();
-//        return user;
-//    }
+    private String imageUrl;
 
     @Builder
-    public UserDTO(Long userId, String email, String password, String carrier, String phone, String sex, String name, String user_img, int height, int weight, LocalDate birthday, Role role) {
+    public UserDTO(Long userId, String email, String password, String carrier, String phone, String sex, String name, String imageUrl, int height, int weight, LocalDate birthday, Role role) {
         this.userId = userId;
         this.email = email;
         this.password = password;
@@ -62,7 +45,7 @@ public class UserDTO {
         this.phone = phone;
         this.sex = sex;
         this.name = name;
-        this.user_img = user_img;
+        this.imageUrl = imageUrl;
         this.height = height;
         this.weight = weight;
         this.birthday = birthday;
