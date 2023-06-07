@@ -13,6 +13,7 @@ import com.feedback.hafit.domain.user.enumerate.SocialType;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -25,7 +26,7 @@ import java.util.*;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -110,10 +111,38 @@ public class User extends BaseEntity {
                 .build();
     }
 
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
         roles.add(new SimpleGrantedAuthority(role.getValue()));
-       return roles;
+        return roles;
+    }
+
+    // Methods required by UserDetails interface
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; // Modify as needed
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; // Modify as needed
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; // Modify as needed
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true; // Modify as needed
     }
 
 }
