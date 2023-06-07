@@ -10,7 +10,6 @@ import com.feedback.hafit.domain.postlike.PostLike;
 import com.feedback.hafit.domain.user.dto.UserLoginDTO;
 import com.feedback.hafit.domain.user.enumerate.Role;
 import com.feedback.hafit.domain.user.enumerate.SocialType;
-import com.feedback.hafit.domain.user.enumerate.UserStatus;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,9 +63,6 @@ public class User extends BaseEntity {
 
     @Column
     private LocalDate birthday;
-
-    @Enumerated(EnumType.STRING)
-    private UserStatus user_status;
 
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
