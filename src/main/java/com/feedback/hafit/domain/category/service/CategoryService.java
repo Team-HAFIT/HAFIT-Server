@@ -3,12 +3,19 @@ package com.feedback.hafit.domain.category.service;
 import com.feedback.hafit.domain.category.dto.CategoryDTO;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
+import com.feedback.hafit.domain.post.dto.response.PostDTO;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.entity.Post;
+import com.feedback.hafit.domain.post.entity.PostFile;
+import com.feedback.hafit.domain.post.repository.FileImageRepository;
+import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,8 +25,8 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO, String email) {
         try {
@@ -91,4 +98,34 @@ public class CategoryService {
             return Collections.emptyList();
         }
     }
+
+    public List<PostDTO> getPostsByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + categoryId));
+
+        List<Post> posts = postRepository.findByCategory(category);
+        List<PostDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            PostDTO postDTO = new PostDTO(post, postFileDTOS);
+            postDTOs.add(postDTO);
+        }
+
+        return postDTOs;
+    }
+
+    private List<PostFileDTO> getFileImageDTOsForPost(Post post) {
+        List<PostFile> postFiles = post.getPostFiles();
+        List<PostFileDTO> postFileDTOS = new ArrayList<>();
+
+        for (PostFile postFile : postFiles) {
+            PostFileDTO postFileDTO = new PostFileDTO(postFile);
+            postFileDTOS.add(postFileDTO);
+        }
+
+        return postFileDTOS;
+    }
+
 }
+

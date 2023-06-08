@@ -67,6 +67,7 @@ public class SecurityConfig {
                 .antMatchers("/").permitAll()
                 .antMatchers("/api/my/**", "/api/posts/**").hasRole("USER")
                 .antMatchers("/api/category/**").hasRole("ADMIN")
+                .antMatchers("/api/category/**/posts").hasAnyRole("USER", "ADMIN")
 
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
