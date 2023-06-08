@@ -21,12 +21,9 @@ public class CategoryController {
 
     @PostMapping // 카테고리 추가
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal) {
-
-        boolean isCategoryCreated = categoryService.createCategory(categoryDTO, principal.getName());
-        if (!isCategoryCreated) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(categoryDTO);
+        log.info("hi");
+        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, principal.getName());
+        return ResponseEntity.ok(createdCategory);
     }
 
     @PutMapping("/{categoryId}") // 카테고리 수정
@@ -52,7 +49,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categoryDTOList = categoryService.getAllCategories()
                 .stream()
-                .map(category -> new CategoryDTO(category.getCategoryId(), category.getCategoryName(), category.getUserEmail()))
+                .map(CategoryDTO::new)
                 .collect(Collectors.toList());
 
         if (!categoryDTOList.isEmpty()) {
@@ -61,5 +58,4 @@ public class CategoryController {
             return ResponseEntity.noContent().build();
         }
     }
-
 }

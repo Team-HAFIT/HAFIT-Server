@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PostCreateDTO {
-    private String userEmail;
+    private String userName;
     private Long categoryId;
     private String postContent;
     private List<MultipartFile> files = Collections.emptyList();

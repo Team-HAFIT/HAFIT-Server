@@ -81,14 +81,14 @@ public class S3Service {
     // 3. 로컬에 생성된 파일삭제
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("FileImage delete success");
+            log.info("PostFile delete success");
             return;
         }
-        log.info("FileImage delete fail");
+        log.info("PostFile delete fail");
     }
 
     public void delete(String fileName) {
-        log.info("FileImage Delete: " + fileName);
+        log.info("PostFile Delete: " + fileName);
         amazonS3.deleteObject(bucket, fileName);
     }
 }

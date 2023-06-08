@@ -5,10 +5,10 @@ import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
-import com.feedback.hafit.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,24 +21,21 @@ public class CategoryService {
 
     private final UserRepository userRepository;
 
-    public boolean createCategory(CategoryDTO categoryDTO, String email) {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO, String email) {
         try {
-            Optional<User> userOptional = userRepository.findByEmail(email);
-            User user = userOptional.get();
-            if (user == null) {
-                // 사용자가 존재하지 않을 경우 처리
-                return false;
-            }
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
             Category category = new Category();
             category.setCategoryName(categoryDTO.getCategoryName());
             category.setUser(user);
 
             Category savedCategory = categoryRepository.save(category);
-            return savedCategory != null;
+
+            return new CategoryDTO(savedCategory);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            throw new RuntimeException("카테고리 생성에 실패하였습니다.");
         }
     }
 

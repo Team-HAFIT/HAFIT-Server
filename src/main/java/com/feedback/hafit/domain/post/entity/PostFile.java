@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Table(name = "files")
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileImage extends BaseEntity {
+public class PostFile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class FileImage extends BaseEntity {
     private Post post;
 
     @Builder
-    public FileImage(String fileName, Post post) {
+    public PostFile(String fileName, Post post) {
         this.fileName = fileName;
         this.post = post;
     }
