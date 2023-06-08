@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -98,7 +99,10 @@ public class JwtTokenProvider {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
+        setRefreshTokenCookie(response, refreshToken);
+        log.info(refreshToken);
+
+        log.info("Access Token, Refresh Token 헤더 및 쿠키 설정 완료");
     }
 
     /**
@@ -159,6 +163,17 @@ public class JwtTokenProvider {
     }
 
     /**
+     * RefreshToken 쿠키 설정
+     */
+    public void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie(refreshHeader, refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(refreshTokenExpirationPeriod.intValue()); // 쿠키의 만료 시간 설정 (초 단위)
+        cookie.setPath("/"); // 쿠키의 경로를 전체 서비스에 적용
+        response.addCookie(cookie);
+    }
+
+    /**
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(String email, String refreshToken) {
@@ -178,4 +193,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
 }
