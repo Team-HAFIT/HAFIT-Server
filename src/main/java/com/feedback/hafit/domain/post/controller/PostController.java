@@ -2,7 +2,7 @@ package com.feedback.hafit.domain.post.controller;
 
 import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
-import com.feedback.hafit.domain.post.dto.response.FileImageDTO;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.service.PostService;
@@ -74,8 +74,8 @@ public class PostController {
             List<PostDTO> postDTOs = posts.stream()
                     .map(post -> new PostDTO(
                             post,
-                            post.getFileImages().stream()
-                                    .map(FileImageDTO::new)
+                            post.getPostFiles().stream()
+                                    .map(PostFileDTO::new)
                                     .collect(Collectors.toList())
                     ))
                     .collect(Collectors.toList());

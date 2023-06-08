@@ -5,9 +5,9 @@ import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.category.service.CategoryService;
 import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
-import com.feedback.hafit.domain.post.dto.response.FileImageDTO;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
-import com.feedback.hafit.domain.post.entity.FileImage;
+import com.feedback.hafit.domain.post.entity.PostFile;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.repository.FileImageRepository;
 import com.feedback.hafit.domain.post.repository.PostRepository;
@@ -59,20 +59,20 @@ public class PostService {
                 .build()
         );
 
-        List<FileImageDTO> fileImageDTOs = new ArrayList<>();
+        List<PostFileDTO> postFileDTOS = new ArrayList<>();
         for (MultipartFile file : files) {
             String uploadUrl = s3Service.upload(file, "posts");
             log.info("uploadUrl: {}", uploadUrl);
-            FileImageDTO fileImageDTO = new FileImageDTO(fileImageRepository.save(
-                    FileImage.builder()
+            PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(
+                    PostFile.builder()
                             .post(post)
                             .fileName(uploadUrl)
                             .build()
             ));
-            fileImageDTOs.add(fileImageDTO);
+            postFileDTOS.add(postFileDTO);
         }
 
-        return new PostDTO(post, fileImageDTOs);
+        return new PostDTO(post, postFileDTOS);
     }
 
     public boolean update(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
@@ -86,17 +86,17 @@ public class PostService {
                 Category category = categoryService.getById(categoryId);
                 post.setCategory(category);
 
-                List<FileImageDTO> fileImageDTOs = new ArrayList<>();
+                List<PostFileDTO> postFileDTOS = new ArrayList<>();
                 for (MultipartFile file : files) {
                     String uploadUrl = s3Service.upload(file, "posts");
                     log.info("uploadUrl: {}", uploadUrl);
-                    FileImageDTO fileImageDTO = new FileImageDTO(fileImageRepository.save(
-                            FileImage.builder()
+                    PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(
+                            PostFile.builder()
                                     .post(post)
                                     .fileName(uploadUrl)
                                     .build()
                     ));
-                    fileImageDTOs.add(fileImageDTO);
+                    postFileDTOS.add(postFileDTO);
                 }
 
                 postRepository.save(post);
@@ -141,21 +141,21 @@ public class PostService {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            // Retrieve the list of FileImageDTO objects associated with the post
-            List<FileImageDTO> fileImageDTOs = getFileImageDTOsForPost(post);
+            // Retrieve the list of PostFileDTO objects associated with the post
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
             // Create and return the PostDTO object
-            return new PostDTO(post, fileImageDTOs);
+            return new PostDTO(post, postFileDTOS);
         } else {
             return null;
         }
     }
 
-    private List<FileImageDTO> getFileImageDTOsForPost(Post post) {
-        // Retrieve the list of FileImage objects associated with the post
-        List<FileImage> fileImages = post.getFileImages();
-        // Convert the list of FileImage objects to FileImageDTO objects
-        return fileImages.stream()
-                .map(FileImageDTO::new)
+    private List<PostFileDTO> getFileImageDTOsForPost(Post post) {
+        // Retrieve the list of PostFile objects associated with the post
+        List<PostFile> postFiles = post.getPostFiles();
+        // Convert the list of PostFile objects to PostFileDTO objects
+        return postFiles.stream()
+                .map(PostFileDTO::new)
                 .collect(Collectors.toList());
     }
 }

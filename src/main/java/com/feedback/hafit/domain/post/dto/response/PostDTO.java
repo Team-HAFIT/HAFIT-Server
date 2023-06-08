@@ -17,14 +17,14 @@ import java.util.List;
 public class PostDTO extends BaseEntity {
     private Long postId;
     private Long categoryId;
-    private String userEmail;
+    private String userName;
     private String postContent;
-    private List<FileImageDTO> files = Collections.emptyList();
+    private List<PostFileDTO> files = Collections.emptyList();
 
-    public PostDTO(Post post, List<FileImageDTO> files) {
+    public PostDTO(Post post, List<PostFileDTO> files) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
-        this.userEmail = post.getUser().getEmail();
+        this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
         this.files = files;
         this.modifiedAt = post.getModifiedAt();

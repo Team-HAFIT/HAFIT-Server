@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.category.controller;
 
 import com.feedback.hafit.domain.category.dto.CategoryDTO;
 import com.feedback.hafit.domain.category.service.CategoryService;
+import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,22 +22,19 @@ public class CategoryController {
 
     @PostMapping // 카테고리 추가
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal) {
-
-        boolean isCategoryCreated = categoryService.createCategory(categoryDTO, principal.getName());
-        if (!isCategoryCreated) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.ok(categoryDTO);
+        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, principal.getName());
+        return ResponseEntity.ok(createdCategory);
     }
 
     @PutMapping("/{categoryId}") // 카테고리 수정
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setCategoryId(categoryId);
-        boolean isCategoryUpdated = categoryService.update(categoryDTO);
-        if (!isCategoryUpdated) {
+        CategoryDTO updatedCategory = categoryService.update(categoryDTO);
+        if (updatedCategory != null) {
+            return ResponseEntity.ok(updatedCategory);
+        } else {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(categoryDTO);
     }
 
     @DeleteMapping("/{categoryId}") // 카테고리 삭제
@@ -52,7 +50,7 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> getAllCategories() {
         List<CategoryDTO> categoryDTOList = categoryService.getAllCategories()
                 .stream()
-                .map(category -> new CategoryDTO(category.getCategoryId(), category.getCategoryName(), category.getUserEmail()))
+                .map(CategoryDTO::new)
                 .collect(Collectors.toList());
 
         if (!categoryDTOList.isEmpty()) {
@@ -62,4 +60,15 @@ public class CategoryController {
         }
     }
 
+    // 카테고리별 게시글 조회
+    @GetMapping("/{categoryId}/posts")
+    public ResponseEntity<List<PostDTO>> getPostsByCategory(@PathVariable Long categoryId) {
+        log.info(String.valueOf(categoryId));
+        List<PostDTO> posts = categoryService.getPostsByCategory(categoryId);
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.noContent().build();
+        }
+    }
 }

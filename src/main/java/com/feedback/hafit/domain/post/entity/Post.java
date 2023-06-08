@@ -30,7 +30,7 @@ public class Post extends BaseEntity {
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
-    private List<FileImage> fileImages = new ArrayList<>();
+    private List<PostFile> postFiles = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
