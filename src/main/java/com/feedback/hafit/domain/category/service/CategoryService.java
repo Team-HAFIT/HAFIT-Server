@@ -47,21 +47,21 @@ public class CategoryService {
         return optionalCategory.get();
     }
 
-    public boolean update(CategoryDTO categoryFormDTO) {
+    public CategoryDTO update(CategoryDTO categoryFormDTO) {
         try {
             Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
             if (optionalCategory.isPresent()) {
                 Category category = optionalCategory.get();
                 category.setCategoryName(categoryFormDTO.getCategoryName());
                 categoryRepository.save(category);
-                return true;
+                return new CategoryDTO(category);
             } else {
                 System.out.println("해당하는 카테고리를 찾을 수 없습니다.");
-                return false;
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

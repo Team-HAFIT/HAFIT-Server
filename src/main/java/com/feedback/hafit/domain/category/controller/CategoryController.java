@@ -21,7 +21,6 @@ public class CategoryController {
 
     @PostMapping // 카테고리 추가
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal) {
-        log.info("hi");
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, principal.getName());
         return ResponseEntity.ok(createdCategory);
     }
@@ -29,11 +28,12 @@ public class CategoryController {
     @PutMapping("/{categoryId}") // 카테고리 수정
     public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO categoryDTO) {
         categoryDTO.setCategoryId(categoryId);
-        boolean isCategoryUpdated = categoryService.update(categoryDTO);
-        if (!isCategoryUpdated) {
+        CategoryDTO updatedCategory = categoryService.update(categoryDTO);
+        if (updatedCategory != null) {
+            return ResponseEntity.ok(updatedCategory);
+        } else {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(categoryDTO);
     }
 
     @DeleteMapping("/{categoryId}") // 카테고리 삭제
