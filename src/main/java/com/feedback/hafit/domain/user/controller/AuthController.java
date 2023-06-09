@@ -9,13 +9,11 @@ import com.feedback.hafit.global.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,17 +37,24 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<String> reissueAccessToken(HttpServletResponse response, @RequestBody String refreshToken) {
-        log.info("dfdfdf");
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public String reissueAccessToken(HttpServletResponse response, @RequestBody String refreshToken) {
         // AccessToken 재발급
-        userRepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getAuthorities());
-                    response.setHeader(accessHeader, accessToken);
-                    response.setHeader(refreshHeader, reIssuedRefreshToken);
-                });
-        return ResponseEntity.ok("AccessToken이 재발급되었습니다.");
+        Optional<User> userOptional = userRepository.findByRefreshToken(refreshToken);
+        log.info("userOptional : {}", userOptional);
+        if (userOptional.isEmpty()) {
+            return null;
+        }
+        User user = userOptional.get();
+        log.info("user : {}", user);
+        String reIssuedRefreshToken = reIssueRefreshToken(user);
+        String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getAuthorities());
+        log.info("accessHeader : {}", accessHeader);
+        log.info("reIssuedRefreshToken : {}", reIssuedRefreshToken);
+        response.setHeader(accessHeader, accessToken);
+        response.setHeader(refreshHeader, reIssuedRefreshToken);
+        return "AccessToken이 재발급되었습니다.";
     }
 
     private String reIssueRefreshToken(User user) {
