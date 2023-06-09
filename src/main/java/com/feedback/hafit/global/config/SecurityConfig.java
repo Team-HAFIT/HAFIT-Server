@@ -74,7 +74,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/file/**")
                 .permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger/**", "/swagger-ui/**", "/swagger-resources/**",
-                        "/v2/api-docs")
+                        "/v3/api-docs")
                 .permitAll()
                 .antMatchers("/api/signup", "/index").permitAll() // 회원가입 접근 가능
                 .antMatchers("/api/**", "/login/**", "/oauth2/**").permitAll()
