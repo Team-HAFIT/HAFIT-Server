@@ -25,6 +25,11 @@ public class UserService {
         return userOptional.get();
     }
 
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+    }
+
     public void signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
