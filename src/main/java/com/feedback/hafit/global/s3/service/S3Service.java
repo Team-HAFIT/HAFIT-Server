@@ -30,6 +30,12 @@ public class S3Service {
 
     private Logger log = LoggerFactory.getLogger(S3Service.class);
 
+    /**
+     * S3 파일 업로드
+     * @param multipartFile 실제 파일
+     * @param dirName 폴더 명
+     * @return s3 파일 url
+     */
     public String upload(MultipartFile multipartFile, String dirName) {
         // 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();

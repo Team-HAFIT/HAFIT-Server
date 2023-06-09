@@ -8,6 +8,7 @@ import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,16 +34,12 @@ public class PostController {
     }
 
     @PutMapping("/{postId}") // 피드 수정
-    public ResponseEntity<Boolean> updatePost(@PathVariable Long postId,
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePost(@PathVariable Long postId,
                                               @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                               @ModelAttribute PostUpdateDTO postFormDTO) {
-        boolean isPostUpdated = postService.update(postId, postFormDTO, files);
-        if (!isPostUpdated) {
-            System.out.println("수정 실패");
-            return ResponseEntity.badRequest().body(false);
-        }
-        System.out.println("수정 성공");
-        return ResponseEntity.ok(true);
+        postService.update(postId, postFormDTO, files);
     }
 
     @DeleteMapping("/{postId}") // 피드 삭제
