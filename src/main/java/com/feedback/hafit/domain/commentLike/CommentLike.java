@@ -1,4 +1,4 @@
-package com.feedback.hafit.domain.commentlike;
+package com.feedback.hafit.domain.commentLike;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.comment.entity.Comment;

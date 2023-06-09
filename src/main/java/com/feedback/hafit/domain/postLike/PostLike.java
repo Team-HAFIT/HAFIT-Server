@@ -1,4 +1,4 @@
-package com.feedback.hafit.domain.postlike;
+package com.feedback.hafit.domain.postLike;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.post.entity.Post;
