@@ -3,7 +3,7 @@ package com.feedback.hafit.domain.user.entity;
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.comment.entity.Comment;
-import com.feedback.hafit.domain.commentLike.CommentLike;
+import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.postLike.PostLike;
