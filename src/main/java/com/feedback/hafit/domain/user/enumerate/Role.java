@@ -9,9 +9,5 @@ public enum Role {
 
     GUEST("ROLE_GUEST"), USER("ROLE_USER"), ADMIN("ROLE_ADMIN");
 
-    private final String key;
-
-    public String getValue() {
-        return this.getValue();
-    }
+    private final String value;
 }
