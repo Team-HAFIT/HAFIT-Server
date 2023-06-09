@@ -3,7 +3,7 @@ package com.feedback.hafit.domain.post.entity;
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.comment.entity.Comment;
-import com.feedback.hafit.domain.postlike.PostLike;
+import com.feedback.hafit.domain.postLike.PostLike;
 import com.feedback.hafit.domain.user.entity.User;
 import lombok.*;
 

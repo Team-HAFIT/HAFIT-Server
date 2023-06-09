@@ -1,7 +1,7 @@
 package com.feedback.hafit.domain.plan.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
-import com.feedback.hafit.domain.exerciseset.ExerciseSet;
+import com.feedback.hafit.domain.exerciseSet.ExerciseSet;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import lombok.AllArgsConstructor;

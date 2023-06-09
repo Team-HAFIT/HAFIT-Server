@@ -45,6 +45,12 @@ public class PostService {
 
     private final FileImageRepository fileImageRepository;
 
+    public Post getById(Long postId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (postOptional.isEmpty()) throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
+        return postOptional.get();
+    }
+
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();

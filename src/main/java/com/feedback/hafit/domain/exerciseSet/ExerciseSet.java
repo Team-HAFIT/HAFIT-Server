@@ -1,4 +1,4 @@
-package com.feedback.hafit.domain.exerciseset;
+package com.feedback.hafit.domain.exerciseSet;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.plan.entity.Plan;
