@@ -12,9 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class PostUpdateDTO {
-    private Long postId;
-    private String userName;
     private Long categoryId;
     private String postContent;
+    private List<Long> deleteImageIds;
     private List<MultipartFile> files = Collections.emptyList();
 }
