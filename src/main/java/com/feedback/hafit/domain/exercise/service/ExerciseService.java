@@ -3,6 +3,7 @@ package com.feedback.hafit.domain.exercise.service;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.dto.ExerciseDTO;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
+import com.feedback.hafit.domain.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,12 @@ public class ExerciseService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public Exercise getById(Long execId) {
+        Optional<Exercise> exerciseOptional = exerciseRepository.findById(execId);
+        if(exerciseOptional.isEmpty())throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        return exerciseOptional.get();
     }
 
     public boolean update(ExerciseDTO exerciseDTO) {

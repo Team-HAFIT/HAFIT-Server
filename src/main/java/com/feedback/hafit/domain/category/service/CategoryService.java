@@ -7,7 +7,7 @@ import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
-import com.feedback.hafit.domain.post.repository.FileImageRepository;
+import lombok.extern.slf4j.Slf4j;
 import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -30,6 +31,7 @@ public class CategoryService {
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO, String email) {
         try {
+            log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~categoryDTO : {}", categoryDTO);
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 

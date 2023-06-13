@@ -22,6 +22,7 @@ public class CategoryController {
 
     @PostMapping // 카테고리 추가
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal) {
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~categoryDTO : {}", categoryDTO);
         CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, principal.getName());
         return ResponseEntity.ok(createdCategory);
     }

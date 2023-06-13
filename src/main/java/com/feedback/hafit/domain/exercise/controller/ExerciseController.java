@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("exercise")
+@RequestMapping("/api/exercises")
 @RequiredArgsConstructor
 public class ExerciseController { // 운동 컨트롤러
 
@@ -24,7 +24,7 @@ public class ExerciseController { // 운동 컨트롤러
     @Autowired
     private ExerciseService exerciseService;
 
-    @PostMapping("/create") // 운동 추가
+    @PostMapping("") // 운동 추가
     public ExerciseDTO create(@RequestBody ExerciseDTO exerciseDTO, HttpSession session) {
         Long exec_id = (Long) session.getAttribute("exec_id");
         boolean isExerciseCreated = exerciseService.createExercise(exerciseDTO);
@@ -36,7 +36,7 @@ public class ExerciseController { // 운동 컨트롤러
         return exerciseDTO;
     }
 
-    @PostMapping("/update") // 운동 수정
+    @PutMapping("") // 운동 수정
     public ExerciseDTO update(@RequestBody ExerciseDTO exerciseDTO) {
         boolean isExerciseUpdated = exerciseService.update(exerciseDTO);
         if (!isExerciseUpdated) {
@@ -47,7 +47,7 @@ public class ExerciseController { // 운동 컨트롤러
         return exerciseDTO;
     }
 
-    @DeleteMapping("/delete") // 운동 삭제
+    @DeleteMapping("") // 운동 삭제
     public boolean delete(@RequestBody ExerciseDTO exerciseDTO) {
         boolean isExerciseDeleted = exerciseService.delete(exerciseDTO);
         if(!isExerciseDeleted) {
@@ -58,7 +58,7 @@ public class ExerciseController { // 운동 컨트롤러
         return true;
     }
 
-    @GetMapping("list") // 운동 목록 조회
+    @GetMapping("") // 운동 목록 조회
     public ResponseEntity<List<ExerciseDTO>> getAllExercise() {
         List<Exercise> exercisesList = exerciseService.getAllExercises();
         List<ExerciseDTO> exerciseDTOList = new ArrayList<>();

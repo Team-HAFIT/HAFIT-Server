@@ -25,7 +25,7 @@ public class Exercise extends BaseEntity {
     private String name; // 이름
 
     @Column
-    private int calorie; // 칼로리
+    private Long calorie; // 칼로리
 
     @Column
     private String exec_description; // 설명
