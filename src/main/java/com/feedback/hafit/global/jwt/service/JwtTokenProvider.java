@@ -167,7 +167,7 @@ public class JwtTokenProvider {
      */
     public void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie(refreshHeader, refreshToken);
-        cookie.setHttpOnly(true);
+        // cookie.setHttpOnly(true);
         cookie.setMaxAge(refreshTokenExpirationPeriod.intValue()); // 쿠키의 만료 시간 설정 (초 단위)
         cookie.setPath("/"); // 쿠키의 경로를 전체 서비스에 적용
         response.addCookie(cookie);

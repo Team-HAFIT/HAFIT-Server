@@ -40,6 +40,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public String reissueAccessToken(HttpServletResponse response, @RequestBody String refreshToken) {
+        log.info("전달받은 refreshToken : {}", refreshToken);
         // AccessToken 재발급
         Optional<User> userOptional = userRepository.findByRefreshToken(refreshToken);
         log.info("userOptional : {}", userOptional);
@@ -52,8 +53,9 @@ public class AuthController {
         String accessToken = jwtTokenProvider.createAccessToken(user.getEmail(), user.getAuthorities());
         log.info("accessHeader : {}", accessHeader);
         log.info("reIssuedRefreshToken : {}", reIssuedRefreshToken);
-        response.setHeader(accessHeader, accessToken);
-        response.setHeader(refreshHeader, reIssuedRefreshToken);
+        jwtTokenProvider.sendAccessAndRefreshToken(response, accessToken, reIssuedRefreshToken);
+        // response.setHeader(accessHeader, accessToken);
+        // response.setHeader(refreshHeader, reIssuedRefreshToken);
         return "AccessToken이 재발급되었습니다.";
     }
 
