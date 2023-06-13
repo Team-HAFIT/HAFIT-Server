@@ -16,11 +16,12 @@ public class ExerciseDTO {
 
     @Autowired
     ExerciseRepository exerciseRepository;
+
     private Long exec_id;
 
     private String name;
 
-    private int calorie;
+    private Long calorie;
 
     private String exec_description;
 
@@ -37,12 +38,11 @@ public class ExerciseDTO {
     }
 
     @Builder
-    public ExerciseDTO(Long exec_id, String name, int calorie, String exec_description, String exec_img) {
+    public ExerciseDTO(Long exec_id, String name, Long calorie, String exec_description, String exec_img) {
         this.exec_id = exec_id;
         this.name = name;
         this.calorie = calorie;
         this.exec_description = exec_description;
         this.exec_img = exec_img;
     }
-
 }
