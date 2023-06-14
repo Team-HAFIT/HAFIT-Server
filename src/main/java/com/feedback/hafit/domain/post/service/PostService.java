@@ -11,9 +11,10 @@ import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
 import com.feedback.hafit.domain.post.repository.FileImageRepository;
 import com.feedback.hafit.domain.post.repository.PostRepository;
+import com.feedback.hafit.domain.postLike.entity.PostLike;
 import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.service.UserService;
+import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class PostService {
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private final PostRepository postRepository;
 
@@ -50,7 +52,8 @@ public class PostService {
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();
-        User user = userService.getByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
         Category category = categoryService.getById(categoryId);
         String postContent = postDTO.getPostContent();
         Post post = postRepository.save(Post.builder()
@@ -137,20 +140,29 @@ public class PostService {
 //        return new PostDTO(post, postFileDTOs);
     }
 
-    public List<PostWithLikesDTO> getAllPosts() {
+    public List<PostWithLikesDTO> getAllPosts(String email) {
         List<Post> posts = postRepository.findAll();
         List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
         for (Post post : posts) {
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
+            boolean likedByUser = checkIfPostLikedByUser(post, user);
 
-            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, totalLikes);
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
 
         return postWithLikesDTOs;
     }
+
+    private boolean checkIfPostLikedByUser(Post post, User user) {
+        Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
+        return optionalPostLike.isPresent();
+    }
+
 
     public boolean deleteById(Long postId) {
         try {
@@ -170,13 +182,17 @@ public class PostService {
     }
 
     // 게시글 1개 조회 좋아요 기능 추가
-    public PostWithLikesDTO getPostById(Long postId) {
+    public PostWithLikesDTO getPostById(Long postId, String email) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+            boolean likedByUser = checkIfPostLikedByUser(post, user);
+
             Long totalLikes = postLikeRepository.countLikesByPost(post);
-            return new PostWithLikesDTO(post, postFileDTOS, totalLikes);
+            return new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
         } else {
             return null;
         }

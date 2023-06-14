@@ -53,8 +53,8 @@ public class PostController {
 
     // 게시글 하나 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostWithLikesDTO> getPostById(@PathVariable Long postId) {
-        PostWithLikesDTO postDTO = postService.getPostById(postId);
+    public ResponseEntity<PostWithLikesDTO> getPostById(@PathVariable Long postId, Principal principal) {
+        PostWithLikesDTO postDTO = postService.getPostById(postId, principal.getName());
         if (postDTO != null) {
             return ResponseEntity.ok(postDTO);
         } else {
@@ -63,8 +63,8 @@ public class PostController {
     }
 
     @GetMapping // 전체 피드 조회
-    public ResponseEntity<List<PostWithLikesDTO>> getAllPosts() {
-        List<PostWithLikesDTO> postDTOs = postService.getAllPosts();
+    public ResponseEntity<List<PostWithLikesDTO>> getAllPosts(Principal principal) {
+        List<PostWithLikesDTO> postDTOs = postService.getAllPosts(principal.getName());
         if (!postDTOs.isEmpty()) {
             return ResponseEntity.ok(postDTOs);
         } else {

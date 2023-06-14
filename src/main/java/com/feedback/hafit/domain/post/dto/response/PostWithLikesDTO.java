@@ -21,13 +21,15 @@ public class PostWithLikesDTO {
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
     private Long totalLikes;
+    private boolean likedByUser;
 
-    public PostWithLikesDTO(Post post, List<PostFileDTO> files, Long totalLikes) {
+    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean likedByUser, Long totalLikes) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
         this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
         this.totalLikes = totalLikes;
+        this.likedByUser = likedByUser;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();
