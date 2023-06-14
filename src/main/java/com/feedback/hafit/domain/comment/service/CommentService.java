@@ -8,7 +8,7 @@ import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.commentLike.repository.CommentLikeRepository;
 import com.feedback.hafit.domain.post.entity.Post;
-import com.feedback.hafit.domain.post.service.PostService;
+import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class CommentService {
-    private final PostService postService;
+    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
@@ -37,7 +37,8 @@ public class CommentService {
         Long postId = commentCreateDTO.getPostId();
         Long commentId = commentCreateDTO.getCommentId();
         String content = commentCreateDTO.getContent();
-        Post post = postService.getById(postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with postId : " + postId));
 
         Comment comment = commentRepository.save(Comment.builder()
                 .commentId(commentId)
@@ -70,5 +71,22 @@ public class CommentService {
     private boolean checkIfCommentLikedByUser(Comment comment, User user) {
         Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByUserAndComment(user, comment);
         return optionalCommentLike.isPresent();
+    }
+
+    public boolean deleteById(Long commentId) {
+        try {
+            Optional<Comment> optionalComment = commentRepository.findById(commentId);
+            if (optionalComment.isPresent()) {
+                Comment comment = optionalComment.get();
+                commentRepository.delete(comment);
+                return true;
+            } else {
+                System.out.println("해당하는 댓글을 찾을 수 없습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

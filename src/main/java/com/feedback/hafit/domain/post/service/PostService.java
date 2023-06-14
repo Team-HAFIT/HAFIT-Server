@@ -33,21 +33,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final UserRepository userRepository;
-
     private final PostRepository postRepository;
-
     private final CategoryService categoryService;
-
     private final S3Service s3Service;
-
     private final FileImageRepository fileImageRepository;
     private final PostLikeRepository postLikeRepository;
-
-    public Post getById(Long postId) {
-        Optional<Post> postOptional = postRepository.findById(postId);
-        if (postOptional.isEmpty()) throw new IllegalArgumentException("존재하지 않는 게시글입니다.");
-        return postOptional.get();
-    }
 
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {

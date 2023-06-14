@@ -39,11 +39,15 @@ public class CommentController {
         }
     }
 
-//    @Operation(summary = "댓글 수정")
-//    @PutMapping("/{id}")
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.OK)
-//    public CommentDTO save(@RequestBody CommentUpdateDTO requestDto) {
-//        return commentService.update(requestDto);
-//    }
+    @DeleteMapping("/{commentId}") // 댓글 삭제
+    public ResponseEntity<Boolean> deletePost(@PathVariable Long commentId) {
+        boolean isCommentDeleted = commentService.deleteById(commentId);
+        if (!isCommentDeleted) {
+            System.out.println("삭제 실패");
+            return ResponseEntity.badRequest().body(false);
+        }
+        System.out.println("삭제 성공");
+        return ResponseEntity.ok(true);
+    }
+
 }
