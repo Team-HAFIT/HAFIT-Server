@@ -1,10 +1,9 @@
 package com.feedback.hafit.domain.post.controller;
 
-import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
-import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
-import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
+import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
-import com.feedback.hafit.domain.post.entity.Post;
+import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -55,8 +53,8 @@ public class PostController {
 
     // 게시글 하나 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostDTO> getPostById(@PathVariable Long postId) {
-        PostDTO postDTO = postService.getPostById(postId);
+    public ResponseEntity<PostWithLikesDTO> getPostById(@PathVariable Long postId, Principal principal) {
+        PostWithLikesDTO postDTO = postService.getPostById(postId, principal.getName());
         if (postDTO != null) {
             return ResponseEntity.ok(postDTO);
         } else {
@@ -65,17 +63,9 @@ public class PostController {
     }
 
     @GetMapping // 전체 피드 조회
-    public ResponseEntity<List<PostDTO>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
-        if (!posts.isEmpty()) {
-            List<PostDTO> postDTOs = posts.stream()
-                    .map(post -> new PostDTO(
-                            post,
-                            post.getPostFiles().stream()
-                                    .map(PostFileDTO::new)
-                                    .collect(Collectors.toList())
-                    ))
-                    .collect(Collectors.toList());
+    public ResponseEntity<List<PostWithLikesDTO>> getAllPosts(Principal principal) {
+        List<PostWithLikesDTO> postDTOs = postService.getAllPosts(principal.getName());
+        if (!postDTOs.isEmpty()) {
             return ResponseEntity.ok(postDTOs);
         } else {
             return ResponseEntity.notFound().build();

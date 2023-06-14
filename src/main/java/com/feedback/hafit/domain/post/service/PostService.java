@@ -2,16 +2,19 @@ package com.feedback.hafit.domain.post.service;
 
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.service.CategoryService;
-import com.feedback.hafit.domain.post.dto.reqeust.PostCreateDTO;
-import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
+import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
+import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
 import com.feedback.hafit.domain.post.repository.FileImageRepository;
 import com.feedback.hafit.domain.post.repository.PostRepository;
+import com.feedback.hafit.domain.postLike.entity.PostLike;
+import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.service.UserService;
+import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,7 +32,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class PostService {
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private final PostRepository postRepository;
 
@@ -38,6 +41,7 @@ public class PostService {
     private final S3Service s3Service;
 
     private final FileImageRepository fileImageRepository;
+    private final PostLikeRepository postLikeRepository;
 
     public Post getById(Long postId) {
         Optional<Post> postOptional = postRepository.findById(postId);
@@ -48,7 +52,8 @@ public class PostService {
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();
-        User user = userService.getByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
         Category category = categoryService.getById(categoryId);
         String postContent = postDTO.getPostContent();
         Post post = postRepository.save(Post.builder()
@@ -102,13 +107,13 @@ public class PostService {
                 fileImageRepository.deleteById(postFile.getImageId());
             });
         }
-        
+
 //        // 삭제하지 않은 기존 파일 리스트 조회
 //        // 왜? 반환해줘야 하니까
 //        fileImageRepository.findAllByPost_PostId(postId).forEach(postFile -> {
 //            postFileDTOs.add(new PostFileDTO(postFile));
 //        });
-        
+
         // 프론트에서 넘어온 새로운 파일 등록
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
@@ -135,14 +140,29 @@ public class PostService {
 //        return new PostDTO(post, postFileDTOs);
     }
 
-    public List<Post> getAllPosts() {
-        try {
-            return postRepository.findAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+    public List<PostWithLikesDTO> getAllPosts(String email) {
+        List<Post> posts = postRepository.findAll();
+        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        for (Post post : posts) {
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            Long totalLikes = postLikeRepository.countLikesByPost(post);
+            boolean likedByUser = checkIfPostLikedByUser(post, user);
+
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
+            postWithLikesDTOs.add(postWithLikesDTO);
         }
+
+        return postWithLikesDTOs;
     }
+
+    private boolean checkIfPostLikedByUser(Post post, User user) {
+        Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
+        return optionalPostLike.isPresent();
+    }
+
 
     public boolean deleteById(Long postId) {
         try {
@@ -161,23 +181,25 @@ public class PostService {
         }
     }
 
-    public PostDTO getPostById(Long postId) {
+    // 게시글 1개 조회 좋아요 기능 추가
+    public PostWithLikesDTO getPostById(Long postId, String email) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            // Retrieve the list of PostFileDTO objects associated with the post
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-            // Create and return the PostDTO object
-            return new PostDTO(post, postFileDTOS);
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+            boolean likedByUser = checkIfPostLikedByUser(post, user);
+
+            Long totalLikes = postLikeRepository.countLikesByPost(post);
+            return new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
         } else {
             return null;
         }
     }
 
     private List<PostFileDTO> getFileImageDTOsForPost(Post post) {
-        // Retrieve the list of PostFile objects associated with the post
         List<PostFile> postFiles = post.getPostFiles();
-        // Convert the list of PostFile objects to PostFileDTO objects
         return postFiles.stream()
                 .map(PostFileDTO::new)
                 .collect(Collectors.toList());
