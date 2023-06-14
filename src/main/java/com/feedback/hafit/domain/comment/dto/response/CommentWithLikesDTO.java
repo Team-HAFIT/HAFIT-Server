@@ -20,17 +20,17 @@ public class CommentWithLikesDTO {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    private Long totalLikes;
-    private boolean likedByUser;
+    private Long commentTotalLikes;
+    private boolean commentLikedByUser;
 
-    public CommentWithLikesDTO(Comment comment, boolean likedByUser, Long totalLikes) {
+    public CommentWithLikesDTO(Comment comment, boolean commentLikedByUser, Long commentTotalLikes) {
         this.commentId = comment.getCommentId();
         this.imageUrl = comment.getUser().getImageUrl();
         this.postId = comment.getPost().getPostId();
         this.content = comment.getContent();
         this.userName = comment.getUser().getName();
-        this.totalLikes = totalLikes;
-        this.likedByUser = likedByUser;
+        this.commentTotalLikes = commentTotalLikes;
+        this.commentLikedByUser = commentLikedByUser;
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }
