@@ -4,15 +4,15 @@ import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.user.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
+@Builder
 @Table(name = "comment_likes")
 @NoArgsConstructor
 @AllArgsConstructor
