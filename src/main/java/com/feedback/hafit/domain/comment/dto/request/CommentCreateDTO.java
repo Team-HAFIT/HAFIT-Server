@@ -1,16 +1,13 @@
 package com.feedback.hafit.domain.comment.dto.request;
 
-import com.feedback.hafit.domain.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Setter
 @NoArgsConstructor
-public class CommentCreateDTO extends BaseEntity {
+public class CommentCreateDTO {
     @NotNull
     private Long commentId; // 댓글 ID
     private Long postId; // 게시글 ID

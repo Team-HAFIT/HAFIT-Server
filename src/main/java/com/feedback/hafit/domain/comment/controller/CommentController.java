@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.comment.controller;
 
 import com.feedback.hafit.domain.comment.dto.request.CommentCreateDTO;
+import com.feedback.hafit.domain.comment.dto.request.CommentUpdateDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.service.CommentService;
@@ -37,6 +38,12 @@ public class CommentController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/{commentId}") // 댓글 수정
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
+        CommentDTO isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getContent());
+        return ResponseEntity.ok(isCommentUpdated);
     }
 
     @DeleteMapping("/{commentId}") // 댓글 삭제

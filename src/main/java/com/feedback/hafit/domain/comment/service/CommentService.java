@@ -89,4 +89,16 @@ public class CommentService {
             return false;
         }
     }
+
+    @Transactional
+    public CommentDTO update(Long commentId, String newContent) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
+
+        comment.setContent(newContent);
+        Comment updatedComment = commentRepository.save(comment);
+
+        return new CommentDTO(updatedComment);
+    }
+
 }
