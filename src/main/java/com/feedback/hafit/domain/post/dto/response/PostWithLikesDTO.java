@@ -12,20 +12,22 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO{
+public class PostWithLikesDTO {
+    private LocalDateTime modifiedAt;
+    private LocalDateTime createdAt;
     private Long postId;
     private Long categoryId;
     private String userName;
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
-    private LocalDateTime modifiedAt;
-    private LocalDateTime createdAt;
+    private Long totalLikes;
 
-    public PostDTO(Post post, List<PostFileDTO> files) {
+    public PostWithLikesDTO(Post post, List<PostFileDTO> files, Long totalLikes) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
         this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
+        this.totalLikes = totalLikes;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();

@@ -2,7 +2,6 @@ package com.feedback.hafit.domain.goal.controller;
 
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.dto.GoalDTO;
-import com.feedback.hafit.domain.post.dto.reqeust.PostUpdateDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.service.GoalService;
