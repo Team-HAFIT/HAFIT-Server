@@ -22,11 +22,11 @@ public class CommentController {
     private final CommentService commentService;
 
     @Operation(summary = "댓글 추가")
-    @PostMapping
+    @PostMapping("/{postId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CommentDTO> create(@RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
-        CommentDTO createdComment = commentService.write(commentCreateDTO, principal.getName());
+    public ResponseEntity<CommentDTO> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
+        CommentDTO createdComment = commentService.write(postId, commentCreateDTO, principal.getName());
         return ResponseEntity.ok(createdComment);
     }
 
