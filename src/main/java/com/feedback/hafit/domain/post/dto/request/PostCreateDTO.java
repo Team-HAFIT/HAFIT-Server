@@ -14,4 +14,20 @@ public class PostCreateDTO {
     private Long categoryId;
     private String postContent;
     private List<MultipartFile> files = Collections.emptyList();
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
+    }
+
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
+    }
 }

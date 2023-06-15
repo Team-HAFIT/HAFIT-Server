@@ -21,14 +21,17 @@ public class PostWithLikesDTO {
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
     private Long postTotalLikes;
+    private Long commentCount;
     private boolean postLikedByUser;
 
-    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes) {
+    // 게시글 전체 조회할 때 사용
+    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long commentCount, Long postTotalLikes) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
         this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
         this.postTotalLikes = postTotalLikes;
+        this.commentCount = commentCount;
         this.postLikedByUser = postLikedByUser;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();

@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.postLike.controller;
 
-import com.feedback.hafit.domain.postLike.dto.request.PostLikeRequestDTO;
 import com.feedback.hafit.domain.postLike.service.PostLikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +16,21 @@ public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    @PostMapping
-    public ResponseEntity<Boolean> insert(@RequestBody PostLikeRequestDTO postLikeRequestDTO, Principal principal) throws Exception  {
-        postLikeService.insert(postLikeRequestDTO, principal.getName());
+    @PostMapping("/{postId}")
+    public ResponseEntity<Boolean> insert(@PathVariable Long postId, Principal principal) throws Exception  {
+        postLikeService.insert(postId, principal.getName());
         return ResponseEntity.ok(true);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Boolean> delete(@RequestBody PostLikeRequestDTO postLikeRequestDTO, Principal principal) {
-        postLikeService.delete(postLikeRequestDTO, principal.getName());
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long postId, Principal principal) {
+        log.info(String.valueOf(postId));
+        boolean isPostLikeDeleted = postLikeService.delete(postId, principal.getName());
+        if (!isPostLikeDeleted) {
+            System.out.println("삭제 실패");
+            return ResponseEntity.badRequest().body(false);
+        }
+        System.out.println("삭제 성공");
         return ResponseEntity.ok(true);
     }
 

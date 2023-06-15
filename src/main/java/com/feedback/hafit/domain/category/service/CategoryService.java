@@ -1,17 +1,18 @@
 package com.feedback.hafit.domain.category.service;
 
-import com.feedback.hafit.domain.category.dto.CategoryDTO;
+import com.feedback.hafit.domain.category.dto.request.CategoryRequestDTO;
+import com.feedback.hafit.domain.category.dto.response.CategoryResponseDTO;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
-import lombok.extern.slf4j.Slf4j;
 import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,41 +30,32 @@ public class CategoryService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CategoryDTO createCategory(CategoryDTO categoryDTO, String email) {
+    public CategoryResponseDTO createCategory(CategoryRequestDTO categoryRequestDTO, String email) {
         try {
-            log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~categoryDTO : {}", categoryDTO);
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
             Category category = new Category();
-            category.setCategoryName(categoryDTO.getCategoryName());
+            category.setCategoryName(categoryRequestDTO.getCategoryName());
             category.setUser(user);
 
             Category savedCategory = categoryRepository.save(category);
 
-            return new CategoryDTO(savedCategory);
+            return new CategoryResponseDTO(savedCategory);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("카테고리 생성에 실패하였습니다.");
         }
     }
 
-    public Category getById(Long id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-        if (optionalCategory.isEmpty()) {
-            throw new IllegalArgumentException("해당하는 카테고리가 없습니다.");
-        }
-        return optionalCategory.get();
-    }
-
-    public CategoryDTO update(CategoryDTO categoryFormDTO) {
+    public CategoryResponseDTO update(CategoryRequestDTO categoryFormDTO) {
         try {
             Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
             if (optionalCategory.isPresent()) {
                 Category category = optionalCategory.get();
                 category.setCategoryName(categoryFormDTO.getCategoryName());
                 categoryRepository.save(category);
-                return new CategoryDTO(category);
+                return new CategoryResponseDTO(category);
             } else {
                 System.out.println("해당하는 카테고리를 찾을 수 없습니다.");
                 return null;

@@ -30,6 +30,7 @@ public class PostController {
     public ResponseEntity<PostDTO> createPost(@RequestParam("files") List<MultipartFile> files,
                                               @ModelAttribute PostCreateDTO postFormDTO,
                                               Principal principal) {
+        log.info(String.valueOf(postFormDTO.getCategoryId()));
         PostDTO createdPost = postService.upload(postFormDTO, files, principal.getName());
         return ResponseEntity.ok(createdPost);
     }
@@ -54,6 +55,7 @@ public class PostController {
         return ResponseEntity.ok(true);
     }
 
+    // 1개 게시글 조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostWithCommentsDTO> getPostById(@PathVariable Long postId, Principal principal) {
         PostWithCommentsDTO postDTO = postService.getPostById(postId, principal.getName());

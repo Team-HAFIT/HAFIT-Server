@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.comment.dto.response;
 
 import com.feedback.hafit.domain.comment.entity.Comment;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CommentDTO {
     @NotNull
     private Long commentId; // 댓글 ID
