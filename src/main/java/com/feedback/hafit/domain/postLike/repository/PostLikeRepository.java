@@ -15,11 +15,9 @@ import java.util.Optional;
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     Optional<PostLike> findByUserAndPost(User user, Post post);
 
-    List<PostLike> findByPost(Post post);
-
     // 특정 게시물의 좋아요 수 합산
     @Query("SELECT COUNT(pl) FROM PostLike pl WHERE pl.post = :post")
     Long countLikesByPost(@Param("post") Post post);
 
-    List<PostLike> findByUserUserId(Long userId);
+    List<PostLike> findByUser(User user);
 }

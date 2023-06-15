@@ -155,7 +155,7 @@ public class PostService {
         return postWithLikesDTOs;
     }
 
-    private boolean checkIfPostLikedByUser(Post post, User user) {
+    public boolean checkIfPostLikedByUser(Post post, User user) {
         Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
         return optionalPostLike.isPresent();
     }
