@@ -2,10 +2,13 @@ package com.feedback.hafit.domain.post.service;
 
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.service.CategoryService;
+import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
+import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
@@ -38,6 +41,7 @@ public class PostService {
     private final S3Service s3Service;
     private final FileImageRepository fileImageRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentService commentService;
 
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
@@ -172,7 +176,7 @@ public class PostService {
     }
 
     // 게시글 1개 조회 좋아요 기능 추가
-    public PostWithLikesDTO getPostById(Long postId, String email) {
+    public PostWithCommentsDTO getPostById(Long postId, String email) {
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
@@ -182,11 +186,17 @@ public class PostService {
             boolean likedByUser = checkIfPostLikedByUser(post, user);
 
             Long totalLikes = postLikeRepository.countLikesByPost(post);
-            return new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
+
+            List<CommentDTO> commentDTOs = commentService.getCommentsByPostId(postId);
+
+            PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentDTOs);
+
+            return postWithCommentsDTO;
         } else {
             return null;
         }
     }
+
 
     private List<PostFileDTO> getFileImageDTOsForPost(Post post) {
         List<PostFile> postFiles = post.getPostFiles();

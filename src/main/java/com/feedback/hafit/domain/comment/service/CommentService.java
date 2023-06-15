@@ -101,4 +101,18 @@ public class CommentService {
         return new CommentDTO(updatedComment);
     }
 
+    public List<CommentDTO> getCommentsByPostId(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with postId : " + postId));
+        List<Comment> comments = commentRepository.findByPost(post);
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            CommentDTO commentDTO = new CommentDTO(comment);
+            commentDTOs.add(commentDTO);
+        }
+
+        return commentDTOs;
+    }
+
 }
