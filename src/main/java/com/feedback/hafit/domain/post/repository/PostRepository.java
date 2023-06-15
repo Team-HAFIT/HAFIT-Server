@@ -1,7 +1,9 @@
 package com.feedback.hafit.domain.post.repository;
 
 import com.feedback.hafit.domain.category.entity.Category;
+import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.entity.Post;
+import com.feedback.hafit.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -200,8 +200,7 @@ public class PostService {
         }
     }
 
-
-    private List<PostFileDTO> getFileImageDTOsForPost(Post post) {
+    public List<PostFileDTO> getFileImageDTOsForPost(Post post) {
         List<PostFile> postFiles = post.getPostFiles();
         return postFiles.stream()
                 .map(PostFileDTO::new)

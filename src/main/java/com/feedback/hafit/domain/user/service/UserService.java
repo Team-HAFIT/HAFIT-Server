@@ -1,5 +1,13 @@
 package com.feedback.hafit.domain.user.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
+import com.feedback.hafit.domain.post.dto.response.PostDTO;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.entity.Post;
+import com.feedback.hafit.domain.post.repository.PostRepository;
+import com.feedback.hafit.domain.post.service.PostService;
+import com.feedback.hafit.domain.postLike.entity.PostLike;
+import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
 import com.feedback.hafit.domain.user.dto.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.UserDTO;
 import com.feedback.hafit.domain.user.dto.UserFormDTO;
@@ -10,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,7 +27,11 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostService postService;
+
 
     public User getById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -108,4 +122,25 @@ public class UserService {
                 .build();
     }
 
+
+    public List<PostDTO> getLikedPostsByUserEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Could not find user with name: " + email));
+
+        List<PostLike> postLikes = postLikeRepository.findByUser(user);
+
+        List<PostDTO> likedPosts = new ArrayList<>();
+        for (PostLike postLike : postLikes) {
+            Long postId = postLike.getPost().getPostId();
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new NotFoundException("Could not find post with id: " + postId));
+
+            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
+
+            PostDTO postDTO = new PostDTO(post, postFileDTOS);
+            likedPosts.add(postDTO);
+        }
+
+        return likedPosts;
+    }
 }
