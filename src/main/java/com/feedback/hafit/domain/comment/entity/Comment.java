@@ -31,4 +31,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_comment_post"))
     private Post post;
 
+    public void setContent(String newContent) {
+        this.content = newContent;
+    }
 }

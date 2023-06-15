@@ -1,5 +1,6 @@
 package com.feedback.hafit.domain.post.dto.response;
 
+import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostWithLikesDTO {
+public class PostWithCommentsDTO {
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
     private Long postId;
@@ -22,8 +23,10 @@ public class PostWithLikesDTO {
     private List<PostFileDTO> files = Collections.emptyList();
     private Long postTotalLikes;
     private boolean postLikedByUser;
+    private List<CommentDTO> comments = Collections.emptyList();
 
-    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes) {
+
+    public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes, List<CommentDTO> comments) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
         this.userName = post.getUser().getName();
@@ -33,6 +36,7 @@ public class PostWithLikesDTO {
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();
+        this.comments = comments;
     }
 
 }

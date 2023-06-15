@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentWithLikesDTO {
+
     @NotNull
     private Long commentId; // 댓글 ID
     private Long postId; // 게시글 ID
@@ -19,16 +20,18 @@ public class CommentDTO {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    public CommentDTO(Comment comment) {
+    private Long commentTotalLikes;
+    private boolean commentLikedByUser;
+
+    public CommentWithLikesDTO(Comment comment, boolean commentLikedByUser, Long commentTotalLikes) {
         this.commentId = comment.getCommentId();
         this.imageUrl = comment.getUser().getImageUrl();
         this.postId = comment.getPost().getPostId();
         this.content = comment.getContent();
         this.userName = comment.getUser().getName();
+        this.commentTotalLikes = commentTotalLikes;
+        this.commentLikedByUser = commentLikedByUser;
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }
-
-
 }
-

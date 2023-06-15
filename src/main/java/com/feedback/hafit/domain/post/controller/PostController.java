@@ -1,8 +1,10 @@
 package com.feedback.hafit.domain.post.controller;
 
+import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
+import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@RequestParam("files") List<MultipartFile> files,
@@ -51,10 +54,9 @@ public class PostController {
         return ResponseEntity.ok(true);
     }
 
-    // 게시글 하나 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostWithLikesDTO> getPostById(@PathVariable Long postId, Principal principal) {
-        PostWithLikesDTO postDTO = postService.getPostById(postId, principal.getName());
+    public ResponseEntity<PostWithCommentsDTO> getPostById(@PathVariable Long postId, Principal principal) {
+        PostWithCommentsDTO postDTO = postService.getPostById(postId, principal.getName());
         if (postDTO != null) {
             return ResponseEntity.ok(postDTO);
         } else {
