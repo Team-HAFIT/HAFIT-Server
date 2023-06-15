@@ -31,12 +31,11 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public CommentDTO write(CommentCreateDTO commentCreateDTO, String email) {
+    public CommentDTO write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email : " + email));
-        Long postId = commentCreateDTO.getPostId();
         Long commentId = commentCreateDTO.getCommentId();
-        String content = commentCreateDTO.getContent();
+        String content = commentCreateDTO.getCommentContent();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with postId : " + postId));
 

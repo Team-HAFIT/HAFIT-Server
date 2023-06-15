@@ -3,7 +3,6 @@ package com.feedback.hafit.domain.commentLike.service;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
-import com.feedback.hafit.domain.commentLike.dto.request.CommentLikeRequestDTO;
 import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.commentLike.repository.CommentLikeRepository;
 import com.feedback.hafit.domain.user.entity.User;
@@ -20,13 +19,13 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void insert(CommentLikeRequestDTO commentLikeRequestDTO, String userEmail) throws Exception {
+    public void insert(Long commentId, String userEmail) throws Exception {
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + commentLikeRequestDTO.getUserId()));
+                .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
 
-        Comment comment = commentRepository.findById(commentLikeRequestDTO.getCommentId())
-                .orElseThrow(() -> new NotFoundException("Could not found board id : " + commentLikeRequestDTO.getCommentId()));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Could not found board id : " + commentId));
 
         // 이미 좋아요되어있으면 에러 반환
         if (commentLikeRepository.findByUserAndComment(user, comment).isPresent()){
@@ -43,13 +42,13 @@ public class CommentLikeService {
     }
 
     @Transactional
-    public void delete(CommentLikeRequestDTO commentLikeRequestDTO, String userEmail) {
+    public void delete(Long commentId, String userEmail) {
 
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + commentLikeRequestDTO.getUserId()));
+                .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
 
-        Comment comment = commentRepository.findById(commentLikeRequestDTO.getCommentId())
-                .orElseThrow(() -> new NotFoundException("Could not found comment id : " + commentLikeRequestDTO.getCommentId()));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Could not found comment id : " + commentId));
 
         CommentLike commentLike = commentLikeRepository.findByUserAndComment(user, comment)
                 .orElseThrow(() -> new NotFoundException("Could not found heart id"));

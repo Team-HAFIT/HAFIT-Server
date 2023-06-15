@@ -31,6 +31,4 @@ public class CommentDTO {
         this.modifiedAt = comment.getModifiedAt();
     }
 
-
 }
-

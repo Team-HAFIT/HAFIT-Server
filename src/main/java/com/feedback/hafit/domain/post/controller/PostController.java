@@ -24,7 +24,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@RequestParam("files") List<MultipartFile> files,
