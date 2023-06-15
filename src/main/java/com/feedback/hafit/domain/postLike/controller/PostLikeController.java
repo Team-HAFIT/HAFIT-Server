@@ -23,9 +23,14 @@ public class PostLikeController {
         return ResponseEntity.ok(true);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Boolean> delete(@RequestBody PostLikeRequestDTO postLikeRequestDTO, Principal principal) {
-        postLikeService.delete(postLikeRequestDTO, principal.getName());
+    @DeleteMapping("/{post_like_Id}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long post_like_Id, Principal principal) {
+        boolean isPostLikeDeleted = postLikeService.delete(post_like_Id, principal.getName());
+        if (!isPostLikeDeleted) {
+            System.out.println("삭제 실패");
+            return ResponseEntity.badRequest().body(false);
+        }
+        System.out.println("삭제 성공");
         return ResponseEntity.ok(true);
     }
 

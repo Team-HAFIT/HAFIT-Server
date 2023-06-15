@@ -42,18 +42,23 @@ public class PostLikeService {
         postLikeRepository.save(postLike);
     }
 
+
     @Transactional
-    public void delete(PostLikeRequestDTO postLikeRequestDTO, String userEmail) {
+    public boolean delete(Long post_like_Id, String userEmail) {
+        try {
+            Post post = postRepository.findById(post_like_Id)
+                    .orElseThrow(() -> new NotFoundException("Could not found board id : " + post_like_Id));
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new NotFoundException("Could not found member id : " + post.getUser().getUserId()));
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + postLikeRequestDTO.getUserId()));
+            PostLike postLike = postLikeRepository.findByUserAndPost(user, post)
+                    .orElseThrow(() -> new NotFoundException("Could not found heart id"));
 
-        Post post = postRepository.findById(postLikeRequestDTO.getPostId())
-                .orElseThrow(() -> new NotFoundException("Could not found board id : " + postLikeRequestDTO.getPostId()));
-
-        PostLike postLike = postLikeRepository.findByUserAndPost(user, post)
-                .orElseThrow(() -> new NotFoundException("Could not found heart id"));
-
-        postLikeRepository.delete(postLike);
+            postLikeRepository.delete(postLike);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

@@ -190,7 +190,7 @@ public class PostService {
 
             Long commentCount = commentRepository.countByPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
-            List<CommentWithLikesDTO> commentDTOs = commentService.getAllComments(email);
+            List<CommentWithLikesDTO> commentDTOs = commentService.getCommentsByPostId(postId, email);
 
             PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount, commentDTOs);
 
