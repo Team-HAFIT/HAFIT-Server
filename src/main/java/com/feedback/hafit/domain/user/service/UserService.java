@@ -1,6 +1,8 @@
 package com.feedback.hafit.domain.user.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.feedback.hafit.domain.comment.dto.response.CommentForUserDTO;
+import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
@@ -162,6 +164,29 @@ public class UserService {
         Map<String, Object> result = new HashMap<>();
         result.put("count", postedPosts.size());
         result.put("posts", postedPosts);
+
+        return result;
+    }
+
+    public Map<String, Object> getMyComments(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+
+        List<Comment> myComments = commentRepository.findByUser(user);
+        List<CommentForUserDTO> postedComments = new ArrayList<>();
+
+        for (Comment comment : myComments) {
+            Long postId = comment.getPost().getPostId();
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
+            CommentForUserDTO commentDTO = new CommentForUserDTO(comment, postFileDTOS);
+            postedComments.add(commentDTO);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", postedComments.size());
+        result.put("comments", postedComments);
 
         return result;
     }
