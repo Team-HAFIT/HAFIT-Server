@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.user.controller;
 
-import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
 import com.feedback.hafit.domain.user.dto.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.UserDTO;
 import com.feedback.hafit.domain.user.service.UserService;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -70,4 +68,16 @@ public class UserController {
         }
     }
 
+    // 작성한 댓글 조회
+    @GetMapping("/comments")
+    public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
+        try {
+            String email = principal.getName();
+            Map<String, Object> result = userService.getMyComments(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
