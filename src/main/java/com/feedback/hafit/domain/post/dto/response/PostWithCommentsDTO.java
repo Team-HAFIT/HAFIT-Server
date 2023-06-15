@@ -1,6 +1,6 @@
 package com.feedback.hafit.domain.post.dto.response;
 
-import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
+import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,10 +23,10 @@ public class PostWithCommentsDTO {
     private List<PostFileDTO> files = Collections.emptyList();
     private Long postTotalLikes;
     private boolean postLikedByUser;
-    private List<CommentDTO> comments = Collections.emptyList();
+    private List<CommentWithLikesDTO> comments = Collections.emptyList();
 
 
-    public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes, List<CommentDTO> comments) {
+    public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes, List<CommentWithLikesDTO> comments) {
         this.postId = post.getPostId();
         this.categoryId = post.getCategory().getCategoryId();
         this.userName = post.getUser().getName();

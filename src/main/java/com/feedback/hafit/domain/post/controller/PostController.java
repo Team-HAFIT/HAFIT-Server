@@ -54,6 +54,7 @@ public class PostController {
         return ResponseEntity.ok(true);
     }
 
+    // 1개 게시글 조회
     @GetMapping("/{postId}")
     public ResponseEntity<PostWithCommentsDTO> getPostById(@PathVariable Long postId, Principal principal) {
         PostWithCommentsDTO postDTO = postService.getPostById(postId, principal.getName());

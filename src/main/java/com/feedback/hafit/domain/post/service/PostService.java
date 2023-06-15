@@ -3,6 +3,7 @@ package com.feedback.hafit.domain.post.service;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.service.CategoryService;
 import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
+import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
@@ -186,8 +187,7 @@ public class PostService {
             boolean likedByUser = checkIfPostLikedByUser(post, user);
 
             Long totalLikes = postLikeRepository.countLikesByPost(post);
-
-            List<CommentDTO> commentDTOs = commentService.getCommentsByPostId(postId);
+            List<CommentWithLikesDTO> commentDTOs = commentService.getAllComments(email);
 
             PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentDTOs);
 
