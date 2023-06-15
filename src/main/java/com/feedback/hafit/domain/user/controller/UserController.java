@@ -59,10 +59,11 @@ public class UserController {
 
     // 작성한 글 조회
     @GetMapping("/posts")
-    public ResponseEntity<List<PostForUserDTO>> getUserPosts(Principal principal) {
+    public ResponseEntity<Map<String, Object>> getMyPosts(Principal principal) {
         try {
-            List<PostForUserDTO> userPosts = userService.getUserPosts(principal.getName());
-            return ResponseEntity.ok(userPosts);
+            String email = principal.getName();
+            Map<String, Object> result = userService.getMyPosts(email);
+            return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.notFound().build();

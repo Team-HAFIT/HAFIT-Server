@@ -146,21 +146,23 @@ public class UserService {
     }
 
     // 내가 작성한 게시글
-    public List<PostForUserDTO> getUserPosts(String email) {
+    public Map<String, Object> getMyPosts(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with name: " + email));
+                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
 
-        List<Post> posts = postRepository.findAll();
+        List<Post> myPosts = postRepository.findByUser(user);
         List<PostForUserDTO> postedPosts = new ArrayList<>();
 
-        for (Post post : posts) {
+        for (Post post : myPosts) {
             List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            Long totalLikes = postLikeRepository.countLikesByPost(post);
-
-            PostForUserDTO postWithLikesDTO = new PostForUserDTO(post, postFileDTOS);
-            postedPosts.add(postWithLikesDTO);
+            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
+            postedPosts.add(postDTO);
         }
 
-        return postedPosts;
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", postedPosts.size());
+        result.put("posts", postedPosts);
+
+        return result;
     }
 }
