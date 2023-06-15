@@ -17,7 +17,7 @@ public class PostWithCommentsDTO {
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
     private Long postId;
-    private Long categoryId;
+    private String categoryName;
     private String userName;
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
@@ -29,7 +29,7 @@ public class PostWithCommentsDTO {
     // 게시글 1개 조회할 때 사용
     public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes, Long commentCount, List<CommentWithLikesDTO> comments) {
         this.postId = post.getPostId();
-        this.categoryId = post.getCategory().getCategoryId();
+        this.categoryName = post.getCategory().getCategoryName();
         this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
         this.postTotalLikes = postTotalLikes;

@@ -20,4 +20,6 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     // 특정 게시물의 좋아요 수 합산
     @Query("SELECT COUNT(pl) FROM PostLike pl WHERE pl.post = :post")
     Long countLikesByPost(@Param("post") Post post);
+
+    List<PostLike> findByUserUserId(Long userId);
 }

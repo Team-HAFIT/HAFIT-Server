@@ -13,8 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO{
-    private Long postId;
-    private Long categoryId;
+    private String categoryName;
     private String userName;
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
@@ -22,8 +21,7 @@ public class PostDTO{
     private LocalDateTime createdAt;
 
     public PostDTO(Post post, List<PostFileDTO> files) {
-        this.postId = post.getPostId();
-        this.categoryId = post.getCategory().getCategoryId();
+        this.categoryName = post.getCategory().getCategoryName();
         this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
         this.files = files;

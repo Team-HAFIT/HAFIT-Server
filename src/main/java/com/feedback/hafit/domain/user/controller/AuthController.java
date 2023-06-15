@@ -4,7 +4,6 @@ import com.feedback.hafit.domain.user.dto.UserFormDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.domain.user.service.UserService;
-import com.feedback.hafit.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.feedback.hafit.global.jwt.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +27,18 @@ public class AuthController {
     private final UserService userService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter;
 
     @PostMapping("/signup")
     public String signup(@RequestBody UserFormDTO userFormDTO) {
         userService.signup(userFormDTO);
         return "회원가입 성공";
+    }
+
+    // 이메일 중복 확인
+    @GetMapping("/email/{email}")
+    @ResponseBody
+    public int checkEmailAvailability(@PathVariable("email") String email) {
+        return userService.emailCheck(email);
     }
 
     @PostMapping("/refresh")
