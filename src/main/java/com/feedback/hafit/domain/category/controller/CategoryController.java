@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.category.controller;
 
-import com.feedback.hafit.domain.category.dto.CategoryDTO;
+import com.feedback.hafit.domain.category.dto.request.CategoryRequestDTO;
+import com.feedback.hafit.domain.category.dto.response.CategoryResponseDTO;
 import com.feedback.hafit.domain.category.service.CategoryService;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +22,15 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping // 카테고리 추가
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal) {
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~categoryDTO : {}", categoryDTO);
-        CategoryDTO createdCategory = categoryService.createCategory(categoryDTO, principal.getName());
+    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO categoryRequestDTO, Principal principal) {
+        CategoryResponseDTO createdCategory = categoryService.createCategory(categoryRequestDTO, principal.getName());
         return ResponseEntity.ok(createdCategory);
     }
 
     @PutMapping("/{categoryId}") // 카테고리 수정
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryDTO categoryDTO) {
-        categoryDTO.setCategoryId(categoryId);
-        CategoryDTO updatedCategory = categoryService.update(categoryDTO);
+    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDTO categoryRequestDTO) {
+        categoryRequestDTO.setCategoryId(categoryId);
+        CategoryResponseDTO updatedCategory = categoryService.update(categoryRequestDTO);
         if (updatedCategory != null) {
             return ResponseEntity.ok(updatedCategory);
         } else {
@@ -48,14 +48,14 @@ public class CategoryController {
     }
 
     @GetMapping // 카테고리 목록 조회
-    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
-        List<CategoryDTO> categoryDTOList = categoryService.getAllCategories()
+    public ResponseEntity<List<CategoryResponseDTO>> getAllCategories() {
+        List<CategoryResponseDTO> categoryResponseDTOList = categoryService.getAllCategories()
                 .stream()
-                .map(CategoryDTO::new)
+                .map(CategoryResponseDTO::new)
                 .collect(Collectors.toList());
 
-        if (!categoryDTOList.isEmpty()) {
-            return ResponseEntity.ok(categoryDTOList);
+        if (!categoryResponseDTOList.isEmpty()) {
+            return ResponseEntity.ok(categoryResponseDTOList);
         } else {
             return ResponseEntity.noContent().build();
         }

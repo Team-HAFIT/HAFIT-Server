@@ -1,7 +1,7 @@
 package com.feedback.hafit.domain.post.service;
 
 import com.feedback.hafit.domain.category.entity.Category;
-import com.feedback.hafit.domain.category.service.CategoryService;
+import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.comment.service.CommentService;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
     private final S3Service s3Service;
     private final FileImageRepository fileImageRepository;
     private final PostLikeRepository postLikeRepository;
@@ -48,9 +48,11 @@ public class PostService {
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();
+        log.info(String.valueOf(categoryId));
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-        Category category = categoryService.getById(categoryId);
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
         String postContent = postDTO.getPostContent();
         Post post = postRepository.save(Post.builder()
                 .user(user)
@@ -78,16 +80,14 @@ public class PostService {
     @Transactional
     public void update(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
         String postComment = postDTO.getPostContent();
-        Category category = null;
         Post post = postRepository.findById(postId)
                 .orElseThrow(
                         () -> new IllegalArgumentException("해당하는 게시물을 찾을 수 없습니다.")
                 );
 
         Long categoryId = postDTO.getCategoryId();
-        if (categoryId != null) {
-            category = categoryService.getById(categoryId);
-        }
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
 
 //        List<PostFileDTO> postFileDTOs = new ArrayList<>();
 

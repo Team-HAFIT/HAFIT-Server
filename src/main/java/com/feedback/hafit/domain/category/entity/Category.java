@@ -10,7 +10,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @Table(name = "categories")
 @NoArgsConstructor
@@ -35,4 +34,19 @@ public class Category extends BaseEntity {
         return user != null ? user.getEmail() : null;
     }
 
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
