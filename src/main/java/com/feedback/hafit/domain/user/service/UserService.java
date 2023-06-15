@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.user.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
 import com.feedback.hafit.domain.post.entity.Post;
@@ -19,9 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -31,6 +30,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PostLikeRepository postLikeRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostService postService;
 
@@ -124,26 +124,43 @@ public class UserService {
                 .build();
     }
 
-
-    public List<PostForUserDTO> getLikedPostsByUserEmail(String email) {
+    // 내가 좋아요한 게시글
+    public Map<String, Object> getLikedPostsByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with name: " + email));
-
-        List<PostLike> postLikes = postLikeRepository.findByUserUserId(user.getUserId());
-
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        List<PostLike> postLikes = postLikeRepository.findByUser(user);
         List<PostForUserDTO> likedPosts = new ArrayList<>();
+
         for (PostLike postLike : postLikes) {
-            Long postId = postLike.getPost().getPostId();
-            log.info(String.valueOf(postId));
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new NotFoundException("Could not find post with id: " + postId));
-
+            Post post = postLike.getPost();
             List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-
             PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
             likedPosts.add(postDTO);
         }
 
-        return likedPosts;
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", likedPosts.size());
+        result.put("posts", likedPosts);
+
+        return result;
+    }
+
+    // 내가 작성한 게시글
+    public List<PostForUserDTO> getUserPosts(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Could not find user with name: " + email));
+
+        List<Post> posts = postRepository.findAll();
+        List<PostForUserDTO> postedPosts = new ArrayList<>();
+
+        for (Post post : posts) {
+            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
+            Long totalLikes = postLikeRepository.countLikesByPost(post);
+
+            PostForUserDTO postWithLikesDTO = new PostForUserDTO(post, postFileDTOS);
+            postedPosts.add(postWithLikesDTO);
+        }
+
+        return postedPosts;
     }
 }

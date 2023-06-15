@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,11 +44,25 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
+    // 내가 좋아요 표시한 글 조회
     @GetMapping("/liked-posts")
-    public ResponseEntity<List<PostForUserDTO>> getLikedPostsByEmail(Principal principal) {
+    public ResponseEntity<Map<String, Object>> getLikedPostsByEmail(Principal principal) {
         try {
-            List<PostForUserDTO> likedPosts = userService.getLikedPostsByUserEmail(principal.getName());
-            return ResponseEntity.ok(likedPosts);
+            String email = principal.getName();
+            Map<String, Object> result = userService.getLikedPostsByEmail(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 작성한 글 조회
+    @GetMapping("/posts")
+    public ResponseEntity<List<PostForUserDTO>> getUserPosts(Principal principal) {
+        try {
+            List<PostForUserDTO> userPosts = userService.getUserPosts(principal.getName());
+            return ResponseEntity.ok(userPosts);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.notFound().build();

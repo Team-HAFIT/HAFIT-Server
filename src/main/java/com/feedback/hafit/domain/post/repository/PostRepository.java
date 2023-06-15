@@ -19,5 +19,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p, COUNT(c) AS commentCount FROM Post p LEFT JOIN p.comments c WHERE p.id = :postId GROUP BY p")
     Optional<Object[]> findPostWithCommentCountById(@Param("post") Post post);
 
-    Optional<Post> findByPostIdAndUser(Long postId, User user);
+    List<Post> findByUser(User user);
 }
