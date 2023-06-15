@@ -2,8 +2,8 @@ package com.feedback.hafit.domain.post.service;
 
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.service.CategoryService;
-import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
+import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
@@ -43,6 +43,7 @@ public class PostService {
     private final FileImageRepository fileImageRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
@@ -144,9 +145,10 @@ public class PostService {
         for (Post post : posts) {
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
+            Long commentCount = commentRepository.countByPost(post);
             boolean likedByUser = checkIfPostLikedByUser(post, user);
 
-            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes);
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
 
@@ -186,10 +188,11 @@ public class PostService {
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
             boolean likedByUser = checkIfPostLikedByUser(post, user);
 
+            Long commentCount = commentRepository.countByPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
             List<CommentWithLikesDTO> commentDTOs = commentService.getAllComments(email);
 
-            PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentDTOs);
+            PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount, commentDTOs);
 
             return postWithCommentsDTO;
         } else {
