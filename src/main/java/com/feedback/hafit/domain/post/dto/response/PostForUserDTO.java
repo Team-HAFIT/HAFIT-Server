@@ -12,30 +12,18 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostWithLikesDTO {
-    private LocalDateTime modifiedAt;
-    private LocalDateTime createdAt;
-    private Long postId;
+public class PostForUserDTO {
     private String categoryName;
-    private String userName;
     private String postContent;
     private List<PostFileDTO> files = Collections.emptyList();
-    private Long postTotalLikes;
-    private Long commentCount;
-    private boolean postLikedByUser;
+    private LocalDateTime modifiedAt;
+    private LocalDateTime createdAt;
 
-    // 게시글 전체 조회할 때 사용
-    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long commentCount, Long postTotalLikes) {
-        this.postId = post.getPostId();
+    public PostForUserDTO(Post post, List<PostFileDTO> files) {
         this.categoryName = post.getCategory().getCategoryName();
-        this.userName = post.getUser().getName();
         this.postContent = post.getPostContent();
-        this.postTotalLikes = postTotalLikes;
-        this.commentCount = commentCount;
-        this.postLikedByUser = postLikedByUser;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();
     }
-
 }

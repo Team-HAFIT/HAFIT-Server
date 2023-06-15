@@ -1,8 +1,8 @@
 package com.feedback.hafit.domain.user.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
+import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.post.service.PostService;
@@ -14,6 +14,7 @@ import com.feedback.hafit.domain.user.dto.UserFormDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -123,21 +125,22 @@ public class UserService {
     }
 
 
-    public List<PostDTO> getLikedPostsByUserEmail(String email) {
+    public List<PostForUserDTO> getLikedPostsByUserEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Could not find user with name: " + email));
 
-        List<PostLike> postLikes = postLikeRepository.findByUser(user);
+        List<PostLike> postLikes = postLikeRepository.findByUserUserId(user.getUserId());
 
-        List<PostDTO> likedPosts = new ArrayList<>();
+        List<PostForUserDTO> likedPosts = new ArrayList<>();
         for (PostLike postLike : postLikes) {
             Long postId = postLike.getPost().getPostId();
+            log.info(String.valueOf(postId));
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new NotFoundException("Could not find post with id: " + postId));
 
             List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
 
-            PostDTO postDTO = new PostDTO(post, postFileDTOS);
+            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
             likedPosts.add(postDTO);
         }
 

@@ -1,6 +1,6 @@
 package com.feedback.hafit.domain.user.controller;
 
-import com.feedback.hafit.domain.post.dto.response.PostDTO;
+import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
 import com.feedback.hafit.domain.user.dto.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.UserDTO;
 import com.feedback.hafit.domain.user.service.UserService;
@@ -44,9 +44,9 @@ public class UserController {
     }
 
     @GetMapping("/liked-posts")
-    public ResponseEntity<List<PostDTO>> getLikedPostsByEmail(Principal principal) {
+    public ResponseEntity<List<PostForUserDTO>> getLikedPostsByEmail(Principal principal) {
         try {
-            List<PostDTO> likedPosts = userService.getLikedPostsByUserEmail(principal.getName());
+            List<PostForUserDTO> likedPosts = userService.getLikedPostsByUserEmail(principal.getName());
             return ResponseEntity.ok(likedPosts);
         } catch (Exception e) {
             e.printStackTrace();
