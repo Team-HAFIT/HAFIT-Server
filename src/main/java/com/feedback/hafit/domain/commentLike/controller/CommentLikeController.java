@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.commentLike.controller;
 
-import com.feedback.hafit.domain.commentLike.dto.request.CommentLikeRequestDTO;
 import com.feedback.hafit.domain.commentLike.service.CommentLikeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +16,15 @@ public class CommentLikeController {
 
     private final CommentLikeService commentLikeService;
 
-    @PostMapping
-    public ResponseEntity<Boolean> insert(@RequestBody CommentLikeRequestDTO commentLikeRequestDTO, Principal principal) throws Exception  {
-        commentLikeService.insert(commentLikeRequestDTO, principal.getName());
+    @PostMapping("/{commentId}")
+    public ResponseEntity<Boolean> insert(@PathVariable Long commentId, Principal principal) throws Exception  {
+        commentLikeService.insert(commentId, principal.getName());
         return ResponseEntity.ok(true);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Boolean> delete(@RequestBody CommentLikeRequestDTO commentLikeRequestDTO, Principal principal) {
-        commentLikeService.delete(commentLikeRequestDTO, principal.getName());
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Boolean> delete(@PathVariable Long commentId, Principal principal) {
+        commentLikeService.delete(commentId, principal.getName());
         return ResponseEntity.ok(true);
     }
 }
