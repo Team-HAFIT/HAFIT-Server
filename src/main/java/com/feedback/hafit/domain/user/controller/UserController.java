@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,42 +41,4 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    // 내가 좋아요 표시한 글 조회
-    @GetMapping("/liked-posts")
-    public ResponseEntity<Map<String, Object>> getLikedPostsByEmail(Principal principal) {
-        try {
-            String email = principal.getName();
-            Map<String, Object> result = userService.getLikedPostsByEmail(email);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // 작성한 글 조회
-    @GetMapping("/posts")
-    public ResponseEntity<Map<String, Object>> getMyPosts(Principal principal) {
-        try {
-            String email = principal.getName();
-            Map<String, Object> result = userService.getMyPosts(email);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    // 작성한 댓글 조회
-    @GetMapping("/comments")
-    public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
-        try {
-            String email = principal.getName();
-            Map<String, Object> result = userService.getMyComments(email);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
-    }
 }
