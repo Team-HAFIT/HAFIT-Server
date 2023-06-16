@@ -46,7 +46,7 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public PostDTO upload(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
+    public PostDTO createPost(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();
         log.info(String.valueOf(categoryId));
         User user = userRepository.findByEmail(email)
@@ -78,7 +78,7 @@ public class PostService {
     }
 
     @Transactional
-    public boolean update(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
+    public boolean updatePost(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
         try {
             String postComment = postDTO.getPostContent();
             Post post = postRepository.findById(postId)

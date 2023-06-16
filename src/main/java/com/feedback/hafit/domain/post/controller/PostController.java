@@ -32,7 +32,7 @@ public class PostController {
                                               @ModelAttribute PostCreateDTO postFormDTO,
                                               Principal principal) {
         log.info(String.valueOf(postFormDTO.getCategoryId()));
-        PostDTO createdPost = postService.upload(postFormDTO, files, principal.getName());
+        PostDTO createdPost = postService.createPost(postFormDTO, files, principal.getName());
         return ResponseEntity.ok(createdPost);
     }
 
@@ -42,7 +42,7 @@ public class PostController {
     public ResponseEntity<Boolean>  updatePost(@PathVariable Long postId,
                                                @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                                @ModelAttribute PostUpdateDTO postFormDTO) {
-        boolean isUpdated = postService.update(postId, postFormDTO, files);
+        boolean isUpdated = postService.updatePost(postId, postFormDTO, files);
         if (isUpdated) {
             return ResponseEntity.ok(true);
         } else {
