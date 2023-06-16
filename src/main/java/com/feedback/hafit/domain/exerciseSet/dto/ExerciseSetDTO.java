@@ -44,8 +44,7 @@ public class ExerciseSetDTO extends BaseEntity {
     private Long targetSet;
 
     @Builder
-    public ExerciseSetDTO(ExerciseSet execSet
-    ) {
+    public ExerciseSetDTO(ExerciseSet execSet) {
         this.setId = execSet.getSetId();
         this.restTime = execSet.getRestTime();
         this.weight = execSet.getWeight();

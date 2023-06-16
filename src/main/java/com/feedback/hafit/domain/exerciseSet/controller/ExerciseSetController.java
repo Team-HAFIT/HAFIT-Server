@@ -19,12 +19,12 @@ public class ExerciseSetController {
     @Autowired
     private ExerciseSetService exerciseSetService;
 
-    @PostMapping("/exec") // 운동 종료 후 저장 및 반환
+    @PostMapping("") // 운동 종료 후 저장 및 반환
     public ResponseEntity<ExerciseSetDTO> endExec(@RequestBody ExerciseSetDTO dto, Principal principal) {
         return ResponseEntity.ok(exerciseSetService.save(dto, principal.getName()));
     }
 
-    @PutMapping("/rest") // 휴식 시간 종료 후 휴식 시간 저장 및 반환
+    @PutMapping("") // 휴식 시간 종료 후 휴식 시간 저장 및 반환
     public ResponseEntity<ExerciseSetDTO> endRest(@RequestBody ExerciseSetDTO dto, Principal principal) {
         return ResponseEntity.ok(exerciseSetService.update(dto, principal.getName()));
     }
