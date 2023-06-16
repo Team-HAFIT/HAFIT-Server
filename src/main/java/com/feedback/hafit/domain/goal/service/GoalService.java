@@ -1,11 +1,12 @@
 package com.feedback.hafit.domain.goal.service;
 
+
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
-import com.feedback.hafit.domain.goal.entity.ExerciseKeyword;
 import com.feedback.hafit.domain.goal.entity.Goal;
-import com.feedback.hafit.domain.goal.repository.ExerciseKeywordRepository;
+import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
+import com.feedback.hafit.domain.goal.repository.KeywordRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class GoalService {
 
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
-    private final ExerciseKeywordRepository exerciseKeywordRepository;
+    private final KeywordRepository keywordRepository;
 
     public boolean createGoal(GoalRequestDTO goalRequestDTO, String email) {
         try {
@@ -32,12 +33,12 @@ public class GoalService {
 
             Long keywordId = goalRequestDTO.getKeywordId();
 
-            ExerciseKeyword exerciseKeyword = exerciseKeywordRepository.findById(keywordId)
-                    .orElseThrow(() -> new EntityNotFoundException("ExerciseKeyword not found with ID: " + keywordId));
+            Keyword keyword = keywordRepository.findById(keywordId)
+                    .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
 
             Goal goal = new Goal();
             goal.setUser(user);
-            goal.setExerciseKeyword(exerciseKeyword);
+            goal.setKeyword(keyword);
             goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
             goal.setGoal_content(goalRequestDTO.getGoal_content());
 
@@ -50,8 +51,6 @@ public class GoalService {
         }
     }
 
-
-
     public List<GoalResponseDTO> getGoalsByUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
@@ -60,9 +59,9 @@ public class GoalService {
         List<GoalResponseDTO> goalResponseDTOs = new ArrayList<>();
 
         for (Goal goal : goals) {
-            log.info(String.valueOf(goal.getExerciseKeyword()));
-            Long keywordId = goal.getExerciseKeyword().getKeywordId();
-            ExerciseKeyword keyword = exerciseKeywordRepository.findById(keywordId)
+            log.info(String.valueOf(goal.getKeyword()));
+            Long keywordId = goal.getKeyword().getKeywordId();
+            Keyword keyword = keywordRepository.findById(keywordId)
                     .orElseThrow(() -> new EntityNotFoundException("Keyword not found with keywordId: " + keywordId));
             goalResponseDTOs.add(new GoalResponseDTO(goal, keyword));
         }
@@ -75,17 +74,17 @@ public class GoalService {
                 .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
 
         Long keywordId = goalRequestDTO.getKeywordId();
-        ExerciseKeyword exerciseKeyword = exerciseKeywordRepository.findById(keywordId)
-                .orElseThrow(() -> new EntityNotFoundException("ExerciseKeyword not found with ID: " + keywordId));
+        Keyword keyword = keywordRepository.findById(keywordId)
+                .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
 
         // Update the goal properties based on the goalRequestDTO
         goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
         goal.setGoal_content(goalRequestDTO.getGoal_content());
-        goal.setExerciseKeyword(exerciseKeyword);
+        goal.setKeyword(keyword);
 
         Goal updatedGoal = goalRepository.save(goal);
 
-        return new GoalResponseDTO(updatedGoal, exerciseKeyword);
+        return new GoalResponseDTO(updatedGoal, keyword);
     }
 
     public boolean deleteGoal(Long goalId) {

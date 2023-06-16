@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExerciseKeyword extends BaseEntity {
+public class Keyword extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class ExerciseKeyword extends BaseEntity {
     @Column(length = 300)
     private String keyword_name;
 
-    public ExerciseKeyword(String keyword_name) {
+    public Keyword(String keyword_name) {
         this.keyword_name = keyword_name;
     }
 

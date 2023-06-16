@@ -32,7 +32,7 @@ public class Goal extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "exercise_keyword_id")
-    private ExerciseKeyword exerciseKeyword;
+    private Keyword keyword;
 
     public void setGoalId(Long goalId) {
         this.goalId = goalId;
@@ -50,7 +50,7 @@ public class Goal extends BaseEntity {
         this.user = user;
     }
 
-    public void setExerciseKeyword(ExerciseKeyword exerciseKeyword) {
-        this.exerciseKeyword = exerciseKeyword;
+    public void setKeyword(Keyword keyword) {
+        this.keyword = keyword;
     }
 }

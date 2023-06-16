@@ -1,7 +1,7 @@
 package com.feedback.hafit.global.config;
 
-import com.feedback.hafit.domain.goal.entity.ExerciseKeyword;
-import com.feedback.hafit.domain.goal.repository.ExerciseKeywordRepository;
+import com.feedback.hafit.domain.goal.entity.Keyword;
+import com.feedback.hafit.domain.goal.repository.KeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -12,14 +12,14 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ExerciseKeywordInitializer implements ApplicationRunner {
+public class KeywordInitializer implements ApplicationRunner {
 
-    private final ExerciseKeywordRepository exerciseKeywordRepository;
+    private final KeywordRepository keywordRepository;
 
     @Override
     public void run(ApplicationArguments args) {
         // 이미 초기화가 수행되었는지 확인
-        if (exerciseKeywordRepository.count() > 0) {
+        if (keywordRepository.count() > 0) {
             return; // 이미 초기화되었으므로 중단
         }
 
@@ -36,8 +36,8 @@ public class ExerciseKeywordInitializer implements ApplicationRunner {
         );
 
         for (String keyword : initialKeywords) {
-            ExerciseKeyword exerciseKeyword = new ExerciseKeyword(keyword);
-            exerciseKeywordRepository.save(exerciseKeyword);
+            Keyword exerciseKeyword = new Keyword(keyword);
+            keywordRepository.save(exerciseKeyword);
         }
     }
 }

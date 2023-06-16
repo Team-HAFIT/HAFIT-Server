@@ -1,5 +1,6 @@
 package com.feedback.hafit.domain.goal.controller;
 
+
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.service.GoalService;

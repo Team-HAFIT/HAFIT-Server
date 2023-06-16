@@ -1,6 +1,6 @@
 package com.feedback.hafit.domain.goal.dto.response;
 
-import com.feedback.hafit.domain.goal.entity.ExerciseKeyword;
+import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +21,12 @@ public class GoalResponseDTO {
 
     private String keyword_name;
 
-    public GoalResponseDTO(Goal goal, ExerciseKeyword exerciseKeyword) {
+    public GoalResponseDTO(Goal goal, Keyword keyword) {
         this.goalId = goal.getGoalId();
         this.goal_content = goal.getGoal_content();
         this.goal_target_date = goal.getGoal_target_date();
         this.goal_start_date = goal.getCreatedAt();
-        this.keyword_name = exerciseKeyword.getKeyword_name();
+        this.keyword_name = keyword.getKeyword_name();
     }
 
     public void setGoalId(Long goalId) {
