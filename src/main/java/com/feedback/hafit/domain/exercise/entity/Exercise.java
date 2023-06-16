@@ -19,7 +19,7 @@ public class Exercise extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exec_id; //운동 번호
+    private Long execId; //운동 번호
 
     @Column
     private String name; // 이름

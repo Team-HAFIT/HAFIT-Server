@@ -65,7 +65,7 @@ public class ExerciseController { // 운동 컨트롤러
 
         for(Exercise exercise : exercisesList) {
             ExerciseDTO exerciseDTO = new ExerciseDTO();
-            exerciseDTO.setExec_id(exercise.getExec_id());
+            exerciseDTO.setExecId(exercise.getExecId());
             exerciseDTO.setExec_img(exercise.getExec_img());
             exerciseDTO.setExec_description(exercise.getExec_description());
 

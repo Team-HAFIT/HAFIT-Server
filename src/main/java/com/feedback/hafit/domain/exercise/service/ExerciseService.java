@@ -21,10 +21,10 @@ public class ExerciseService {
     public boolean createExercise(ExerciseDTO exerciseDTO) {
         try {
             Exercise exercise = Exercise.builder()
-                    .exec_id(exerciseDTO.getExec_id())
+                    .execId(exerciseDTO.getExecId())
                     .exec_img(exerciseDTO.getExec_img())
                     .exec_description(exerciseDTO.getExec_description())
-                    .build(); // Security 작업이 완성되지 않아 오류 뜸,,,
+                    .calorie(exerciseDTO.getCalorie()).build(); // Security 작업이 완성되지 않아 오류 뜸,,,
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class ExerciseService {
 
     public boolean update(ExerciseDTO exerciseDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExec_id());
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExecId());
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exercise.setExec_description(exerciseDTO.getExec_description());
@@ -53,7 +53,7 @@ public class ExerciseService {
 
     public boolean delete(ExerciseDTO exerciseDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExec_id());
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExecId());
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exerciseRepository.delete(exercise);
