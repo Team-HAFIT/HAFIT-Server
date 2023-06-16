@@ -30,28 +30,23 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public boolean write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
+    public boolean writeComment(Long postId, CommentCreateDTO commentCreateDTO, String email) {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-            String content = commentCreateDTO.getCommentContent();
+            String content = commentCreateDTO.getComment_content();
             Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with postId: " + postId));
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
 
-            Comment comment = commentRepository.save(Comment.builder()
-                    .content(content)
-                    .user(user)
-                    .post(post)
-                    .build()
-            );
+            Comment comment = new Comment(content, user, post);
+            commentRepository.save(comment);
 
-            return comment != null;
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-
 
     public List<CommentWithLikesDTO> getAllComments(String email) {
         List<Comment> comments = commentRepository.findAll();
@@ -78,15 +73,10 @@ public class CommentService {
 
     public boolean deleteById(Long commentId) {
         try {
-            Optional<Comment> optionalComment = commentRepository.findById(commentId);
-            if (optionalComment.isPresent()) {
-                Comment comment = optionalComment.get();
-                commentRepository.delete(comment);
-                return true;
-            } else {
-                System.out.println("해당하는 댓글을 찾을 수 없습니다.");
-                return false;
-            }
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
+            commentRepository.delete(comment);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;

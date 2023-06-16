@@ -13,26 +13,26 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostWithLikesDTO {
+    private Long postId;
+    private String category_name;
+    private String user_name;
+    private String post_content;
+    private List<PostFileDTO> files = Collections.emptyList();
+    private Long post_totalLikes;
+    private Long comment_count;
+    private boolean post_likedByUser;
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
-    private Long postId;
-    private String categoryName;
-    private String userName;
-    private String postContent;
-    private List<PostFileDTO> files = Collections.emptyList();
-    private Long postTotalLikes;
-    private Long commentCount;
-    private boolean postLikedByUser;
 
     // 게시글 전체 조회할 때 사용
-    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long commentCount, Long postTotalLikes) {
+    public PostWithLikesDTO(Post post, List<PostFileDTO> files, boolean post_likedByUser, Long comment_count, Long post_totalLikes) {
         this.postId = post.getPostId();
-        this.categoryName = post.getCategory().getCategoryName();
-        this.userName = post.getUser().getName();
-        this.postContent = post.getPostContent();
-        this.postTotalLikes = postTotalLikes;
-        this.commentCount = commentCount;
-        this.postLikedByUser = postLikedByUser;
+        this.category_name = post.getCategory().getCategory_name();
+        this.user_name = post.getUser().getName();
+        this.post_content = post.getPost_content();
+        this.post_totalLikes = post_totalLikes;
+        this.comment_count = comment_count;
+        this.post_likedByUser = post_likedByUser;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();

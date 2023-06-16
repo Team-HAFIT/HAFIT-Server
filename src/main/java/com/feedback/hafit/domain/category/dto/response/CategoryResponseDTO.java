@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryResponseDTO {
 
-    private String categoryName;
+    private String category_name;
 
     public CategoryResponseDTO(Category category) {
-        this.categoryName = category.getCategoryName();
+        this.category_name = category.getCategory_name();
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 }

@@ -18,7 +18,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,44 +34,35 @@ public class CategoryService {
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
             Category category = new Category();
-            category.setCategoryName(categoryRequestDTO.getCategoryName());
+            category.setCategory_name(categoryRequestDTO.getCategory_name());
             category.setUser(user);
+            categoryRepository.save(category);
 
-            Category savedCategory = categoryRepository.save(category);
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to create category", e);
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-            return savedCategory != null;
+    public boolean updateCategory(CategoryRequestDTO categoryFormDTO) {
+        try {
+            Category category = categoryRepository.findById(categoryFormDTO.getCategoryId())
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryFormDTO.getCategoryId()));
+            category.setCategory_name(categoryFormDTO.getCategory_name());
+            categoryRepository.save(category);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean update(CategoryRequestDTO categoryFormDTO) {
+    public boolean deleteCategory(Long categoryId) {
         try {
-            Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
-            if (optionalCategory.isPresent()) {
-                Category category = optionalCategory.get();
-                category.setCategoryName(categoryFormDTO.getCategoryName());
-                categoryRepository.save(category);
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean delete(Long categoryId) {
-        try {
-            Optional<Category> categoryOptional = categoryRepository.findById(categoryId);
-            if (categoryOptional.isEmpty()) {
-                // 삭제할 카테고리가 존재하지 않을 경우 처리
-                return false;
-            }
-
-            Category category = categoryOptional.get();
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryId));
             categoryRepository.delete(category);
             return true;
         } catch (Exception e) {

@@ -28,7 +28,7 @@ public class CommentController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Boolean> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
-        boolean isCommentCreated = commentService.write(postId, commentCreateDTO, principal.getName());
+        boolean isCommentCreated = commentService.writeComment(postId, commentCreateDTO, principal.getName());
         if (isCommentCreated) {
             return ResponseEntity.ok(true);
         } else {

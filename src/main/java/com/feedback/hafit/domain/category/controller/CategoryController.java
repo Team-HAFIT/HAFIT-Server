@@ -34,7 +34,7 @@ public class CategoryController {
     @PutMapping("/{categoryId}") // 카테고리 수정
     public ResponseEntity<Boolean> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDTO categoryRequestDTO) {
         categoryRequestDTO.setCategoryId(categoryId);
-        boolean isUpdated = categoryService.update(categoryRequestDTO);
+        boolean isUpdated = categoryService.updateCategory(categoryRequestDTO);
         if (isUpdated) {
             return ResponseEntity.ok(true);
         } else {
@@ -44,7 +44,7 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}") // 카테고리 삭제
     public ResponseEntity<Boolean> deleteCategory(@PathVariable Long categoryId) {
-        boolean isDeleted = categoryService.delete(categoryId);
+        boolean isDeleted = categoryService.deleteCategory(categoryId);
         if (isDeleted) {
             return ResponseEntity.ok(true);
         } else {
@@ -58,7 +58,6 @@ public class CategoryController {
                 .stream()
                 .map(CategoryResponseDTO::new)
                 .collect(Collectors.toList());
-
         if (!categoryResponseDTOList.isEmpty()) {
             return ResponseEntity.ok(categoryResponseDTOList);
         } else {

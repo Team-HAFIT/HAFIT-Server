@@ -13,8 +13,8 @@ public class CommentCreateDTO {
     @NotNull
     private Long commentId; // 댓글 ID
     private Long postId; // 게시글 ID
-    private String commentContent; // 댓글 내용
     private Long userId; // 유저 ID
+    private String comment_content; // 댓글 내용
 
     public void setCommentId(Long commentId) {
         this.commentId = commentId;
@@ -24,8 +24,8 @@ public class CommentCreateDTO {
         this.postId = postId;
     }
 
-    public void setCommentContent(String commentContent) {
-        this.commentContent = commentContent;
+    public void setComment_content(String comment_content) {
+        this.comment_content = comment_content;
     }
 
     public void setUserId(Long userId) {

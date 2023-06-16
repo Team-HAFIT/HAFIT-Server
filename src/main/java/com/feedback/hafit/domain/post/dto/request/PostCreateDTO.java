@@ -10,21 +10,21 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class PostCreateDTO {
-    private String userName;
     private Long categoryId;
-    private String postContent;
+    private String user_name;
+    private String post_content;
     private List<MultipartFile> files = Collections.emptyList();
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
 
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
+    public void setPost_content(String post_content) {
+        this.post_content = post_content;
     }
 
     public void setFiles(List<MultipartFile> files) {
