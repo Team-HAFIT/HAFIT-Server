@@ -3,6 +3,7 @@ package com.feedback.hafit.domain.plan.dto.response;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @Getter
 @NoArgsConstructor
 public class PlanResponseDTO {

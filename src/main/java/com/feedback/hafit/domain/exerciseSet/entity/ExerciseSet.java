@@ -2,7 +2,10 @@ package com.feedback.hafit.domain.exerciseSet.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.plan.entity.Plan;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;

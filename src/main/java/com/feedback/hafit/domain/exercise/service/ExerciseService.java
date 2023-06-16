@@ -54,9 +54,9 @@ public class ExerciseService {
         }
     }
 
-    public boolean deleteExercise(Long exerciseId) {
+    public boolean deleteExercise(Long execId) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseId);
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(execId);
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exerciseRepository.delete(exercise);

@@ -6,6 +6,8 @@ import com.feedback.hafit.domain.exerciseSet.entity.ExerciseSet;
 import com.feedback.hafit.domain.exerciseSet.repository.ExerciseSetRepository;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.plan.repository.PlanRepository;
+import com.feedback.hafit.domain.user.entity.User;
+import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -75,7 +77,6 @@ public class ExerciseSetService {
             throw new RuntimeException("휴식 시간 저장에 실패하였습니다.");
         }
     }
-
 
     // 하나의 계획에 해당하는 세트 조회용 메서드
     @Transactional
