@@ -1,7 +1,7 @@
 package com.feedback.hafit.global.oauth2.service;
 
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.enumerate.SocialType;
+import com.feedback.hafit.global.enumerate.SocialType;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.oauth2.CustomOAuth2User;
 import com.feedback.hafit.global.oauth2.OAuthAttributes;

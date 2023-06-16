@@ -2,7 +2,10 @@ package com.feedback.hafit.domain.goal.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.user.entity.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,7 +34,7 @@ public class Goal extends BaseEntity {
     private User user; // 회원 번호
 
     @OneToOne
-    @JoinColumn(name = "exercise_keyword_id")
+    @JoinColumn(name = "keyword_id", foreignKey = @ForeignKey(name = "fk_goal_keyword"))
     private Keyword keyword;
 
     public void setGoalId(Long goalId) {

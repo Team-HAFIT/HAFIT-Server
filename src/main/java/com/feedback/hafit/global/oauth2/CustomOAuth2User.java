@@ -1,7 +1,7 @@
 package com.feedback.hafit.global.oauth2;
 
 
-import com.feedback.hafit.domain.user.enumerate.Role;
+import com.feedback.hafit.global.enumerate.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;

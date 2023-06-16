@@ -1,4 +1,4 @@
-package com.feedback.hafit.domain.user.enumerate;
+package com.feedback.hafit.global.enumerate;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

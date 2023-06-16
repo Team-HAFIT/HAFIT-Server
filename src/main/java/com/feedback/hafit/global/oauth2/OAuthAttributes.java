@@ -1,8 +1,8 @@
 package com.feedback.hafit.global.oauth2;
 
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.enumerate.Role;
-import com.feedback.hafit.domain.user.enumerate.SocialType;
+import com.feedback.hafit.global.enumerate.Role;
+import com.feedback.hafit.global.enumerate.SocialType;
 import com.feedback.hafit.global.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.feedback.hafit.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.feedback.hafit.global.oauth2.userinfo.NaverOAuth2UserInfo;

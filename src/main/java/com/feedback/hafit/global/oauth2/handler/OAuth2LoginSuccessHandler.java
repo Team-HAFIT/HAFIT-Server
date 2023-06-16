@@ -1,6 +1,6 @@
 package com.feedback.hafit.global.oauth2.handler;
 
-import com.feedback.hafit.domain.user.enumerate.Role;
+import com.feedback.hafit.global.enumerate.Role;
 import com.feedback.hafit.global.jwt.service.JwtTokenProvider;
 import com.feedback.hafit.global.oauth2.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;

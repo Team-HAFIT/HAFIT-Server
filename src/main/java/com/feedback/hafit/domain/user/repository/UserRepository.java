@@ -1,7 +1,7 @@
 package com.feedback.hafit.domain.user.repository;
 
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.enumerate.SocialType;
+import com.feedback.hafit.global.enumerate.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

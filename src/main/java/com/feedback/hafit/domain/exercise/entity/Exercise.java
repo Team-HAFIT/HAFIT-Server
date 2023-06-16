@@ -2,7 +2,10 @@ package com.feedback.hafit.domain.exercise.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
 import com.feedback.hafit.domain.plan.entity.Plan;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;

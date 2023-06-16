@@ -1,6 +1,6 @@
 package com.feedback.hafit.domain.user.dto;
 
-import com.feedback.hafit.domain.user.enumerate.Role;
+import com.feedback.hafit.global.enumerate.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

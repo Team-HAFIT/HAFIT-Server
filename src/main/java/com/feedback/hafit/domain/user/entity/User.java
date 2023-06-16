@@ -8,9 +8,12 @@ import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.postLike.entity.PostLike;
 import com.feedback.hafit.domain.user.dto.UserLoginDTO;
-import com.feedback.hafit.domain.user.enumerate.Role;
-import com.feedback.hafit.domain.user.enumerate.SocialType;
-import lombok.*;
+import com.feedback.hafit.global.enumerate.Role;
+import com.feedback.hafit.global.enumerate.SocialType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +24,6 @@ import java.util.*;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @Table(name = "users")
 @NoArgsConstructor
@@ -109,6 +111,94 @@ public class User extends BaseEntity implements UserDetails {
                 .email(this.email)
                 .password(this.password)
                 .build();
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCarrier(String carrier) {
+        this.carrier = carrier;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setPayment(Character payment) {
+        this.payment = payment;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setSocialType(SocialType socialType) {
+        this.socialType = socialType;
+    }
+
+    public void setSocialId(String socialId) {
+        this.socialId = socialId;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public void setGoals(List<Goal> goals) {
+        this.goals = goals;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setPostLikes(List<PostLike> postLikes) {
+        PostLikes = postLikes;
+    }
+
+    public void setCommentLikes(List<CommentLike> commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     @Override
