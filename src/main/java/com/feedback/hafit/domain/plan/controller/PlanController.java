@@ -19,13 +19,13 @@ public class PlanController {
 
     @PostMapping("") // 운동 시작 전 세팅
     public ResponseEntity<PlanDTO> create(@RequestBody PlanDTO planDTO, Principal principal) {
-        PlanDTO set = planService.setting(planDTO, principal.getName());
-        return ResponseEntity.ok(set);
+        PlanDTO dto = planService.setting(planDTO, principal.getName());
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/{planId}") // 계획 조회
     public ResponseEntity<PlanDTO> find(@PathVariable Long planId) {
-        PlanDTO set = planService.getDTOById(planId);
-        return ResponseEntity.ok(set);
+        PlanDTO dto = planService.getDTOById(planId);
+        return ResponseEntity.ok(dto);
     }
 }

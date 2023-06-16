@@ -40,6 +40,9 @@ public class ExerciseSetDTO extends BaseEntity {
     // 계획 번호
     private Long plan;
 
+    // 목표 세트
+    private Long targetSet;
+
     @Builder
     public ExerciseSetDTO(ExerciseSet execSet
     ) {
@@ -53,19 +56,8 @@ public class ExerciseSetDTO extends BaseEntity {
         this.limitTime = execSet.getLimitTime();
         this.realTime = execSet.getRealTime();
         this.plan = execSet.getPlan().getPlan_id();
+        this.targetSet = execSet.getPlan().getTargetSet();
         this.createdAt = execSet.getCreatedAt();
         this.modifiedAt = execSet.getModifiedAt();
-    }
-
-    public ExerciseSet toEntity() {
-        return ExerciseSet.builder()
-                .restTime(restTime)
-                .weight(weight)
-                .score(score)
-                .realCount(realCount)
-                .realSet(realSet)
-                .limitTime(limitTime)
-                .realTime(realTime)
-                .build();
     }
 }
