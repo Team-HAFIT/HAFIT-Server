@@ -4,6 +4,7 @@ import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.service.GoalService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/goals")
 public class GoalController {
 
@@ -20,6 +22,7 @@ public class GoalController {
     @PostMapping
     public ResponseEntity<GoalResponseDTO> createWrite(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
         String email = principal.getName();
+        log.info(String.valueOf(goalRequestDTO.getKeywordId()));
         GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO, email);
         if (createdGoal != null) {
             return ResponseEntity.ok(createdGoal);

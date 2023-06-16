@@ -9,7 +9,6 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "goals")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,8 +29,28 @@ public class Goal extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
     private User user; // 회원 번호
-/*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword_id", foreignKey = @ForeignKey(name = "fk_goal_keyword"))
-    private Keyword keyword; // 키워드 번호(운동 추천용으로 사용, 키워드와 연결) */
+
+    @OneToOne
+    @JoinColumn(name = "exercise_keyword_id")
+    private ExerciseKeyword exerciseKeyword;
+
+    public void setGoalId(Long goalId) {
+        this.goalId = goalId;
+    }
+
+    public void setGoal_content(String goal_content) {
+        this.goal_content = goal_content;
+    }
+
+    public void setGoal_target_date(LocalDate goal_target_date) {
+        this.goal_target_date = goal_target_date;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setExerciseKeyword(ExerciseKeyword exerciseKeyword) {
+        this.exerciseKeyword = exerciseKeyword;
+    }
 }
