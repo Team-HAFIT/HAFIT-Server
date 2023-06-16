@@ -143,8 +143,7 @@ public class PostService {
         return optionalPostLike.isPresent();
     }
 
-
-    public boolean deleteById(Long postId) {
+    public boolean deletePostById(Long postId) {
         try {
             Optional<Post> optionalPost = postRepository.findById(postId);
             if (optionalPost.isPresent()) {
