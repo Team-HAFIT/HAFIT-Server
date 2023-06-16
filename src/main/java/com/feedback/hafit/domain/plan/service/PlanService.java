@@ -1,66 +1,60 @@
 package com.feedback.hafit.domain.plan.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
-import com.feedback.hafit.domain.exercise.service.ExerciseService;
-import com.feedback.hafit.domain.plan.dto.PlanDTO;
+import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
+import com.feedback.hafit.domain.plan.dto.request.PlanRequestDTO;
+import com.feedback.hafit.domain.plan.dto.response.PlanResponseDTO;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.service.UserService;
+import com.feedback.hafit.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PlanService {
 
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ExerciseService exerciseService;
-
-    @Autowired
-    PlanRepository planRepository;
+    private final UserRepository userRepository;
+    private final ExerciseRepository exerciseRepository;
+    private final PlanRepository planRepository;
 
     @Transactional
-    public PlanDTO setting(PlanDTO planDTO, String email) {
+    public PlanResponseDTO settingPlan(PlanRequestDTO planRequestDTO, String email) {
         try {
-//            Long userId = settingDTO.getUserId(); // Long userId
-            User user = userService.getByEmail(email);
-            Long execId = planDTO.getExecId(); // Long categoryId
-            Exercise exercise = exerciseService.getById(execId);
-            planRepository.save(Plan.builder()
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+            Long exerciseId = planRequestDTO.getExerciseId();
+            Exercise exercise = exerciseRepository.findById(exerciseId)
+                    .orElseThrow(() -> new NotFoundException("Could not find Exercise with exerciseId: " + exerciseId));
+            Plan plan = Plan.builder()
                     .user(user)
                     .exercise(exercise)
-                    .targetCount(planDTO.getTargetCount())
-                    .targetSet(planDTO.getTargetSet())
-                    .weight(planDTO.getWeight())
-                    .restTime(planDTO.getRestTime())
-                    .build()
-            );
-            return planDTO;
+                    .targetCount(planRequestDTO.getTargetCount())
+                    .targetSet(planRequestDTO.getTargetSet())
+                    .weight(planRequestDTO.getWeight())
+                    .restTime(planRequestDTO.getRestTime())
+                    .build();
+            Plan savedPlan = planRepository.save(plan);
+            return new PlanResponseDTO(savedPlan);
         } catch (Exception e) {
-            System.out.println("존재하지 않는 사용자입니다.");
+            e.printStackTrace();
         }
         return null;
     }
 
-    public PlanDTO getDTOById(Long planId) {
+
+    public PlanResponseDTO getPlanById(Long planId) {
         Optional<Plan> plan = planRepository.findById(planId);
         if(plan.isEmpty())throw new IllegalArgumentException("존재하지 않는 계획입니다.");
-        PlanDTO planDTO = new PlanDTO(plan.get());
+        PlanResponseDTO planResponseDTO = new PlanResponseDTO(plan.get());
 
-        return planDTO;
+        return planResponseDTO;
     }
 
-    public Plan getById(Long planId) {
-        Optional<Plan> planOptional = planRepository.findById(planId);
-        if(planOptional.isEmpty())throw new IllegalArgumentException("존재하지 않는 계획입니다.");
-        return planOptional.get();
-    }
 }

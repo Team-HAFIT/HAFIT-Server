@@ -1,10 +1,9 @@
 package com.feedback.hafit.domain.exerciseSet.controller;
 
-import com.feedback.hafit.domain.exerciseSet.dto.ExerciseSetDTO;
+import com.feedback.hafit.domain.exerciseSet.dto.request.ExerciseSetRequestDTO;
+import com.feedback.hafit.domain.exerciseSet.dto.response.ExerciseSetResponseDTO;
 import com.feedback.hafit.domain.exerciseSet.service.ExerciseSetService;
-import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,26 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseSetController {
 
-    @Autowired
-    private ExerciseSetService exerciseSetService;
+    private final ExerciseSetService exerciseSetService;
 
-    @PostMapping("") // 운동 종료 후 저장 및 반환
-    public ResponseEntity<ExerciseSetDTO> endExec(@RequestBody ExerciseSetDTO dto, Principal principal) {
-        return ResponseEntity.ok(exerciseSetService.save(dto, principal.getName()));
+    @PostMapping // 운동 종료 후 저장 및 반환
+    public ResponseEntity<ExerciseSetResponseDTO> endExec(@RequestBody ExerciseSetRequestDTO dto) {
+        return ResponseEntity.ok(exerciseSetService.save(dto));
     }
 
-    @PutMapping("") // 휴식 시간 종료 후 휴식 시간 저장 및 반환
-    public ResponseEntity<ExerciseSetDTO> endRest(@RequestBody ExerciseSetDTO dto, Principal principal) {
-        return ResponseEntity.ok(exerciseSetService.update(dto, principal.getName()));
+    @PutMapping("/rest") // 휴식 시간 종료 후 휴식 시간 저장 및 반환
+    public ResponseEntity<ExerciseSetResponseDTO> endRest(@RequestBody ExerciseSetRequestDTO dto) {
+        return ResponseEntity.ok(exerciseSetService.update(dto));
     }
 
     @GetMapping("/{planId}") // 하나의 계획에 해당하는 모든 운동 기록 조회
-    public ResponseEntity<List<ExerciseSetDTO>> getPlan(@PathVariable Long planId, Principal principal) {
-        return ResponseEntity.ok(exerciseSetService.getByPlanId(planId, principal.getName()));
+    public ResponseEntity<List<ExerciseSetResponseDTO>> getPlan(@PathVariable Long planId) {
+        return ResponseEntity.ok(exerciseSetService.getByPlanId(planId));
     }
 
-    @GetMapping("") // 모든 운동 기록 조회
-    public ResponseEntity<List<ExerciseSetDTO>> getAllPlan(Principal principal) {
-        return ResponseEntity.ok(exerciseSetService.getAllSets(principal.getName()));
+    @GetMapping // 모든 운동 기록 조회
+    public ResponseEntity<List<ExerciseSetResponseDTO>> getAllPlan() {
+        return ResponseEntity.ok(exerciseSetService.getAllSets());
     }
 }

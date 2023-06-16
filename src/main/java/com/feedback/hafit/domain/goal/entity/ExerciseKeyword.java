@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Table(name = "exercise_keywords")
+@Table(name = "keywords")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

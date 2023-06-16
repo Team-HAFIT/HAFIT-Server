@@ -3,27 +3,37 @@ package com.feedback.hafit.domain.exercise.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity
 @Getter
-@Setter
-@Table(name = "ExerciseBodyParts")
+@Entity
+@Table(name = "exercise_body_parts")
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExerciseBodyPart { // 운동_부위 연결
+public class ExerciseBodyPart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long exerciseBodyPartId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exec_id", foreignKey = @ForeignKey(name = "fk_exec"))
-    private Exercise exec_id;
+    @JoinColumn(name = "exercise_id", foreignKey = @ForeignKey(name = "fk_exercise_body_parts_exercise"))
+    private Exercise exercise;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "part_id", foreignKey = @ForeignKey(name = "fk_part"))
-    private BodyPart part_id;
+    @JoinColumn(name = "part_id", foreignKey = @ForeignKey(name = "fk_exercise_body_parts_part"))
+    private BodyPart bodyPart;
+
+    public void setExerciseBodyPartId(Long exerciseBodyPartId) {
+        this.exerciseBodyPartId = exerciseBodyPartId;
+    }
+
+    public void setExercise(Exercise exercise) {
+        this.exercise = exercise;
+    }
+
+    public void setBodyPart(BodyPart bodyPart) {
+        this.bodyPart = bodyPart;
+    }
 }

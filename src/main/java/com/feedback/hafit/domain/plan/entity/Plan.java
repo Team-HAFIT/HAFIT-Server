@@ -9,10 +9,9 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Getter
-@Setter
+@Builder
 @Table(name = "plans")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +19,7 @@ public class Plan extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long plan_id; // 계획 번호
+    private Long planId; // 계획 번호
 
     @Column(name="target_count")
     private Long targetCount; // 목표 갯수
@@ -50,17 +49,42 @@ public class Plan extends BaseEntity {
 
     // Exercise 참조
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exec_id", foreignKey = @ForeignKey(name = "fk_plan_exec"))
+    @JoinColumn(name = "exercise_id", foreignKey = @ForeignKey(name = "fk_plan_exercise"))
     private Exercise exercise;
 
-    @Builder
-    public Plan(Long targetCount, Long targetSet, Long weight, Long restTime, User user, Exercise exercise) {
+    public void setPlanId(Long planId) {
+        this.planId = planId;
+    }
+
+    public void setTargetCount(Long targetCount) {
         this.targetCount = targetCount;
+    }
+
+    public void setTargetSet(Long targetSet) {
         this.targetSet = targetSet;
+    }
+
+    public void setWeight(Long weight) {
         this.weight = weight;
+    }
+
+    public void setRestTime(Long restTime) {
         this.restTime = restTime;
+    }
+
+    public void setPerformStatus(String performStatus) {
+        this.performStatus = performStatus;
+    }
+
+    public void setExerciseSets(List<ExerciseSet> exerciseSets) {
+        this.exerciseSets = exerciseSets;
+    }
+
+    public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setExercise(Exercise exercise) {
         this.exercise = exercise;
-        this.performStatus = "N";
     }
 }

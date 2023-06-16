@@ -22,29 +22,34 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping // 카테고리 추가
-    public ResponseEntity<CategoryResponseDTO> createCategory(@RequestBody CategoryRequestDTO categoryRequestDTO, Principal principal) {
-        CategoryResponseDTO createdCategory = categoryService.createCategory(categoryRequestDTO, principal.getName());
-        return ResponseEntity.ok(createdCategory);
+    public ResponseEntity<Boolean> createCategory(@RequestBody CategoryRequestDTO categoryRequestDTO, Principal principal) {
+        boolean createdCategory = categoryService.createCategory(categoryRequestDTO, principal.getName());
+        if (createdCategory) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{categoryId}") // 카테고리 수정
-    public ResponseEntity<CategoryResponseDTO> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDTO categoryRequestDTO) {
+    public ResponseEntity<Boolean> updateCategory(@PathVariable Long categoryId, @RequestBody CategoryRequestDTO categoryRequestDTO) {
         categoryRequestDTO.setCategoryId(categoryId);
-        CategoryResponseDTO updatedCategory = categoryService.update(categoryRequestDTO);
-        if (updatedCategory != null) {
-            return ResponseEntity.ok(updatedCategory);
+        boolean isUpdated = categoryService.update(categoryRequestDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{categoryId}") // 카테고리 삭제
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        boolean isCategoryDeleted = categoryService.delete(categoryId);
-        if (!isCategoryDeleted) {
+    public ResponseEntity<Boolean> deleteCategory(@PathVariable Long categoryId) {
+        boolean isDeleted = categoryService.delete(categoryId);
+        if (isDeleted) {
+            return ResponseEntity.ok(true);
+        } else {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping // 카테고리 목록 조회

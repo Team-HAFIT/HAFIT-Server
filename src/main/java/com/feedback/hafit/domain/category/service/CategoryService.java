@@ -1,7 +1,6 @@
 package com.feedback.hafit.domain.category.service;
 
 import com.feedback.hafit.domain.category.dto.request.CategoryRequestDTO;
-import com.feedback.hafit.domain.category.dto.response.CategoryResponseDTO;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
@@ -30,7 +29,7 @@ public class CategoryService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CategoryResponseDTO createCategory(CategoryRequestDTO categoryRequestDTO, String email) {
+    public boolean createCategory(CategoryRequestDTO categoryRequestDTO, String email) {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
@@ -41,28 +40,27 @@ public class CategoryService {
 
             Category savedCategory = categoryRepository.save(category);
 
-            return new CategoryResponseDTO(savedCategory);
+            return savedCategory != null;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("카테고리 생성에 실패하였습니다.");
+            return false;
         }
     }
 
-    public CategoryResponseDTO update(CategoryRequestDTO categoryFormDTO) {
+    public boolean update(CategoryRequestDTO categoryFormDTO) {
         try {
             Optional<Category> optionalCategory = categoryRepository.findById(categoryFormDTO.getCategoryId());
             if (optionalCategory.isPresent()) {
                 Category category = optionalCategory.get();
                 category.setCategoryName(categoryFormDTO.getCategoryName());
                 categoryRepository.save(category);
-                return new CategoryResponseDTO(category);
+                return true;
             } else {
-                System.out.println("해당하는 카테고리를 찾을 수 없습니다.");
-                return null;
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return false;
         }
     }
 
@@ -82,7 +80,6 @@ public class CategoryService {
             return false;
         }
     }
-
 
     public List<Category> getAllCategories() {
         try {

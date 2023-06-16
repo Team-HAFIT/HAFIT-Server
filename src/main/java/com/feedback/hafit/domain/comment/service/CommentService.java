@@ -1,7 +1,6 @@
 package com.feedback.hafit.domain.comment.service;
 
 import com.feedback.hafit.domain.comment.dto.request.CommentCreateDTO;
-import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
@@ -31,21 +30,28 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public CommentDTO write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email : " + email));
-        String content = commentCreateDTO.getCommentContent();
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with postId : " + postId));
+    public boolean write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+            String content = commentCreateDTO.getCommentContent();
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with postId: " + postId));
 
-        Comment comment = commentRepository.save(Comment.builder()
-                .content(content)
-                .user(user)
-                .post(post)
-                .build()
-        );
-        return new CommentDTO(comment);
+            Comment comment = commentRepository.save(Comment.builder()
+                    .content(content)
+                    .user(user)
+                    .post(post)
+                    .build()
+            );
+
+            return comment != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 
     public List<CommentWithLikesDTO> getAllComments(String email) {
         List<Comment> comments = commentRepository.findAll();
@@ -88,14 +94,19 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentDTO update(Long commentId, String newContent) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
+    public boolean update(Long commentId, String newContent) {
+        try {
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
 
-        comment.setContent(newContent);
-        Comment updatedComment = commentRepository.save(comment);
+            comment.setContent(newContent);
+            Comment updatedComment = commentRepository.save(comment);
 
-        return new CommentDTO(updatedComment);
+            return updatedComment != null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public List<CommentWithLikesDTO> getCommentsByPostId(Long postId, String email) {

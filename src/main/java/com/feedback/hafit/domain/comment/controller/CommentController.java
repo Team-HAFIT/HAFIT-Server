@@ -2,7 +2,6 @@ package com.feedback.hafit.domain.comment.controller;
 
 import com.feedback.hafit.domain.comment.dto.request.CommentCreateDTO;
 import com.feedback.hafit.domain.comment.dto.request.CommentUpdateDTO;
-import com.feedback.hafit.domain.comment.dto.response.CommentDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.user.service.UserService;
@@ -28,9 +27,13 @@ public class CommentController {
     @PostMapping("/{postId}")
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<CommentDTO> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
-        CommentDTO createdComment = commentService.write(postId, commentCreateDTO, principal.getName());
-        return ResponseEntity.ok(createdComment);
+    public ResponseEntity<Boolean> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
+        boolean isCommentCreated = commentService.write(postId, commentCreateDTO, principal.getName());
+        if (isCommentCreated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     @GetMapping // 전체 댓글 조회
@@ -44,9 +47,13 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}") // 댓글 수정
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
-        CommentDTO isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getContent());
-        return ResponseEntity.ok(isCommentUpdated);
+    public ResponseEntity<Boolean> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
+        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getContent());
+        if (isCommentUpdated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     @DeleteMapping("/{commentId}") // 댓글 삭제
@@ -54,8 +61,9 @@ public class CommentController {
         boolean isCommentDeleted = commentService.deleteById(commentId);
         if (isCommentDeleted) {
             return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
         }
-        return ResponseEntity.badRequest().body(false);
     }
 
     // 작성한 댓글 조회
