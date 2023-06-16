@@ -1,5 +1,6 @@
 package com.feedback.hafit.domain.goal.dto.response;
 
+import com.feedback.hafit.domain.goal.entity.ExerciseKeyword;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,14 +19,14 @@ public class GoalResponseDTO {
 
     private LocalDate goal_target_date;
 
-    private String userEmail;
+    private String keyword_name;
 
-    public GoalResponseDTO(Goal goal) {
+    public GoalResponseDTO(Goal goal, ExerciseKeyword keyword) {
         this.goalId = goal.getGoalId();
         this.goal_content = goal.getGoal_content();
         this.goal_target_date = goal.getGoal_target_date();
         this.goal_start_date = goal.getCreatedAt();
-        this.userEmail = goal.getUser().getEmail();
+        this.keyword_name = keyword.getKeyword_name();
     }
 
     public void setGoalId(Long goalId) {
@@ -40,7 +41,12 @@ public class GoalResponseDTO {
         this.goal_target_date = goal_target_date;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setKeyword_name(String keyword_name) {
+        this.keyword_name = keyword_name;
     }
+
+    public void setGoal_start_date(LocalDateTime goal_start_date) {
+        this.goal_start_date = goal_start_date;
+    }
+
 }

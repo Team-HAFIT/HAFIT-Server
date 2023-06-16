@@ -23,4 +23,12 @@ public class ExerciseKeyword extends BaseEntity {
     public ExerciseKeyword(String keyword_name) {
         this.keyword_name = keyword_name;
     }
+
+    public void setKeywordId(Long keywordId) {
+        this.keywordId = keywordId;
+    }
+
+    public void setKeyword_name(String keyword_name) {
+        this.keyword_name = keyword_name;
+    }
 }

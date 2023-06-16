@@ -3,21 +3,26 @@ package com.feedback.hafit.global.config;
 import com.feedback.hafit.domain.goal.entity.ExerciseKeyword;
 import com.feedback.hafit.domain.goal.repository.ExerciseKeywordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class ExerciseKeywordListener {
+public class ExerciseKeywordInitializer implements ApplicationRunner {
 
-    // 디비 생성 시 키워드 값 insert
     private final ExerciseKeywordRepository exerciseKeywordRepository;
 
-    @PostConstruct
-    public void init() {
+    @Override
+    public void run(ApplicationArguments args) {
+        // 이미 초기화가 수행되었는지 확인
+        if (exerciseKeywordRepository.count() > 0) {
+            return; // 이미 초기화되었으므로 중단
+        }
+
         List<String> initialKeywords = Arrays.asList(
                 "다이어트",
                 "밸런스 있는 몸 만들기",
@@ -36,3 +41,4 @@ public class ExerciseKeywordListener {
         }
     }
 }
+
