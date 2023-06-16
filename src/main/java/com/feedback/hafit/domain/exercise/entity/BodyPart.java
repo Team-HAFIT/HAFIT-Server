@@ -14,7 +14,7 @@ public class BodyPart { // 자극 부위
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int partId; // 부위 번호
+    private int part_id; // 부위 번호
 
     @Column(length = 100)
     private String name; // 부위 이름

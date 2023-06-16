@@ -21,9 +21,9 @@ public class ExerciseBodyPart { // 운동_부위 연결
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exec_id", foreignKey = @ForeignKey(name = "fk_exec"))
-    private Exercise execId;
+    private Exercise exec_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "part_id", foreignKey = @ForeignKey(name = "fk_part"))
-    private BodyPart partId;
+    private BodyPart part_id;
 }
