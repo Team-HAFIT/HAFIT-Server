@@ -48,7 +48,7 @@ public class CommentController {
 
     @PutMapping("/{commentId}") // 댓글 수정
     public ResponseEntity<Boolean> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
-        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getContent());
+        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getComment_content());
         if (isCommentUpdated) {
             return ResponseEntity.ok(true);
         } else {

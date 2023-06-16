@@ -1,7 +1,5 @@
 package com.feedback.hafit.domain.exerciseSet.dto.request;
 
-import com.feedback.hafit.domain.exerciseSet.entity.ExerciseSet;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -46,23 +44,6 @@ public class ExerciseSetRequestDTO{
 
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
-
-    @Builder
-    public ExerciseSetRequestDTO(ExerciseSet execSet) {
-        this.setId = execSet.getSetId();
-        this.restTime = execSet.getRestTime();
-        this.weight = execSet.getWeight();
-        this.score = execSet.getScore();
-        this.realCount = execSet.getRealCount();
-        this.realSet = execSet.getRealSet();
-        this.startTime = execSet.getStartTime();
-        this.limitTime = execSet.getLimitTime();
-        this.realTime = execSet.getRealTime();
-        this.plan = execSet.getPlan().getPlanId();
-        this.targetSet = execSet.getPlan().getTargetSet();
-        this.createdAt = execSet.getCreatedAt();
-        this.modifiedAt = execSet.getModifiedAt();
-    }
 
     public void setSetId(Long setId) {
         this.setId = setId;

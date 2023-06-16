@@ -17,13 +17,17 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping // 운동 시작 전 세팅
-    public ResponseEntity<PlanResponseDTO> createPlan(@RequestBody PlanRequestDTO planRequestDTO, Principal principal) {
-        PlanResponseDTO dto = planService.settingPlan(planRequestDTO, principal.getName());
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<Boolean> createPlan(@RequestBody PlanRequestDTO planRequestDTO, Principal principal) {
+        boolean isCreated = planService.settingPlan(planRequestDTO, principal.getName());
+        if (isCreated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     @GetMapping("/{planId}") // 계획 조회
-    public ResponseEntity<PlanResponseDTO> find(@PathVariable Long planId) {
+    public ResponseEntity<PlanResponseDTO> getPlanById(@PathVariable Long planId) {
         PlanResponseDTO dto = planService.getPlanById(planId);
         return ResponseEntity.ok(dto);
     }

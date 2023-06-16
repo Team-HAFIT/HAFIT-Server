@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 public class CommentUpdateDTO {
     @NotNull
     private Long postId; // 게시글 ID
-    private String content; // 댓글 내용
-    private String name; // 이름
     private Long CommentId; // 댓글 ID
+    private String comment_content; // 댓글 내용
 }

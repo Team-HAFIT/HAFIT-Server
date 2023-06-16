@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.plan.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import com.feedback.hafit.domain.plan.dto.request.PlanRequestDTO;
@@ -14,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,36 +24,34 @@ public class PlanService {
     private final PlanRepository planRepository;
 
     @Transactional
-    public PlanResponseDTO settingPlan(PlanRequestDTO planRequestDTO, String email) {
+    public boolean settingPlan(PlanRequestDTO planRequestDTO, String email) {
         try {
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+                    .orElseThrow(() -> new EntityNotFoundException("User not find with email: " + email));
             Long exerciseId = planRequestDTO.getExerciseId();
             Exercise exercise = exerciseRepository.findById(exerciseId)
-                    .orElseThrow(() -> new NotFoundException("Could not find Exercise with exerciseId: " + exerciseId));
+                    .orElseThrow(() -> new EntityNotFoundException("Exercise not find Exercise exerciseId: " + exerciseId));
             Plan plan = Plan.builder()
                     .user(user)
                     .exercise(exercise)
-                    .targetCount(planRequestDTO.getTargetCount())
-                    .targetSet(planRequestDTO.getTargetSet())
-                    .weight(planRequestDTO.getWeight())
-                    .restTime(planRequestDTO.getRestTime())
+                    .plan_target_count(planRequestDTO.getPlan_target_count())
+                    .plan_target_set(planRequestDTO.getPlan_target_set())
+                    .plan_weight(planRequestDTO.getPlan_weight())
+                    .plan_rest_time(planRequestDTO.getPlan_rest_time())
                     .build();
-            Plan savedPlan = planRepository.save(plan);
-            return new PlanResponseDTO(savedPlan);
+            planRepository.save(plan);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-        return null;
     }
 
-
     public PlanResponseDTO getPlanById(Long planId) {
-        Optional<Plan> plan = planRepository.findById(planId);
-        if(plan.isEmpty())throw new IllegalArgumentException("존재하지 않는 계획입니다.");
-        PlanResponseDTO planResponseDTO = new PlanResponseDTO(plan.get());
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 계획입니다."));
 
-        return planResponseDTO;
+        return new PlanResponseDTO(plan);
     }
 
 }
