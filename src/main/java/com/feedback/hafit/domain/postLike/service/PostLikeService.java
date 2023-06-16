@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
@@ -19,35 +21,36 @@ public class PostLikeService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void insert(Long postId, String userEmail) throws Exception {
+    public boolean insertPostLike(Long postId, String userEmail) {
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("User not find with email: " + userEmail));
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("Post not find with Id: " + postId));
 
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new NotFoundException("Could not found board id : " + postId));
+            PostLike postLike = PostLike.builder()
+                    .post(post)
+                    .user(user)
+                    .build();
 
-        // 이미 좋아요되어있으면 에러 반환
-        if (postLikeRepository.findByUserAndPost(user, post).isPresent()){
-            //TODO 409에러로 변경
-            throw new Exception();
+            postLikeRepository.save(postLike);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-
-        PostLike postLike = PostLike.builder()
-                .post(post)
-                .user(user)
-                .build();
-
-        postLikeRepository.save(postLike);
     }
 
+
     @Transactional
-    public boolean delete(Long postId, String userEmail) {
+    public boolean deletePostLike(Long postId, String userEmail) {
         try {
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new NotFoundException("Could not found board id : " + postId));
             User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
+                    .orElseThrow(() -> new EntityNotFoundException("User not find with email: " + userEmail));
+
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("Post not find with Id: " + postId));
 
             PostLike postLike = postLikeRepository.findByUserAndPost(user, post)
                     .orElseThrow(() -> new NotFoundException("Could not found postLike id"));

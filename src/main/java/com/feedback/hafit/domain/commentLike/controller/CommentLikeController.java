@@ -17,14 +17,14 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
     @PostMapping("/{commentId}")
-    public ResponseEntity<Boolean> insert(@PathVariable Long commentId, Principal principal) throws Exception  {
-        commentLikeService.insert(commentId, principal.getName());
+    public ResponseEntity<Boolean> insertCommentLike(@PathVariable Long commentId, Principal principal) throws Exception  {
+        commentLikeService.insertCommentLike(commentId, principal.getName());
         return ResponseEntity.ok(true);
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long commentId, Principal principal) {
-        commentLikeService.delete(commentId, principal.getName());
+    public ResponseEntity<Boolean> deleteCommentLike(@PathVariable Long commentId, Principal principal) {
+        commentLikeService.deleteCommentLike(commentId, principal.getName());
         return ResponseEntity.ok(true);
     }
 }
