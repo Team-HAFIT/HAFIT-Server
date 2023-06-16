@@ -78,63 +78,47 @@ public class PostService {
     }
 
     @Transactional
-    public void update(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
-        String postComment = postDTO.getPostContent();
-        Post post = postRepository.findById(postId)
-                .orElseThrow(
-                        () -> new IllegalArgumentException("해당하는 게시물을 찾을 수 없습니다.")
-                );
+    public boolean update(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
+        try {
+            String postComment = postDTO.getPostContent();
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물을 찾을 수 없습니다."));
 
-        Long categoryId = postDTO.getCategoryId();
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
+            Long categoryId = postDTO.getCategoryId();
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
 
-//        List<PostFileDTO> postFileDTOs = new ArrayList<>();
-
-        // 삭제할 기존 파일 조회
-        List<Long> deleteImageIds = postDTO.getDeleteImageIds();
-        if (deleteImageIds != null) {
-            // postId에 해당하는 Image들을 조회
-            List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
-            postFiles.forEach(postFile -> {
-                // s3 파일 삭제
-                s3Service.delete(postFile.getFileName());
-                // db에서 삭제
-                fileImageRepository.deleteById(postFile.getImageId());
-            });
-        }
-
-//        // 삭제하지 않은 기존 파일 리스트 조회
-//        // 왜? 반환해줘야 하니까
-//        fileImageRepository.findAllByPost_PostId(postId).forEach(postFile -> {
-//            postFileDTOs.add(new PostFileDTO(postFile));
-//        });
-
-        // 프론트에서 넘어온 새로운 파일 등록
-        if (files != null && !files.isEmpty()) {
-            for (MultipartFile file : files) {
-                // 신규 파일 업로드
-                String uploadUrl = s3Service.upload(file, "posts");
-                log.info("uploadUrl: {}", uploadUrl);
-                // db 저장
-                fileImageRepository.save(
-                        PostFile.builder()
-                                .post(post)
-                                .fileName(uploadUrl)
-                                .build()
-                );
-//                PostFileDTO postFileDTO = new PostFileDTO(저장한거 넣기);
-//                postFileDTOs.add(postFileDTO);
+            List<Long> deleteImageIds = postDTO.getDeleteImageIds();
+            if (deleteImageIds != null) {
+                List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
+                postFiles.forEach(postFile -> {
+                    s3Service.delete(postFile.getFileName());
+                    fileImageRepository.deleteById(postFile.getImageId());
+                });
             }
-        }
 
-        post.update(
-                postComment,
-                category
-        );
-        postRepository.save(post);
-//        return new PostDTO(post, postFileDTOs);
+            if (files != null && !files.isEmpty()) {
+                for (MultipartFile file : files) {
+                    String uploadUrl = s3Service.upload(file, "posts");
+                    log.info("uploadUrl: {}", uploadUrl);
+                    fileImageRepository.save(
+                            PostFile.builder()
+                                    .post(post)
+                                    .fileName(uploadUrl)
+                                    .build()
+                    );
+                }
+            }
+
+            post.update(postComment, category);
+            postRepository.save(post);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 
     public List<PostWithLikesDTO> getAllPosts(String email) {
         List<Post> posts = postRepository.findAll();

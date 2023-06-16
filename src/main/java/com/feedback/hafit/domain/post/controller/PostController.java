@@ -39,21 +39,25 @@ public class PostController {
     @PutMapping("/{postId}") // 피드 수정
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@PathVariable Long postId,
+    public ResponseEntity<Boolean>  updatePost(@PathVariable Long postId,
                                               @RequestParam(value = "files", required = false) List<MultipartFile> files,
                                               @ModelAttribute PostUpdateDTO postFormDTO) {
-        postService.update(postId, postFormDTO, files);
+        boolean isUpdated = postService.update(postId, postFormDTO, files);
+        if (isUpdated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     @DeleteMapping("/{postId}") // 피드 삭제
     public ResponseEntity<Boolean> deletePost(@PathVariable Long postId) {
         boolean isPostDeleted = postService.deleteById(postId);
-        if (!isPostDeleted) {
-            System.out.println("삭제 실패");
+        if (isPostDeleted) {
+            return ResponseEntity.ok(true);
+        } else {
             return ResponseEntity.badRequest().body(false);
         }
-        System.out.println("삭제 성공");
-        return ResponseEntity.ok(true);
     }
 
     // 1개 게시글 조회

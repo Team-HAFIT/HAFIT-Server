@@ -20,12 +20,11 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping
-    public ResponseEntity<GoalResponseDTO> createWrite(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
+    public ResponseEntity<Boolean> createGoal(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
         String email = principal.getName();
-        log.info(String.valueOf(goalRequestDTO.getKeywordId()));
-        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO, email);
-        if (createdGoal != null) {
-            return ResponseEntity.ok(createdGoal);
+        boolean createdGoal = goalService.createGoal(goalRequestDTO, email);
+        if (createdGoal) {
+            return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.badRequest().build();
         }
