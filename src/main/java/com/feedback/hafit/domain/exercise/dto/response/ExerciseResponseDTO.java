@@ -1,7 +1,7 @@
 package com.feedback.hafit.domain.exercise.dto.response;
 
 
-import lombok.Builder;
+import com.feedback.hafit.domain.exercise.entity.Exercise;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,13 +19,12 @@ public class ExerciseResponseDTO {
 
     private String exec_img;
 
-    @Builder
-    public ExerciseResponseDTO(Long execId, String name, Long calorie, String exec_description, String exec_img) {
-        this.execId = execId;
-        this.name = name;
-        this.calorie = calorie;
-        this.exec_description = exec_description;
-        this.exec_img = exec_img;
+    public ExerciseResponseDTO(Exercise exercise) {
+        this.execId = exercise.getExecId();
+        this.name = exercise.getName();
+        this.calorie = exercise.getCalorie();
+        this.exec_description = exercise.getExec_description();
+        this.exec_img = exercise.getExec_img();
     }
 
     public void setExecId(Long execId) {

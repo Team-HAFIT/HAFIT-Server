@@ -1,12 +1,13 @@
 package com.feedback.hafit.domain.exercise.service;
 
 import com.feedback.hafit.domain.exercise.dto.request.ExerciseRequestDTO;
+import com.feedback.hafit.domain.exercise.dto.response.ExerciseResponseDTO;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,14 +33,15 @@ public class ExerciseService {
         return false;
     }
 
-
-    public boolean update(ExerciseRequestDTO exerciseRequestDTO) {
+    public boolean updateExercise(Long execId, ExerciseRequestDTO exerciseRequestDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseRequestDTO.getExecId());
-            if(optionalExercise.isPresent()) {
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(execId);
+            if (optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exercise.setExec_description(exerciseRequestDTO.getExec_description());
                 exercise.setExec_img(exerciseRequestDTO.getExec_img());
+                exercise.setCalorie(exerciseRequestDTO.getCalorie());
+                exercise.setName(exerciseRequestDTO.getName());
                 exerciseRepository.save(exercise);
                 return true;
             } else {
@@ -52,9 +54,9 @@ public class ExerciseService {
         }
     }
 
-    public boolean delete(ExerciseRequestDTO exerciseRequestDTO) {
+    public boolean deleteExercise(Long execId) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseRequestDTO.getExecId());
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(execId);
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exerciseRepository.delete(exercise);
@@ -69,12 +71,22 @@ public class ExerciseService {
         }
     }
 
-    public List<Exercise> getAllExercises() {
-        try {
-            return exerciseRepository.findAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+    public List<ExerciseResponseDTO> getAllExercises() {
+        List<Exercise> exercises = exerciseRepository.findAll();
+        return convertToDTOList(exercises);
+    }
+
+    private List<ExerciseResponseDTO> convertToDTOList(List<Exercise> exercises) {
+        List<ExerciseResponseDTO> exerciseDTOs = new ArrayList<>();
+        for (Exercise exercise : exercises) {
+            ExerciseResponseDTO exerciseDTO = new ExerciseResponseDTO();
+            exerciseDTO.setExecId(exercise.getExecId());
+            exerciseDTO.setName(exercise.getName());
+            exerciseDTO.setCalorie(exercise.getCalorie());
+            exerciseDTO.setExec_description(exercise.getExec_description());
+            exerciseDTO.setExec_img(exercise.getExec_img());
+            exerciseDTOs.add(exerciseDTO);
         }
+        return exerciseDTOs;
     }
 }
