@@ -33,7 +33,7 @@ public class GoalService {
 
             Goal goal = new Goal();
             goal.setUser(user);
-            goal.setGoal_date(goalRequestDTO.getGoal_date());
+            goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
             goal.setGoal_content(goalRequestDTO.getGoal_content());
 
             Goal savedGoal = goalRepository.save(goal);
@@ -59,4 +59,27 @@ public class GoalService {
 
         return goalResponseDTOs;
     }
+
+    public GoalResponseDTO updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
+
+        // Update the goal properties based on the goalRequestDTO
+        goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
+        goal.setGoal_content(goalRequestDTO.getGoal_content());
+
+        Goal updatedGoal = goalRepository.save(goal);
+
+        return new GoalResponseDTO(updatedGoal);
+    }
+
+    public boolean deleteGoal(Long goalId) {
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
+
+        goalRepository.delete(goal);
+
+        return true;
+    }
+
 }

@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @Builder
 public class Goal extends BaseEntity {
     // 운동 목표 엔티티
-    // 시작일은 BaseEntity의 createdAt을 사용
+    // 시작일은 BaseEntity의 createdAt(goal_start_date)을 사용
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Goal extends BaseEntity {
     @Column(length = 300)
     private String goal_content; // 목표 내용
 
-    private LocalDate goal_date; // 종료일
+    private LocalDate goal_target_date; // 종료일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))

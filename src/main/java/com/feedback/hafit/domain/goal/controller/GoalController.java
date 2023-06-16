@@ -40,12 +40,12 @@ public class GoalController {
     }
 
     @PutMapping("/{goalId}")
-    public boolean update(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
-        return true;
+    public GoalResponseDTO updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
+        return goalService.updateGoal(goalId, goalRequestDTO);
     }
 
     @DeleteMapping("/{goalId}")
-    public boolean delete(@PathVariable Long goalId) {
-        return true;
+    public boolean deleteGoal(@PathVariable Long goalId) {
+        return goalService.deleteGoal(goalId);
     }
 }
