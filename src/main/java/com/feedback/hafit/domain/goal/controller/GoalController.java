@@ -28,6 +28,16 @@ public class GoalController {
         }
     }
 
+    @PutMapping("/{goalId}")
+    public GoalResponseDTO updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
+        return goalService.updateGoal(goalId, goalRequestDTO);
+    }
+
+    @DeleteMapping("/{goalId}")
+    public boolean deleteGoal(@PathVariable Long goalId) {
+        return goalService.deleteGoal(goalId);
+    }
+
     @GetMapping("/my")
     public ResponseEntity<List<GoalResponseDTO>> getMyGoals(Principal principal) {
         String email = principal.getName();
@@ -39,13 +49,4 @@ public class GoalController {
         }
     }
 
-    @PutMapping("/{goalId}")
-    public GoalResponseDTO updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
-        return goalService.updateGoal(goalId, goalRequestDTO);
-    }
-
-    @DeleteMapping("/{goalId}")
-    public boolean deleteGoal(@PathVariable Long goalId) {
-        return goalService.deleteGoal(goalId);
-    }
 }
