@@ -39,12 +39,13 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}") // 카테고리 삭제
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        boolean isCategoryDeleted = categoryService.delete(categoryId);
-        if (!isCategoryDeleted) {
+    public ResponseEntity<Boolean> deleteCategory(@PathVariable Long categoryId) {
+        boolean isDeleted = categoryService.delete(categoryId);
+        if (isDeleted) {
+            return ResponseEntity.ok(true);
+        } else {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping // 카테고리 목록 조회

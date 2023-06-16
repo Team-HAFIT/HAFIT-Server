@@ -36,23 +36,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final PostService postService;
 
-
-    public User getById(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if(userOptional.isEmpty())throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-        return userOptional.get();
-    }
-
-    public User getByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-    }
-
-    public void signup(UserFormDTO userFormDTO) {
+    public boolean signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return savedUser != null;
     }
 
     public boolean deleteUser(String email) {

@@ -1,16 +1,14 @@
 package com.feedback.hafit.domain.exerciseSet.service;
 
-import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exerciseSet.dto.ExerciseSetDTO;
 import com.feedback.hafit.domain.exerciseSet.entity.ExerciseSet;
 import com.feedback.hafit.domain.exerciseSet.repository.ExerciseSetRepository;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.plan.repository.PlanRepository;
-import com.feedback.hafit.domain.plan.service.PlanService;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,22 +18,18 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ExerciseSetService {
 
-    @Autowired
-    ExerciseSetRepository exerciseSetRepository;
-
-    @Autowired
-    PlanService planService;
-
-    @Autowired
-    UserRepository userRepository;
-
+    private final ExerciseSetRepository exerciseSetRepository;
+    private final PlanRepository planRepository;
+    private final UserRepository userRepository;
 
     @Transactional // 운동 한세트 종료 후 저장 메서드
     public ExerciseSetDTO save(ExerciseSetDTO execSetDTO, String email) {
         Long planId = execSetDTO.getPlan();
-        Plan plan = planService.getById(planId);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
@@ -59,9 +53,10 @@ public class ExerciseSetService {
     @Transactional // 휴식 시간 종료 후 휴식 시간 저장 메서드 (휴식 시간 -> 운동 화면 / 휴식 시간 -> 결과 화면)
     public ExerciseSetDTO update(ExerciseSetDTO execSetDTO, String email) {
         Long planId = execSetDTO.getPlan();
-        Plan plan = planService.getById(planId);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
 
-        ExerciseSet execSet = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
+        ExerciseSet execSet = exerciseSetRepository.findFirstByPlanOrderBySetIdDesc(plan);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
@@ -80,8 +75,10 @@ public class ExerciseSetService {
 
     @Transactional // 하나의 계획에 해당하는 세트 조회용 메서드
     public List<ExerciseSetDTO> getByPlanId(Long planId, String email) {
-        Plan plan = planService.getById(planId);
-        List<ExerciseSet> sets = exerciseSetRepository.findByplan(plan);
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
+
+        List<ExerciseSet> sets = exerciseSetRepository.findByPlan(plan);
         List<ExerciseSetDTO> execSets = new ArrayList<>();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));

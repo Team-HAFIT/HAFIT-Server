@@ -25,7 +25,7 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final ExerciseKeywordRepository exerciseKeywordRepository;
 
-    public GoalResponseDTO createGoal(GoalRequestDTO goalRequestDTO, String email) {
+    public boolean createGoal(GoalRequestDTO goalRequestDTO, String email) {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
@@ -43,12 +43,13 @@ public class GoalService {
 
             Goal savedGoal = goalRepository.save(goal);
 
-            return new GoalResponseDTO(savedGoal, exerciseKeyword);
+            return savedGoal != null;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to create a goal.");
+            return false;
         }
     }
+
 
 
     public List<GoalResponseDTO> getGoalsByUser(String email) {

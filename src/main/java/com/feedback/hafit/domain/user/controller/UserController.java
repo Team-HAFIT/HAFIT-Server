@@ -16,22 +16,34 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원 정보 수정
     @PutMapping
-    public boolean updateUser(Principal principal, @RequestBody UserDTO userDTO) {
-        return userService.updateUser(principal.getName(), userDTO);
+    public ResponseEntity<Boolean> updateUser(Principal principal, @RequestBody UserDTO userDTO) {
+        boolean isUpdated = userService.updateUser(principal.getName(), userDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
-    // 회원 삭제
     @DeleteMapping
-    public boolean deleteUser(Principal principal) {
-        return userService.deleteUser(principal.getName());
+    public ResponseEntity<Boolean> deleteUser(Principal principal) {
+        boolean isDeleted = userService.deleteUser(principal.getName());
+        if (isDeleted) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
-    // 비밀번호 변경
     @PutMapping("/password-change")
-    public boolean changePassword(Principal principal, @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
-        return userService.changePassword(principal.getName(), userChangePasswordDTO);
+    public ResponseEntity<Boolean> changePassword(Principal principal, @RequestBody UserChangePasswordDTO userChangePasswordDTO) {
+        boolean isChanged = userService.changePassword(principal.getName(), userChangePasswordDTO);
+        if (isChanged) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     // 회원 정보 가져오기

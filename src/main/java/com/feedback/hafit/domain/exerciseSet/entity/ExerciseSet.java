@@ -1,9 +1,11 @@
 package com.feedback.hafit.domain.exerciseSet.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
-import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.plan.entity.Plan;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -11,7 +13,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "sets")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -60,25 +61,43 @@ public class ExerciseSet extends BaseEntity {
     @JoinColumn(name = "plan_id", foreignKey = @ForeignKey(name = "fk_set_plan"))
     private Plan plan;
 
-    @Builder
-    public ExerciseSet(Long restTime,
-                       Long weight,
-                       Long score,
-                       Long realCount,
-                       Long realSet,
-                       LocalDateTime startTime,
-                       Long limitTime,
-                       Long realTime,
-                       Plan plan
-    ) {
+    public void setSetId(Long setId) {
+        this.setId = setId;
+    }
+
+    public void setRestTime(Long restTime) {
         this.restTime = restTime;
+    }
+
+    public void setWeight(Long weight) {
         this.weight = weight;
+    }
+
+    public void setScore(Long score) {
         this.score = score;
+    }
+
+    public void setRealCount(Long realCount) {
         this.realCount = realCount;
+    }
+
+    public void setRealSet(Long realSet) {
         this.realSet = realSet;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+    }
+
+    public void setLimitTime(Long limitTime) {
         this.limitTime = limitTime;
+    }
+
+    public void setRealTime(Long realTime) {
         this.realTime = realTime;
+    }
+
+    public void setPlan(Plan plan) {
         this.plan = plan;
     }
 }

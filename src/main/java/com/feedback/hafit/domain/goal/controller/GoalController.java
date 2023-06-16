@@ -20,25 +20,34 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping
-    public ResponseEntity<GoalResponseDTO> createWrite(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
+    public ResponseEntity<Boolean> createGoal(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
         String email = principal.getName();
-        log.info(String.valueOf(goalRequestDTO.getKeywordId()));
-        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO, email);
-        if (createdGoal != null) {
-            return ResponseEntity.ok(createdGoal);
+        boolean createdGoal = goalService.createGoal(goalRequestDTO, email);
+        if (createdGoal) {
+            return ResponseEntity.ok(true);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @PutMapping("/{goalId}")
-    public GoalResponseDTO updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
-        return goalService.updateGoal(goalId, goalRequestDTO);
+    public ResponseEntity<GoalResponseDTO> updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
+        GoalResponseDTO updatedGoal = goalService.updateGoal(goalId, goalRequestDTO);
+        if (updatedGoal != null) {
+            return ResponseEntity.ok(updatedGoal);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{goalId}")
-    public boolean deleteGoal(@PathVariable Long goalId) {
-        return goalService.deleteGoal(goalId);
+    public ResponseEntity<Boolean> deleteGoal(@PathVariable Long goalId) {
+        boolean isDeleted = goalService.deleteGoal(goalId);
+        if (isDeleted) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     @GetMapping("/my")

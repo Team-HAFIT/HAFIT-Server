@@ -2,9 +2,7 @@ package com.feedback.hafit.domain.exerciseSet.controller;
 
 import com.feedback.hafit.domain.exerciseSet.dto.ExerciseSetDTO;
 import com.feedback.hafit.domain.exerciseSet.service.ExerciseSetService;
-import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseSetController {
 
-    @Autowired
-    private ExerciseSetService exerciseSetService;
+    private final ExerciseSetService exerciseSetService;
 
     @PostMapping("") // 운동 종료 후 저장 및 반환
     public ResponseEntity<ExerciseSetDTO> endExec(@RequestBody ExerciseSetDTO dto, Principal principal) {
@@ -34,7 +31,7 @@ public class ExerciseSetController {
         return ResponseEntity.ok(exerciseSetService.getByPlanId(planId, principal.getName()));
     }
 
-    @GetMapping("") // 모든 운동 기록 조회
+    @GetMapping // 모든 운동 기록 조회
     public ResponseEntity<List<ExerciseSetDTO>> getAllPlan(Principal principal) {
         return ResponseEntity.ok(exerciseSetService.getAllSets(principal.getName()));
     }
