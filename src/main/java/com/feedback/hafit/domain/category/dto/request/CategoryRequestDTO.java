@@ -1,7 +1,6 @@
 package com.feedback.hafit.domain.category.dto.request;
 
 
-import com.feedback.hafit.domain.category.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,12 +16,6 @@ public class CategoryRequestDTO {
     private Long categoryId;
     private String categoryName;
     private String userEmail;
-
-    public CategoryRequestDTO(Category category) {
-        this.categoryId = category.getCategoryId();
-        this.categoryName = category.getCategoryName();
-        this.userEmail = category.getUser().getEmail();
-    }
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;

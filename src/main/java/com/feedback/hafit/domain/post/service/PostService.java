@@ -169,7 +169,6 @@ public class PostService {
                 postRepository.delete(post);
                 return true;
             } else {
-                System.out.println("해당하는 게시물을 찾을 수 없습니다.");
                 return false;
             }
         } catch (Exception e) {

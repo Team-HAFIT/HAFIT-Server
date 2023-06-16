@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface ExerciseSetRepository extends JpaRepository<ExerciseSet, Long> {
 
-    List<ExerciseSet> findByplan(@Param("planId") Plan planId);
+    List<ExerciseSet> findByPlan(@Param("planId") Plan planId);
 
-    ExerciseSet findFirstByplanOrderBySetIdDesc(@Param("planId") Plan planId);
+    ExerciseSet findFirstByPlanOrderBySetIdDesc(@Param("planId") Plan planId);
 
 }

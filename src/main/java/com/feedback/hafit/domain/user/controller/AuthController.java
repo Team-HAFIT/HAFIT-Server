@@ -1,5 +1,6 @@
 package com.feedback.hafit.domain.user.controller;
 
+import com.feedback.hafit.domain.user.dto.UserDTO;
 import com.feedback.hafit.domain.user.dto.UserFormDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
@@ -9,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.Optional;
 
 @RestController
@@ -28,10 +31,23 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public ResponseEntity<Boolean> updateUser(Principal principal, @RequestBody UserDTO userDTO) {
+        boolean isUpdated = userService.updateUser(principal.getName(), userDTO);
+        if (isUpdated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
+    }
+
     @PostMapping("/signup")
-    public String signup(@RequestBody UserFormDTO userFormDTO) {
-        userService.signup(userFormDTO);
-        return "회원가입 성공";
+    public ResponseEntity<Boolean> signup(@RequestBody UserFormDTO userFormDTO) {
+        boolean isSaved = userService.signup(userFormDTO);;
+        if (isSaved) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
     // 이메일 중복 확인

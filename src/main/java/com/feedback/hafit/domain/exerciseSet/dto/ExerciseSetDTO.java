@@ -6,7 +6,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ExerciseSetDTO extends BaseEntity {
 
@@ -44,8 +43,7 @@ public class ExerciseSetDTO extends BaseEntity {
     private Long targetSet;
 
     @Builder
-    public ExerciseSetDTO(ExerciseSet execSet
-    ) {
+    public ExerciseSetDTO(ExerciseSet execSet) {
         this.setId = execSet.getSetId();
         this.restTime = execSet.getRestTime();
         this.weight = execSet.getWeight();
@@ -59,5 +57,49 @@ public class ExerciseSetDTO extends BaseEntity {
         this.targetSet = execSet.getPlan().getTargetSet();
         this.createdAt = execSet.getCreatedAt();
         this.modifiedAt = execSet.getModifiedAt();
+    }
+
+    public void setSetId(Long setId) {
+        this.setId = setId;
+    }
+
+    public void setRestTime(Long restTime) {
+        this.restTime = restTime;
+    }
+
+    public void setWeight(Long weight) {
+        this.weight = weight;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
+    }
+
+    public void setRealCount(Long realCount) {
+        this.realCount = realCount;
+    }
+
+    public void setRealSet(Long realSet) {
+        this.realSet = realSet;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setLimitTime(Long limitTime) {
+        this.limitTime = limitTime;
+    }
+
+    public void setRealTime(Long realTime) {
+        this.realTime = realTime;
+    }
+
+    public void setPlan(Long plan) {
+        this.plan = plan;
+    }
+
+    public void setTargetSet(Long targetSet) {
+        this.targetSet = targetSet;
     }
 }

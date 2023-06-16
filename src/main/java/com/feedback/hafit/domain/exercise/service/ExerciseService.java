@@ -1,10 +1,9 @@
 package com.feedback.hafit.domain.exercise.service;
 
-import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.dto.ExerciseDTO;
+import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
-import com.feedback.hafit.domain.user.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +12,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ExerciseService {
 
-    @Autowired
-    ExerciseRepository exerciseRepository;
+    private final ExerciseRepository exerciseRepository;
 
     @PreAuthorize("hasRole('ADMIN')") // Security 작업에서 Admin 역할인 사람만 운동 추가, 어노테이션
     public boolean createExercise(ExerciseDTO exerciseDTO) {
@@ -31,12 +30,6 @@ public class ExerciseService {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public Exercise getById(Long execId) {
-        Optional<Exercise> exerciseOptional = exerciseRepository.findById(execId);
-        if(exerciseOptional.isEmpty())throw new IllegalArgumentException("존재하지 않는 유저입니다.");
-        return exerciseOptional.get();
     }
 
     public boolean update(ExerciseDTO exerciseDTO) {
