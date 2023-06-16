@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.plan.dto.request;
 
-import com.feedback.hafit.domain.plan.entity.Plan;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,28 +8,17 @@ import lombok.NoArgsConstructor;
 public class PlanRequestDTO {
 
     private Long userId;
-
     private Long exerciseId;
 
-    private Long targetCount;
+    private Long plan_target_count; // 목표 갯수
 
-    private Long targetSet;
+    private Long plan_target_set; // 목표 세트
 
-    private Long weight;
+    private Long plan_weight; // 무게
 
-    private Long restTime;
+    private Long plan_rest_time; // 휴식 시간
 
-    private String performStatus;
-
-    public PlanRequestDTO(Plan plan) {
-        this.userId = plan.getUser().getUserId();
-        this.exerciseId = plan.getExercise().getExerciseId();
-        this.targetCount = plan.getTargetCount();
-        this.targetSet = plan.getTargetSet();
-        this.weight = plan.getWeight();
-        this.restTime = plan.getRestTime();
-        this.performStatus = plan.getPerformStatus();
-    }
+    private String plan_performStatus; // 수행 여부
 
     public void setUserId(Long userId) {
         this.userId = userId;
@@ -40,23 +28,23 @@ public class PlanRequestDTO {
         this.exerciseId = exerciseId;
     }
 
-    public void setTargetCount(Long targetCount) {
-        this.targetCount = targetCount;
+    public void setPlan_target_count(Long plan_target_count) {
+        this.plan_target_count = plan_target_count;
     }
 
-    public void setTargetSet(Long targetSet) {
-        this.targetSet = targetSet;
+    public void setPlan_target_set(Long plan_target_set) {
+        this.plan_target_set = plan_target_set;
     }
 
-    public void setWeight(Long weight) {
-        this.weight = weight;
+    public void setPlan_weight(Long plan_weight) {
+        this.plan_weight = plan_weight;
     }
 
-    public void setRestTime(Long restTime) {
-        this.restTime = restTime;
+    public void setPlan_rest_time(Long plan_rest_time) {
+        this.plan_rest_time = plan_rest_time;
     }
 
-    public void setPerformStatus(String performStatus) {
-        this.performStatus = performStatus;
+    public void setPlan_performStatus(String plan_performStatus) {
+        this.plan_performStatus = plan_performStatus;
     }
 }

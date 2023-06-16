@@ -15,18 +15,18 @@ public class CommentDTO {
     @NotNull
     private Long commentId; // 댓글 ID
     private Long postId; // 게시글 ID
-    private String content; // 댓글 내용
-    private String userName; // 유저 ID
-    private String imageUrl; // 프로필 사진
+    private String comment_content; // 댓글 내용
+    private String user_name; // 유저 ID
+    private String user_imageUrl; // 프로필 사진
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
     public CommentDTO(Comment comment) {
         this.commentId = comment.getCommentId();
-        this.imageUrl = comment.getUser().getImageUrl();
+        this.user_imageUrl = comment.getUser().getImageUrl();
         this.postId = comment.getPost().getPostId();
-        this.content = comment.getContent();
-        this.userName = comment.getUser().getName();
+        this.comment_content = comment.getComment_content();
+        this.user_name = comment.getUser().getName();
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
     }

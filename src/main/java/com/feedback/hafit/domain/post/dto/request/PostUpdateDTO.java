@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class PostUpdateDTO {
     private Long categoryId;
-    private String postContent;
+    private String post_content;
     private List<Long> deleteImageIds;
     private List<MultipartFile> files = Collections.emptyList();
 
@@ -19,8 +19,8 @@ public class PostUpdateDTO {
         this.categoryId = categoryId;
     }
 
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
+    public void setPostContent(String post_content) {
+        this.post_content = post_content;
     }
 
     public void setDeleteImageIds(List<Long> deleteImageIds) {

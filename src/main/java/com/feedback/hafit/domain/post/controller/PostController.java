@@ -52,7 +52,7 @@ public class PostController {
 
     @DeleteMapping("/{postId}") // 피드 삭제
     public ResponseEntity<Boolean> deletePost(@PathVariable Long postId) {
-        boolean isPostDeleted = postService.deleteById(postId);
+        boolean isPostDeleted = postService.deletePostById(postId);
         if (isPostDeleted) {
             return ResponseEntity.ok(true);
         } else {

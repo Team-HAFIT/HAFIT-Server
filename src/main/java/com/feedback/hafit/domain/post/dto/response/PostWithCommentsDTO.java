@@ -14,27 +14,27 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostWithCommentsDTO {
+    private Long postId;
+    private String category_name;
+    private String user_name;
+    private String post_content;
+    private List<PostFileDTO> files = Collections.emptyList();
+    private Long post_totalLikes;
+    private Long comment_count;
+    private boolean post_likedByUser;
+    private List<CommentWithLikesDTO> comments = Collections.emptyList();
     private LocalDateTime modifiedAt;
     private LocalDateTime createdAt;
-    private Long postId;
-    private String categoryName;
-    private String userName;
-    private String postContent;
-    private List<PostFileDTO> files = Collections.emptyList();
-    private Long postTotalLikes;
-    private Long commentCount;
-    private boolean postLikedByUser;
-    private List<CommentWithLikesDTO> comments = Collections.emptyList();
 
     // 게시글 1개 조회할 때 사용
-    public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean postLikedByUser, Long postTotalLikes, Long commentCount, List<CommentWithLikesDTO> comments) {
+    public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean post_likedByUser, Long post_totalLikes, Long comment_count, List<CommentWithLikesDTO> comments) {
         this.postId = post.getPostId();
-        this.categoryName = post.getCategory().getCategoryName();
-        this.userName = post.getUser().getName();
-        this.postContent = post.getPostContent();
-        this.postTotalLikes = postTotalLikes;
-        this.commentCount = commentCount;
-        this.postLikedByUser = postLikedByUser;
+        this.category_name = post.getCategory().getCategory_name();
+        this.user_name = post.getUser().getName();
+        this.post_content = post.getPost_content();
+        this.post_totalLikes = post_totalLikes;
+        this.comment_count = comment_count;
+        this.post_likedByUser = post_likedByUser;
         this.files = files;
         this.modifiedAt = post.getModifiedAt();
         this.createdAt = post.getCreatedAt();

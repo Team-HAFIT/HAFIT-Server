@@ -53,11 +53,11 @@ public class PostService {
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
-        String postContent = postDTO.getPostContent();
+        String post_content = postDTO.getPost_content();
         Post post = postRepository.save(Post.builder()
                 .user(user)
                 .category(category)
-                .postContent(postContent)
+                .post_content(post_content)
                 .build()
         );
 
@@ -68,7 +68,7 @@ public class PostService {
             PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(
                     PostFile.builder()
                             .post(post)
-                            .fileName(uploadUrl)
+                            .file_name(uploadUrl)
                             .build()
             ));
             postFileDTOS.add(postFileDTO);
@@ -80,7 +80,7 @@ public class PostService {
     @Transactional
     public boolean updatePost(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
         try {
-            String postComment = postDTO.getPostContent();
+            String postComment = postDTO.getPost_content();
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물을 찾을 수 없습니다."));
 
@@ -92,7 +92,7 @@ public class PostService {
             if (deleteImageIds != null) {
                 List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
                 postFiles.forEach(postFile -> {
-                    s3Service.delete(postFile.getFileName());
+                    s3Service.delete(postFile.getFile_name());
                     fileImageRepository.deleteById(postFile.getImageId());
                 });
             }
@@ -104,7 +104,7 @@ public class PostService {
                     fileImageRepository.save(
                             PostFile.builder()
                                     .post(post)
-                                    .fileName(uploadUrl)
+                                    .file_name(uploadUrl)
                                     .build()
                     );
                 }
@@ -118,7 +118,6 @@ public class PostService {
             return false;
         }
     }
-
 
     public List<PostWithLikesDTO> getAllPosts(String email) {
         List<Post> posts = postRepository.findAll();
@@ -144,8 +143,7 @@ public class PostService {
         return optionalPostLike.isPresent();
     }
 
-
-    public boolean deleteById(Long postId) {
+    public boolean deletePostById(Long postId) {
         try {
             Optional<Post> optionalPost = postRepository.findById(postId);
             if (optionalPost.isPresent()) {

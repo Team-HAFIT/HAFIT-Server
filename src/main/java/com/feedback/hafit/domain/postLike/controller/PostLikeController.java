@@ -17,20 +17,14 @@ public class PostLikeController {
     private final PostLikeService postLikeService;
 
     @PostMapping("/{postId}")
-    public ResponseEntity<Boolean> insert(@PathVariable Long postId, Principal principal) throws Exception  {
-        postLikeService.insert(postId, principal.getName());
+    public ResponseEntity<Boolean> insertPostLike(@PathVariable Long postId, Principal principal) {
+        postLikeService.insertPostLike(postId, principal.getName());
         return ResponseEntity.ok(true);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long postId, Principal principal) {
-        log.info(String.valueOf(postId));
-        boolean isPostLikeDeleted = postLikeService.delete(postId, principal.getName());
-        if (!isPostLikeDeleted) {
-            System.out.println("삭제 실패");
-            return ResponseEntity.badRequest().body(false);
-        }
-        System.out.println("삭제 성공");
+    public ResponseEntity<Boolean> deletePostLike(@PathVariable Long postId, Principal principal) {
+        postLikeService.deletePostLike(postId, principal.getName());
         return ResponseEntity.ok(true);
     }
 

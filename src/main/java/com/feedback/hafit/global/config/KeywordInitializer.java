@@ -41,4 +41,3 @@ public class KeywordInitializer implements ApplicationRunner {
         }
     }
 }
-

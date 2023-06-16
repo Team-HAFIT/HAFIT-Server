@@ -28,7 +28,7 @@ public class CommentController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Boolean> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
-        boolean isCommentCreated = commentService.write(postId, commentCreateDTO, principal.getName());
+        boolean isCommentCreated = commentService.writeComment(postId, commentCreateDTO, principal.getName());
         if (isCommentCreated) {
             return ResponseEntity.ok(true);
         } else {
@@ -48,7 +48,7 @@ public class CommentController {
 
     @PutMapping("/{commentId}") // 댓글 수정
     public ResponseEntity<Boolean> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
-        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getContent());
+        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getComment_content());
         if (isCommentUpdated) {
             return ResponseEntity.ok(true);
         } else {

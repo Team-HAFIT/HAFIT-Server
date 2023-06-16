@@ -30,28 +30,27 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public boolean write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
+    public boolean writeComment(Long postId, CommentCreateDTO commentCreateDTO, String email) {
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-            String content = commentCreateDTO.getCommentContent();
+            String content = commentCreateDTO.getComment_content();
             Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with postId: " + postId));
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
 
-            Comment comment = commentRepository.save(Comment.builder()
-                    .content(content)
+            Comment comment = Comment.builder()
+                    .comment_content(content)
                     .user(user)
                     .post(post)
-                    .build()
-            );
+                    .build();
 
-            return comment != null;
+            commentRepository.save(comment);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-
 
     public List<CommentWithLikesDTO> getAllComments(String email) {
         List<Comment> comments = commentRepository.findAll();
@@ -78,15 +77,10 @@ public class CommentService {
 
     public boolean deleteById(Long commentId) {
         try {
-            Optional<Comment> optionalComment = commentRepository.findById(commentId);
-            if (optionalComment.isPresent()) {
-                Comment comment = optionalComment.get();
-                commentRepository.delete(comment);
-                return true;
-            } else {
-                System.out.println("해당하는 댓글을 찾을 수 없습니다.");
-                return false;
-            }
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
+            commentRepository.delete(comment);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -110,27 +104,23 @@ public class CommentService {
     }
 
     public List<CommentWithLikesDTO> getCommentsByPostId(Long postId, String email) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with ID: " + postId));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
-            List<Comment> comments = commentRepository.findByPost(post); // 게시글 ID에 해당하는 댓글 조회
-            List<CommentWithLikesDTO> commentDTOs = new ArrayList<>();
+        List<Comment> comments = commentRepository.findByPost(post);
+        List<CommentWithLikesDTO> commentDTOs = new ArrayList<>();
 
-            for (Comment comment : comments) {
-                boolean likedByUser = checkIfCommentLikedByUser(comment, user);
-                Long totalLikes = commentLikeRepository.countLikesByComment(comment);
+        for (Comment comment : comments) {
+            boolean likedByUser = checkIfCommentLikedByUser(comment, user);
+            Long totalLikes = commentLikeRepository.countLikesByComment(comment);
 
-                CommentWithLikesDTO commentDTO = new CommentWithLikesDTO(comment, likedByUser, totalLikes);
-                commentDTOs.add(commentDTO);
-            }
-
-            return commentDTOs;
-        } else {
-            throw new EntityNotFoundException("Post not found with ID: " + postId);
+            CommentWithLikesDTO commentDTO = new CommentWithLikesDTO(comment, likedByUser, totalLikes);
+            commentDTOs.add(commentDTO);
         }
+
+        return commentDTOs;
     }
 
 }

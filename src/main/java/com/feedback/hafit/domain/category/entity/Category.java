@@ -21,7 +21,7 @@ public class Category extends BaseEntity {
     private Long categoryId; // auto_increment
 
     @Column(unique = true, nullable = false, length = 30)
-    private String categoryName; // 카테고리 이름
+    private String category_name; // 카테고리 이름
 
     @OneToMany(mappedBy = "category")
     private List<Post> posts;
@@ -34,8 +34,8 @@ public class Category extends BaseEntity {
         this.categoryId = categoryId;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 
     public void setPosts(List<Post> posts) {

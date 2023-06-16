@@ -59,7 +59,7 @@ public class ExerciseSetResponseDTO {
         this.limitTime = execSet.getLimitTime();
         this.realTime = execSet.getRealTime();
         this.plan = execSet.getPlan().getPlanId();
-        this.targetSet = execSet.getPlan().getTargetSet();
+        this.targetSet = execSet.getPlan().getPlan_target_set();
         this.createdAt = execSet.getCreatedAt();
         this.modifiedAt = execSet.getModifiedAt();
     }

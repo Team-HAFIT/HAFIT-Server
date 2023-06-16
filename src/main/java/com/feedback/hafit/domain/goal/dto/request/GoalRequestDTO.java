@@ -10,13 +10,13 @@ import java.time.LocalDate;
 public class GoalRequestDTO {
 
     private Long goalId;
+    private Long keywordId;
 
     private String goal_content;
 
     private LocalDate goal_target_date;
 
-    private String userEmail;
-    private Long keywordId;
+    private String user_email;
 
     public void setGoalId(Long goalId) {
         this.goalId = goalId;
@@ -30,8 +30,8 @@ public class GoalRequestDTO {
         this.goal_target_date = goal_target_date;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUser_email(String user_email) {
+        this.user_email = user_email;
     }
 
     public void setKeywordId(Long keywordId) {

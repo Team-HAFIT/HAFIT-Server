@@ -7,9 +7,10 @@ import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,36 +36,28 @@ public class ExerciseService {
 
     public boolean updateExercise(Long exerciseId, ExerciseRequestDTO exerciseRequestDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseId);
-            if (optionalExercise.isPresent()) {
-                Exercise exercise = optionalExercise.get();
-                exercise.setExercise_description(exerciseRequestDTO.getExercise_description());
-                exercise.setExercise_img(exerciseRequestDTO.getExercise_img());
-                exercise.setExercise_calorie(exerciseRequestDTO.getExercise_calorie());
-                exercise.setExercise_name(exerciseRequestDTO.getExercise_name());
-                exerciseRepository.save(exercise);
-                return true;
-            } else {
-                System.out.println("해당하는 운동을 찾을 수 없습니다.");
-                return false;
-            }
+            Exercise exercise = exerciseRepository.findById(exerciseId)
+                    .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
+            exercise.setExercise_description(exerciseRequestDTO.getExercise_description());
+            exercise.setExercise_img(exerciseRequestDTO.getExercise_img());
+            exercise.setExercise_calorie(exerciseRequestDTO.getExercise_calorie());
+            exercise.setExercise_name(exerciseRequestDTO.getExercise_name());
+            exerciseRepository.save(exercise);
+
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean deleteExercise(Long execId) {
+
+    public boolean deleteExercise(Long exerciseId) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(execId);
-            if(optionalExercise.isPresent()) {
-                Exercise exercise = optionalExercise.get();
-                exerciseRepository.delete(exercise);
-                return true;
-            } else {
-                System.out.println("해당하는 운동을 삭제할 수 없습니다.");
-                return false;
-            }
+            Exercise exercise = exerciseRepository.findById(exerciseId)
+                    .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
+            exerciseRepository.delete(exercise);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -72,21 +65,20 @@ public class ExerciseService {
     }
 
     public List<ExerciseResponseDTO> getAllExercises() {
-        List<Exercise> exercises = exerciseRepository.findAll();
-        return convertToDTOList(exercises);
+        try {
+            List<Exercise> exercises = exerciseRepository.findAll();
+            List<ExerciseResponseDTO> exerciseDTOs = new ArrayList<>();
+
+            for (Exercise exercise : exercises) {
+                ExerciseResponseDTO exerciseDTO = new ExerciseResponseDTO(exercise);
+                exerciseDTOs.add(exerciseDTO);
+            }
+
+            return exerciseDTOs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 
-    private List<ExerciseResponseDTO> convertToDTOList(List<Exercise> exercises) {
-        List<ExerciseResponseDTO> exerciseDTOs = new ArrayList<>();
-        for (Exercise exercise : exercises) {
-            ExerciseResponseDTO exerciseDTO = new ExerciseResponseDTO();
-            exerciseDTO.setExerciseId(exercise.getExerciseId());
-            exerciseDTO.setExercise_name(exercise.getExercise_name());
-            exerciseDTO.setExercise_calorie(exercise.getExercise_calorie());
-            exerciseDTO.setExercise_description(exercise.getExercise_description());
-            exerciseDTO.setExercise_img(exercise.getExercise_img());
-            exerciseDTOs.add(exerciseDTO);
-        }
-        return exerciseDTOs;
-    }
 }

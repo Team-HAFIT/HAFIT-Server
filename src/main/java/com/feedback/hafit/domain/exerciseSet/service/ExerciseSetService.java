@@ -6,8 +6,6 @@ import com.feedback.hafit.domain.exerciseSet.entity.ExerciseSet;
 import com.feedback.hafit.domain.exerciseSet.repository.ExerciseSetRepository;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.plan.repository.PlanRepository;
-import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,9 +43,8 @@ public class ExerciseSetService {
                     .plan(plan)
                     .build();
 
-            ExerciseSet savedExecSet = exerciseSetRepository.save(execSet);
-
-            return new ExerciseSetResponseDTO(savedExecSet);
+            ExerciseSet savedExerciseSet = exerciseSetRepository.save(execSet);
+            return new ExerciseSetResponseDTO(savedExerciseSet);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("운동 세트 저장에 실패하였습니다.");
@@ -56,22 +53,22 @@ public class ExerciseSetService {
 
     // 휴식 시간 종료 후 휴식 시간 저장 메서드 (휴식 시간 -> 운동 화면 / 휴식 시간 -> 결과 화면)
     @Transactional
-    public ExerciseSetResponseDTO update(ExerciseSetRequestDTO execSetDTO) {
+    public ExerciseSetResponseDTO update(ExerciseSetRequestDTO exerciseSetDTO) {
         try {
-            Long planId = execSetDTO.getPlan();
+            Long planId = exerciseSetDTO.getPlan();
             Plan plan = planRepository.findById(planId)
                     .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
 
-            ExerciseSet execSet = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
+            ExerciseSet exerciseSets = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
 
-            execSet.setRestTime(execSetDTO.getRestTime());
-            ExerciseSet updatedExecSet = exerciseSetRepository.save(execSet);
+            exerciseSets.setRestTime(exerciseSetDTO.getRestTime());
+            ExerciseSet updatedExerciseSet = exerciseSetRepository.save(exerciseSets);
 
-            ExerciseSetResponseDTO execDTO = new ExerciseSetResponseDTO(updatedExecSet);
-            execDTO.setRealSet(updatedExecSet.getRealSet() + 1);
-            execDTO.setWeight(execSetDTO.getWeight());
+            ExerciseSetResponseDTO exerciseDTO = new ExerciseSetResponseDTO(updatedExerciseSet);
+            exerciseDTO.setRealSet(updatedExerciseSet.getRealSet() + 1);
+            exerciseDTO.setWeight(exerciseSetDTO.getWeight());
 
-            return execDTO;
+            return exerciseDTO;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("휴식 시간 저장에 실패하였습니다.");
@@ -86,14 +83,14 @@ public class ExerciseSetService {
                     .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
 
             List<ExerciseSet> sets = exerciseSetRepository.findByplan(plan);
-            List<ExerciseSetResponseDTO> execSets = new ArrayList<>();
+            List<ExerciseSetResponseDTO> exerciseSets = new ArrayList<>();
 
-            for (ExerciseSet exec : sets) {
-                ExerciseSetResponseDTO execSetDTO = new ExerciseSetResponseDTO(exec);
-                execSets.add(execSetDTO);
+            for (ExerciseSet exerciseSet : sets) {
+                ExerciseSetResponseDTO exerciseSetDTO = new ExerciseSetResponseDTO(exerciseSet);
+                exerciseSets.add(exerciseSetDTO);
             }
 
-            return execSets;
+            return exerciseSets;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("세트 조회에 실패하였습니다.");
@@ -113,14 +110,14 @@ public class ExerciseSetService {
     public List<ExerciseSetResponseDTO> getAllSets() {
         try {
             List<ExerciseSet> sets = exerciseSetRepository.findAll();
-            List<ExerciseSetResponseDTO> execSets = new ArrayList<>();
+            List<ExerciseSetResponseDTO> exerciseSets = new ArrayList<>();
 
-            for (ExerciseSet exec : sets) {
-                ExerciseSetResponseDTO execSetDTO = new ExerciseSetResponseDTO(exec);
-                execSets.add(execSetDTO);
+            for (ExerciseSet exerciseSet : sets) {
+                ExerciseSetResponseDTO execSetDTO = new ExerciseSetResponseDTO(exerciseSet);
+                exerciseSets.add(execSetDTO);
             }
 
-            return execSets;
+            return exerciseSets;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("모든 세트 정보 조회에 실패하였습니다.");

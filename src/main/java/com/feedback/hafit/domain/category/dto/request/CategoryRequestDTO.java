@@ -14,7 +14,7 @@ public class CategoryRequestDTO {
 
     @NotNull
     private Long categoryId;
-    private String categoryName;
+    private String category_name;
     private String userEmail;
 
     public void setUserEmail(String userEmail) {
@@ -23,7 +23,7 @@ public class CategoryRequestDTO {
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategory_name(String category_name) {
+        this.category_name = category_name;
     }
 }

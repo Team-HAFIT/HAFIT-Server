@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 @Service
 @RequiredArgsConstructor
 public class CommentLikeService {
@@ -19,40 +21,43 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void insert(Long commentId, String userEmail) throws Exception {
+    public boolean insertCommentLike(Long commentId, String userEmail) {
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
+            CommentLike commentLike = CommentLike.builder()
+                    .comment(comment)
+                    .user(user)
+                    .build();
 
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Could not found board id : " + commentId));
-
-        // 이미 좋아요되어있으면 에러 반환
-        if (commentLikeRepository.findByUserAndComment(user, comment).isPresent()){
-            //TODO 409에러로 변경
-            throw new Exception();
+            commentLikeRepository.save(commentLike);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
-
-        CommentLike commentLike = CommentLike.builder()
-                .comment(comment)
-                .user(user)
-                .build();
-
-        commentLikeRepository.save(commentLike);
     }
 
     @Transactional
-    public void delete(Long commentId, String userEmail) {
+    public boolean deleteCommentLike(Long commentId, String userEmail) {
+        try {
+            User user = userRepository.findByEmail(userEmail)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
+            Comment comment = commentRepository.findById(commentId)
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
 
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new NotFoundException("Could not found member id : " + userEmail));
+            CommentLike commentLike = commentLikeRepository.findByUserAndComment(user, comment)
+                    .orElseThrow(() -> new NotFoundException("Could not find CommentLike"));
 
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NotFoundException("Could not found comment id : " + commentId));
-
-        CommentLike commentLike = commentLikeRepository.findByUserAndComment(user, comment)
-                .orElseThrow(() -> new NotFoundException("Could not found heart id"));
-
-        commentLikeRepository.delete(commentLike);
+            commentLikeRepository.delete(commentLike);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
 }

@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostFileDTO{
 
-    private String fileName;
+    private String file_name;
 
     public PostFileDTO(PostFile postFile){
-        this.fileName = postFile.getFileName();
+        this.file_name = postFile.getFile_name();
     }
 }

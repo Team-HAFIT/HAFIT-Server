@@ -15,19 +15,18 @@ public class PostFile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
     private Long imageId;
 
     @Column(name = "file_name")
-    private String fileName;
+    private String file_name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_file_post"))
     private Post post;
 
     @Builder
-    public PostFile(String fileName, Post post) {
-        this.fileName = fileName;
+    public PostFile(String file_name, Post post) {
+        this.file_name = file_name;
         this.post = post;
     }
 
