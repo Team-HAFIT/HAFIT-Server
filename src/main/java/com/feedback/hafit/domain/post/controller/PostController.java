@@ -1,12 +1,12 @@
 package com.feedback.hafit.domain.post.controller;
 
-import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.service.PostService;
+import com.feedback.hafit.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -24,6 +25,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     @PostMapping
     public ResponseEntity<PostDTO> createPost(@RequestParam("files") List<MultipartFile> files,
@@ -65,7 +67,8 @@ public class PostController {
         }
     }
 
-    @GetMapping // 전체 피드 조회
+    // 전체 피드 조회
+    @GetMapping
     public ResponseEntity<List<PostWithLikesDTO>> getAllPosts(Principal principal) {
         List<PostWithLikesDTO> postDTOs = postService.getAllPosts(principal.getName());
         if (!postDTOs.isEmpty()) {
@@ -75,4 +78,29 @@ public class PostController {
         }
     }
 
+    // 내가 작성한 글 조회
+    @GetMapping("/my")
+    public ResponseEntity<Map<String, Object>> getMyPosts(Principal principal) {
+        try {
+            String email = principal.getName();
+            Map<String, Object> result = userService.getMyPosts(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // 내가 좋아요 표시한 글 조회
+    @GetMapping("/my/liked-posts")
+    public ResponseEntity<Map<String, Object>> getLikedPostsByEmail(Principal principal) {
+        try {
+            String email = principal.getName();
+            Map<String, Object> result = userService.getLikedPostsByEmail(email);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

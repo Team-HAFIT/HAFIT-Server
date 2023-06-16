@@ -34,13 +34,11 @@ public class CommentService {
     public CommentDTO write(Long postId, CommentCreateDTO commentCreateDTO, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email : " + email));
-        Long commentId = commentCreateDTO.getCommentId();
         String content = commentCreateDTO.getCommentContent();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with postId : " + postId));
 
         Comment comment = commentRepository.save(Comment.builder()
-                .commentId(commentId)
                 .content(content)
                 .user(user)
                 .post(post)

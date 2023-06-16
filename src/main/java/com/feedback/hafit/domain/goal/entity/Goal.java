@@ -1,15 +1,11 @@
 package com.feedback.hafit.domain.goal.entity;
 
 import com.feedback.hafit.domain.BaseEntity;
-import com.feedback.hafit.domain.keyword.entity.Keyword;
-import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.user.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -20,16 +16,16 @@ import java.util.List;
 @Builder
 public class Goal extends BaseEntity {
     // 운동 목표 엔티티
-    // 시작일은 BaseEntity의 createdAt을 사용
+    // 시작일은 BaseEntity의 createdAt(goal_start_date)을 사용
 
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long goal_id; // 목표 번호
+    private Long goalId; // 목표 번호
 
     @Column(length = 300)
     private String goal_content; // 목표 내용
 
-    private LocalDate goal_date; // 종료일
+    private LocalDate goal_target_date; // 종료일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))

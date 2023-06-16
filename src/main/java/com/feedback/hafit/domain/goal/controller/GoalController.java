@@ -1,69 +1,52 @@
 package com.feedback.hafit.domain.goal.controller;
 
-import com.feedback.hafit.domain.goal.entity.Goal;
-import com.feedback.hafit.domain.goal.dto.GoalDTO;
-import com.feedback.hafit.domain.user.entity.User;
-import com.feedback.hafit.domain.goal.repository.GoalRepository;
+import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
+import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.service.GoalService;
-import com.feedback.hafit.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/goals")
 public class GoalController {
 
-    @Autowired
-    private GoalService goalService;
+    private final GoalService goalService;
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private GoalRepository goalRepository;
-
-    @PostMapping("")
-    public ResponseEntity<?> write(@RequestBody GoalDTO goalDTO, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        boolean result = goalService.write(goalDTO, userId);
-        if (result) {
-            return ResponseEntity.ok().build();
+    @PostMapping
+    public ResponseEntity<GoalResponseDTO> createWrite(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
+        String email = principal.getName();
+        GoalResponseDTO createdGoal = goalService.createGoal(goalRequestDTO, email);
+        if (createdGoal != null) {
+            return ResponseEntity.ok(createdGoal);
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/read")
-    public List<GoalDTO> getUserGoals(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        User user = userService.getById(userId);
-        if (user == null) {
-            throw new RuntimeException("User not found");
-        }
-        List<Goal> goals = goalRepository.findByUser(user);
-        return goals.stream()
-                .map(goal -> GoalDTO.builder()
-                        .goal_id(goal.getGoal_id())
-                        .goal_content(goal.getGoal_content())
-                        .goal_date(goal.getGoal_date())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    @PutMapping("")
-    public boolean update(@RequestBody GoalDTO goalDTO) {
-        return true;
+    @PutMapping("/{goalId}")
+    public GoalResponseDTO updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
+        return goalService.updateGoal(goalId, goalRequestDTO);
     }
 
     @DeleteMapping("/{goalId}")
-    public boolean delete(@PathVariable Long goalId) {
-        return true;
+    public boolean deleteGoal(@PathVariable Long goalId) {
+        return goalService.deleteGoal(goalId);
     }
+
+    @GetMapping("/my")
+    public ResponseEntity<List<GoalResponseDTO>> getMyGoals(Principal principal) {
+        String email = principal.getName();
+        List<GoalResponseDTO> goalResponseDTOs = goalService.getGoalsByUser(email);
+        if (goalResponseDTOs != null) {
+            return ResponseEntity.ok(goalResponseDTOs);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
