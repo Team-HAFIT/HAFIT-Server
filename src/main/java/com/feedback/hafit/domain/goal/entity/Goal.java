@@ -30,8 +30,13 @@ public class Goal extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
     private User user; // 회원 번호
+
+    @OneToOne
+    @JoinColumn(name = "exercise_keyword_id")
+    private ExerciseKeyword exerciseKeyword;
+
 /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id", foreignKey = @ForeignKey(name = "fk_goal_keyword"))
-    private Keyword keyword; // 키워드 번호(운동 추천용으로 사용, 키워드와 연결) */
+    private ExerciseKeyword keyword; // 키워드 번호(운동 추천용으로 사용, 키워드와 연결) */
 }
