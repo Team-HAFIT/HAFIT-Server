@@ -1,15 +1,12 @@
 package com.feedback.hafit.domain.exercise.controller;
 
+import com.feedback.hafit.domain.exercise.dto.request.ExerciseRequestDTO;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
-import com.feedback.hafit.domain.exercise.dto.ExerciseDTO;
-import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import com.feedback.hafit.domain.exercise.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,38 +15,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExerciseController { // 운동 컨트롤러
 
-    @Autowired
-    private ExerciseRepository exerciseRepository;
+    private final ExerciseService exerciseService;
 
-    @Autowired
-    private ExerciseService exerciseService;
-
-    @PostMapping("") // 운동 추가
-    public ExerciseDTO create(@RequestBody ExerciseDTO exerciseDTO, HttpSession session) {
-        Long exec_id = (Long) session.getAttribute("exec_id");
-        boolean isExerciseCreated = exerciseService.createExercise(exerciseDTO);
-        if(!isExerciseCreated) {
-            System.out.println("운동 추가 실패");
-            return null;
+    @PostMapping // 운동 추가
+    public ResponseEntity<Boolean> create(@RequestBody ExerciseRequestDTO exerciseRequestDTO) {
+        boolean isExerciseCreated = exerciseService.createExercise(exerciseRequestDTO);
+        if (isExerciseCreated) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        System.out.println("운동 추가 성공");
-        return exerciseDTO;
     }
 
-    @PutMapping("") // 운동 수정
-    public ExerciseDTO update(@RequestBody ExerciseDTO exerciseDTO) {
-        boolean isExerciseUpdated = exerciseService.update(exerciseDTO);
+    @PutMapping("{execId}") // 운동 수정
+    public ExerciseRequestDTO update(@RequestBody ExerciseRequestDTO exerciseRequestDTO) {
+        boolean isExerciseUpdated = exerciseService.update(exerciseRequestDTO);
         if (!isExerciseUpdated) {
             System.out.println("운동 수정 성공");
             return null;
         }
         System.out.println("운동 수정 성공");
-        return exerciseDTO;
+        return exerciseRequestDTO;
     }
 
-    @DeleteMapping("") // 운동 삭제
-    public boolean delete(@RequestBody ExerciseDTO exerciseDTO) {
-        boolean isExerciseDeleted = exerciseService.delete(exerciseDTO);
+    @DeleteMapping("{execId}") // 운동 삭제
+    public boolean delete(@RequestBody ExerciseRequestDTO exerciseRequestDTO) {
+        boolean isExerciseDeleted = exerciseService.delete(exerciseRequestDTO);
         if(!isExerciseDeleted) {
             System.out.println("삭제 실패");
             return false;
@@ -58,21 +49,21 @@ public class ExerciseController { // 운동 컨트롤러
         return true;
     }
 
-    @GetMapping("") // 운동 목록 조회
-    public ResponseEntity<List<ExerciseDTO>> getAllExercise() {
+    @GetMapping // 운동 목록 조회
+    public ResponseEntity<List<ExerciseRequestDTO>> getAllExercise() {
         List<Exercise> exercisesList = exerciseService.getAllExercises();
-        List<ExerciseDTO> exerciseDTOList = new ArrayList<>();
+        List<ExerciseRequestDTO> exerciseRequestDTOList = new ArrayList<>();
 
         for(Exercise exercise : exercisesList) {
-            ExerciseDTO exerciseDTO = new ExerciseDTO();
-            exerciseDTO.setExec_id(exercise.getExec_id());
-            exerciseDTO.setExec_img(exercise.getExec_img());
-            exerciseDTO.setExec_description(exercise.getExec_description());
+            ExerciseRequestDTO exerciseRequestDTO = new ExerciseRequestDTO();
+            exerciseRequestDTO.setExecId(exercise.getExecId());
+            exerciseRequestDTO.setExec_img(exercise.getExec_img());
+            exerciseRequestDTO.setExec_description(exercise.getExec_description());
 
-            exerciseDTOList.add(exerciseDTO);
+            exerciseRequestDTOList.add(exerciseRequestDTO);
         }
-        if(!exerciseDTOList.isEmpty()) {
-            return ResponseEntity.ok(exerciseDTOList);
+        if(!exerciseRequestDTOList.isEmpty()) {
+            return ResponseEntity.ok(exerciseRequestDTOList);
         } else {
             return ResponseEntity.notFound().build();
         }

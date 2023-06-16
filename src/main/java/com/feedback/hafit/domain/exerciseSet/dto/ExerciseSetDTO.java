@@ -53,7 +53,7 @@ public class ExerciseSetDTO extends BaseEntity {
         this.startTime = execSet.getStartTime();
         this.limitTime = execSet.getLimitTime();
         this.realTime = execSet.getRealTime();
-        this.plan = execSet.getPlan().getPlan_id();
+        this.plan = execSet.getPlan().getPlanId();
         this.targetSet = execSet.getPlan().getTargetSet();
         this.createdAt = execSet.getCreatedAt();
         this.modifiedAt = execSet.getModifiedAt();

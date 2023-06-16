@@ -1,10 +1,9 @@
 package com.feedback.hafit.domain.exercise.service;
 
-import com.feedback.hafit.domain.exercise.dto.ExerciseDTO;
+import com.feedback.hafit.domain.exercise.dto.request.ExerciseRequestDTO;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -17,14 +16,15 @@ public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
-    @PreAuthorize("hasRole('ADMIN')") // Security 작업에서 Admin 역할인 사람만 운동 추가, 어노테이션
-    public boolean createExercise(ExerciseDTO exerciseDTO) {
+    public boolean createExercise(ExerciseRequestDTO exerciseRequestDTO) {
         try {
             Exercise exercise = Exercise.builder()
-                    .exec_id(exerciseDTO.getExec_id())
-                    .exec_img(exerciseDTO.getExec_img())
-                    .exec_description(exerciseDTO.getExec_description())
-                    .build(); // Security 작업이 완성되지 않아 오류 뜸,,,
+                    .name(exerciseRequestDTO.getName())
+                    .calorie(exerciseRequestDTO.getCalorie())
+                    .exec_description(exerciseRequestDTO.getExec_description())
+                    .exec_img(exerciseRequestDTO.getExec_img())
+                    .build();
+            exerciseRepository.save(exercise);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,13 +32,14 @@ public class ExerciseService {
         return false;
     }
 
-    public boolean update(ExerciseDTO exerciseDTO) {
+
+    public boolean update(ExerciseRequestDTO exerciseRequestDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExec_id());
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseRequestDTO.getExecId());
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
-                exercise.setExec_description(exerciseDTO.getExec_description());
-                exercise.setExec_img(exerciseDTO.getExec_img());
+                exercise.setExec_description(exerciseRequestDTO.getExec_description());
+                exercise.setExec_img(exerciseRequestDTO.getExec_img());
                 exerciseRepository.save(exercise);
                 return true;
             } else {
@@ -51,9 +52,9 @@ public class ExerciseService {
         }
     }
 
-    public boolean delete(ExerciseDTO exerciseDTO) {
+    public boolean delete(ExerciseRequestDTO exerciseRequestDTO) {
         try {
-            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseDTO.getExec_id());
+            Optional<Exercise> optionalExercise = exerciseRepository.findById(exerciseRequestDTO.getExecId());
             if(optionalExercise.isPresent()) {
                 Exercise exercise = optionalExercise.get();
                 exerciseRepository.delete(exercise);
