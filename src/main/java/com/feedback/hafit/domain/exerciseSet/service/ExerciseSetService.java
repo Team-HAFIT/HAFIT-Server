@@ -32,36 +32,16 @@ public class ExerciseSetService {
     UserRepository userRepository;
 
 
-    @Transactional
+    @Transactional // 운동 한세트 종료 후 저장 메서드
     public ExerciseSetDTO save(ExerciseSetDTO execSetDTO, String email) {
         Long planId = execSetDTO.getPlan();
         Plan plan = planService.getById(planId);
-        Long targetSet = plan.getTargetSet();
-        Long realSet = execSetDTO.getRealSet();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
-        if (realSet + 1 > targetSet) {
-            // 이 조건에 해당하면 휴식 시간 화면이 아닌 결과 화면으로 이동
-            // 저장은 하고나서 return
-//            ExerciseSet execSet = exerciseSetRepository.save(ExerciseSet.builder()
-//                    .restTime(execSetDTO.getRestTime())
-//                    .weight(execSetDTO.getWeight())
-//                    .score(execSetDTO.getScore())
-//                    .realCount(execSetDTO.getRealCount())
-//                    .realSet(execSetDTO.getRealSet())
-//                    .startTime(execSetDTO.getStartTime())
-//                    .limitTime(execSetDTO.getLimitTime())
-//                    .realTime(execSetDTO.getRealTime())
-//                    .plan(plan)
-//                    .build()
-//            );
-//            return new ExerciseSetDTO(execSet);
-        }
-
         ExerciseSet execSet = exerciseSetRepository.save(ExerciseSet.builder()
-                .restTime(execSetDTO.getRestTime())
+//                .restTime(execSetDTO.getRestTime())
                 .weight(execSetDTO.getWeight())
                 .score(execSetDTO.getScore())
                 .realCount(execSetDTO.getRealCount())
@@ -73,12 +53,32 @@ public class ExerciseSetService {
                 .build()
         );
 
-        execSet.setRealSet(execSet.getRealSet()+1);
-
         return new ExerciseSetDTO(execSet);
     }
 
-    @Transactional
+    @Transactional // 휴식 시간 종료 후 휴식 시간 저장 메서드 (휴식 시간 -> 운동 화면 / 휴식 시간 -> 결과 화면)
+    public ExerciseSetDTO update(ExerciseSetDTO execSetDTO, String email) {
+        Long planId = execSetDTO.getPlan();
+        Plan plan = planService.getById(planId);
+
+        ExerciseSet execSet = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        ExerciseSetDTO execDTO = new ExerciseSetDTO(execSet);
+        execSet.setRestTime(execSetDTO.getRestTime());
+
+        exerciseSetRepository.save(execSet);
+
+        execDTO.setRealSet(execSet.getRealSet()+1);
+        log.info(String.valueOf(execDTO.getRealSet()));
+        execDTO.setWeight(execSetDTO.getWeight());
+        log.info(String.valueOf(execDTO.getWeight()));
+
+        return execDTO;
+    }
+
+    @Transactional // 하나의 계획에 해당하는 세트 조회용 메서드
     public List<ExerciseSetDTO> getByPlanId(Long planId, String email) {
         Plan plan = planService.getById(planId);
         List<ExerciseSet> sets = exerciseSetRepository.findByplan(plan);
@@ -94,7 +94,14 @@ public class ExerciseSetService {
         return execSets;
     }
 
-    @Transactional
+//    @Transactional // 운동 업데이트 전 조회용 테스트 메서드
+//    public ExerciseSetDTO getget(Long planId, String email) {
+//        Plan plan = planService.getById(planId);
+//        ExerciseSet execSet = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
+//        return new ExerciseSetDTO(execSet);
+//    }
+
+    @Transactional // 모든 세트 정보 조회용 메서드
     public List<ExerciseSetDTO> getAllSets(String email) {
         List<ExerciseSet> sets = exerciseSetRepository.findAll();
         List<ExerciseSetDTO> execSets = new ArrayList<>();
