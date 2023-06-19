@@ -26,7 +26,7 @@ public class PostController {
     private final UserService userService;
 
     @PostMapping
-    public void createPost(@RequestParam("files") List<MultipartFile> files,
+    public void createPost(@RequestParam(value="files", required = false) List<MultipartFile> files,
                                               @ModelAttribute PostCreateDTO postFormDTO,
                                               Principal principal) {
         postService.createPost(postFormDTO, files, principal.getName());

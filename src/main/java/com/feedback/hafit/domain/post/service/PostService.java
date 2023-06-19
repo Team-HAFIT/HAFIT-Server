@@ -60,20 +60,20 @@ public class PostService {
                 .user(user)
                 .category(category)
                 .post_content(post_content)
-                .build()
-        );
+                .build());
 
-        List<PostFileDTO> postFileDTOS = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String uploadUrl = s3Service.upload(file, "posts");
-            log.info("uploadUrl: {}", uploadUrl);
-            PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(
-                    PostFile.builder()
-                            .post(post)
-                            .file_name(uploadUrl)
-                            .build()
-            ));
-            postFileDTOS.add(postFileDTO);
+        if (files != null) { // files를 업로드한 경우에만 실행
+            List<PostFileDTO> postFileDTOS = new ArrayList<>();
+            for (MultipartFile file : files) {
+                String uploadUrl = s3Service.upload(file, "posts");
+                log.info("uploadUrl: {}", uploadUrl);
+                PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(
+                        PostFile.builder()
+                                .post(post)
+                                .file_name(uploadUrl)
+                                .build()));
+                postFileDTOS.add(postFileDTO);
+            }
         }
     }
 
@@ -103,8 +103,7 @@ public class PostService {
                         PostFile.builder()
                                 .post(post)
                                 .file_name(uploadUrl)
-                                .build()
-                );
+                                .build());
             }
         }
 
@@ -124,13 +123,13 @@ public class PostService {
             Long totalLikes = postLikeRepository.countLikesByPost(post);
             Long commentCount = commentRepository.countByPost(post);
             boolean likedByUser = checkIfPostLikedByUser(post, user);
-            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount);
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes,
+                    commentCount);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
 
         return postWithLikesDTOs;
     }
-
 
     public boolean checkIfPostLikedByUser(Post post, User user) {
         Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
