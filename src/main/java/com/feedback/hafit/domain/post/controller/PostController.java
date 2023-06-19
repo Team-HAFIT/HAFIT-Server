@@ -54,8 +54,10 @@ public class PostController {
 
     // 전체 피드 조회
     @GetMapping
-    public List<PostWithLikesDTO> getAllPosts(Principal principal) {
-        return postService.getAllPosts(principal.getName());
+    public List<PostWithLikesDTO> getAllPosts(@RequestParam Long lastPostId,
+                                              @RequestParam int size,
+                                              Principal principal) {
+        return postService.getAllPosts(lastPostId, size, principal.getName());
     }
 
     // 내가 작성한 글 조회

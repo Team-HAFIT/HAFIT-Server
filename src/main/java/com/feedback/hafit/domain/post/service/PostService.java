@@ -21,6 +21,8 @@ import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,24 +110,25 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public List<PostWithLikesDTO> getAllPosts(String email) {
-        List<Post> posts = postRepository.findAll();
-        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+    public List<PostWithLikesDTO> getAllPosts(Long lastPostId, int size, String email) {
+        PageRequest pageRequest = PageRequest.of(0, size);
+        Page<Post> pagePosts = postRepository.findByPostIdLessThanOrderByPostIdDesc(lastPostId, pageRequest);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
-        for (Post post : posts) {
+        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+        for (Post post : pagePosts) {
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
             Long commentCount = commentRepository.countByPost(post);
             boolean likedByUser = checkIfPostLikedByUser(post, user);
-
             PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
 
         return postWithLikesDTOs;
     }
+
 
     public boolean checkIfPostLikedByUser(Post post, User user) {
         Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
