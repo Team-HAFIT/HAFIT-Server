@@ -61,6 +61,7 @@ public class PostService {
                 .build()
         );
 
+        // S3 posts 파일에 이미지 저장
         List<PostFileDTO> postFileDTOS = new ArrayList<>();
         for (MultipartFile file : files) {
             String uploadUrl = s3Service.upload(file, "posts");
