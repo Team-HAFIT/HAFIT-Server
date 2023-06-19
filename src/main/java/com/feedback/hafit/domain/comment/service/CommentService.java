@@ -30,26 +30,20 @@ public class CommentService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Transactional
-    public boolean writeComment(Long postId, CommentCreateDTO commentCreateDTO, String email) {
-        try {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-            String content = commentCreateDTO.getComment_content();
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
+    public void writeComment(Long postId, CommentCreateDTO commentCreateDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        String content = commentCreateDTO.getComment_content();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
 
-            Comment comment = Comment.builder()
-                    .comment_content(content)
-                    .user(user)
-                    .post(post)
-                    .build();
+        Comment comment = Comment.builder()
+                .comment_content(content)
+                .user(user)
+                .post(post)
+                .build();
 
-            commentRepository.save(comment);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        commentRepository.save(comment);
     }
 
     public List<CommentWithLikesDTO> getAllComments(String email) {
@@ -75,32 +69,20 @@ public class CommentService {
         return optionalCommentLike.isPresent();
     }
 
-    public boolean deleteById(Long commentId) {
-        try {
-            Comment comment = commentRepository.findById(commentId)
-                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
-            commentRepository.delete(comment);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
+        commentRepository.delete(comment);
     }
 
     @Transactional
-    public boolean update(Long commentId, String newContent) {
-        try {
+    public void update(Long commentId, String newContent) {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new EntityNotFoundException("Comment not found with commentId: " + commentId));
 
             comment.setContent(newContent);
-            Comment updatedComment = commentRepository.save(comment);
+            commentRepository.save(comment);
 
-            return updatedComment != null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     public List<CommentWithLikesDTO> getCommentsByPostId(Long postId, String email) {
