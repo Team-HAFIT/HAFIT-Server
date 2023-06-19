@@ -26,29 +26,21 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
 
-    public boolean createGoal(GoalRequestDTO goalRequestDTO, String email) {
-        try {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
-            Long keywordId = goalRequestDTO.getKeywordId();
-            Keyword keyword = keywordRepository.findById(keywordId)
-                    .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+    public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
+        Long keywordId = goalRequestDTO.getKeywordId();
+        Keyword keyword = keywordRepository.findById(keywordId)
+                .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+        Goal goal = Goal.builder()
+                .user(user)
+                .keyword(keyword)
+                .goal_target_date(goalRequestDTO.getGoal_target_date())
+                .goal_content(goalRequestDTO.getGoal_content())
+                .build();
 
-            Goal goal = Goal.builder()
-                    .user(user)
-                    .keyword(keyword)
-                    .goal_target_date(goalRequestDTO.getGoal_target_date())
-                    .goal_content(goalRequestDTO.getGoal_content())
-                    .build();
-
-            goalRepository.save(goal);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        goalRepository.save(goal);
     }
-
 
     public List<GoalResponseDTO> getGoalsByUser(String email) {
         User user = userRepository.findByEmail(email)
@@ -67,7 +59,7 @@ public class GoalService {
         return goalResponseDTOs;
     }
 
-    public GoalResponseDTO updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
+    public void updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
 
@@ -80,18 +72,14 @@ public class GoalService {
         goal.setGoal_content(goalRequestDTO.getGoal_content());
         goal.setKeyword(keyword);
 
-        Goal updatedGoal = goalRepository.save(goal);
-
-        return new GoalResponseDTO(updatedGoal, keyword);
+        goalRepository.save(goal);
     }
 
-    public boolean deleteGoal(Long goalId) {
+    public void deleteGoal(Long goalId) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
 
         goalRepository.delete(goal);
-
-        return true;
     }
 
 }
