@@ -7,7 +7,6 @@ import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
-import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
@@ -22,6 +21,8 @@ import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,9 +47,8 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public PostDTO createPost(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
+    public void createPost(PostCreateDTO postDTO, List<MultipartFile> files, String email) {
         Long categoryId = postDTO.getCategoryId();
-        log.info(String.valueOf(categoryId));
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
         Category category = categoryRepository.findById(categoryId)
@@ -73,64 +73,55 @@ public class PostService {
             ));
             postFileDTOS.add(postFileDTO);
         }
-
-        return new PostDTO(post, postFileDTOS);
     }
 
     @Transactional
-    public boolean updatePost(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
-        try {
-            String postComment = postDTO.getPost_content();
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("해당하는 게시물을 찾을 수 없습니다."));
+    public void updatePost(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
+        String postComment = postDTO.getPost_content();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
+        Long categoryId = postDTO.getCategoryId();
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
 
-            Long categoryId = postDTO.getCategoryId();
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
-
-            List<Long> deleteImageIds = postDTO.getDeleteImageIds();
-            if (deleteImageIds != null) {
-                List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
-                postFiles.forEach(postFile -> {
-                    s3Service.delete(postFile.getFile_name());
-                    fileImageRepository.deleteById(postFile.getImageId());
-                });
-            }
-
-            if (files != null && !files.isEmpty()) {
-                for (MultipartFile file : files) {
-                    String uploadUrl = s3Service.upload(file, "posts");
-                    log.info("uploadUrl: {}", uploadUrl);
-                    fileImageRepository.save(
-                            PostFile.builder()
-                                    .post(post)
-                                    .file_name(uploadUrl)
-                                    .build()
-                    );
-                }
-            }
-
-            post.update(postComment, category);
-            postRepository.save(post);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        List<Long> deleteImageIds = postDTO.getDeleteImageIds();
+        if (deleteImageIds != null) {
+            List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
+            postFiles.forEach(postFile -> {
+                s3Service.delete(postFile.getFile_name());
+                fileImageRepository.deleteById(postFile.getImageId());
+            });
         }
+
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String uploadUrl = s3Service.upload(file, "posts");
+                log.info("uploadUrl: {}", uploadUrl);
+                fileImageRepository.save(
+                        PostFile.builder()
+                                .post(post)
+                                .file_name(uploadUrl)
+                                .build()
+                );
+            }
+        }
+
+        post.update(postComment, category);
+        postRepository.save(post);
     }
 
-    public List<PostWithLikesDTO> getAllPosts(String email) {
-        List<Post> posts = postRepository.findAll();
-        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+    public List<PostWithLikesDTO> getAllPosts(Long lastPostId, int size, String email) {
+        PageRequest pageRequest = PageRequest.of(0, size);
+        Page<Post> pagePosts = postRepository.findByPostIdLessThanOrderByPostIdDesc(lastPostId, pageRequest);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
-        for (Post post : posts) {
+        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+        for (Post post : pagePosts) {
             List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
             Long totalLikes = postLikeRepository.countLikesByPost(post);
             Long commentCount = commentRepository.countByPost(post);
             boolean likedByUser = checkIfPostLikedByUser(post, user);
-
             PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
@@ -138,47 +129,31 @@ public class PostService {
         return postWithLikesDTOs;
     }
 
+
     public boolean checkIfPostLikedByUser(Post post, User user) {
         Optional<PostLike> optionalPostLike = postLikeRepository.findByUserAndPost(user, post);
         return optionalPostLike.isPresent();
     }
 
-    public boolean deletePostById(Long postId) {
-        try {
-            Optional<Post> optionalPost = postRepository.findById(postId);
-            if (optionalPost.isPresent()) {
-                Post post = optionalPost.get();
-                postRepository.delete(post);
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deletePostById(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
+        postRepository.delete(post);
     }
 
     // 게시글 1개 조회 좋아요 기능 추가
     public PostWithCommentsDTO getPostById(Long postId, String email) {
-        Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-            boolean likedByUser = checkIfPostLikedByUser(post, user);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
+        List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        boolean likedByUser = checkIfPostLikedByUser(post, user);
+        Long commentCount = commentRepository.countByPost(post);
+        Long totalLikes = postLikeRepository.countLikesByPost(post);
+        List<CommentWithLikesDTO> commentDTOs = commentService.getCommentsByPostId(postId, email);
 
-            Long commentCount = commentRepository.countByPost(post);
-            Long totalLikes = postLikeRepository.countLikesByPost(post);
-            List<CommentWithLikesDTO> commentDTOs = commentService.getCommentsByPostId(postId, email);
-
-            PostWithCommentsDTO postWithCommentsDTO = new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount, commentDTOs);
-
-            return postWithCommentsDTO;
-        } else {
-            return null;
-        }
+        return new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount, commentDTOs);
     }
 
     public List<PostFileDTO> getFileImageDTOsForPost(Post post) {
