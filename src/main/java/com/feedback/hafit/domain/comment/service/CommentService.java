@@ -1,13 +1,17 @@
 package com.feedback.hafit.domain.comment.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.comment.dto.request.CommentCreateDTO;
+import com.feedback.hafit.domain.comment.dto.response.CommentForUserDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.commentLike.repository.CommentLikeRepository;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.repository.PostRepository;
+import com.feedback.hafit.domain.post.service.PostService;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -28,6 +30,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
+    private final PostService postService;
 
     @Transactional
     public boolean writeComment(Long postId, CommentCreateDTO commentCreateDTO, String email) {
@@ -68,7 +71,6 @@ public class CommentService {
 
         return commentsWithLikesDTOs;
     }
-
 
     private boolean checkIfCommentLikedByUser(Comment comment, User user) {
         Optional<CommentLike> optionalCommentLike = commentLikeRepository.findByUserAndComment(user, comment);
@@ -123,4 +125,26 @@ public class CommentService {
         return commentDTOs;
     }
 
+    public Map<String, Object> getMyComments(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+
+        List<Comment> myComments = commentRepository.findByUser(user);
+        List<CommentForUserDTO> postedComments = new ArrayList<>();
+
+        for (Comment comment : myComments) {
+            Long postId = comment.getPost().getPostId();
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
+            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
+            CommentForUserDTO commentDTO = new CommentForUserDTO(comment, postFileDTOS);
+            postedComments.add(commentDTO);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", postedComments.size());
+        result.put("comments", postedComments);
+
+        return result;
+    }
 }

@@ -63,12 +63,12 @@ public class PostController {
     // 내가 작성한 글 조회
     @GetMapping("/my")
     public Map<String, Object> getMyPosts(Principal principal) {
-        return userService.getMyPosts(principal.getName());
+        return postService.getMyPosts(principal.getName());
     }
 
     // 내가 좋아요 표시한 글 조회
     @GetMapping("/my/liked-posts")
     public Map<String, Object> getLikedPostsByEmail(Principal principal) {
-        return userService.getLikedPostsByEmail(principal.getName());
+        return postService.getLikedPostsByEmail(principal.getName());
     }
 }

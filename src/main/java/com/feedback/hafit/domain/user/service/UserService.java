@@ -1,15 +1,8 @@
 package com.feedback.hafit.domain.user.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
-import com.feedback.hafit.domain.comment.dto.response.CommentForUserDTO;
-import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
-import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
-import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
-import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.post.service.PostService;
-import com.feedback.hafit.domain.postLike.entity.PostLike;
 import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
 import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.request.UserDTO;
@@ -23,10 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -89,68 +78,4 @@ public class UserService {
         return new UserResponseDTO(user);
     }
 
-    // 내가 좋아요한 게시글
-    public Map<String, Object> getLikedPostsByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-        List<PostLike> postLikes = postLikeRepository.findByUser(user);
-        List<PostForUserDTO> likedPosts = new ArrayList<>();
-
-        for (PostLike postLike : postLikes) {
-            Post post = postLike.getPost();
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            likedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", likedPosts.size());
-        result.put("posts", likedPosts);
-
-        return result;
-    }
-
-    // 내가 작성한 게시글
-    public Map<String, Object> getMyPosts(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-
-        List<Post> myPosts = postRepository.findByUser(user);
-        List<PostForUserDTO> postedPosts = new ArrayList<>();
-
-        for (Post post : myPosts) {
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            postedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", postedPosts.size());
-        result.put("posts", postedPosts);
-
-        return result;
-    }
-
-    public Map<String, Object> getMyComments(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-
-        List<Comment> myComments = commentRepository.findByUser(user);
-        List<CommentForUserDTO> postedComments = new ArrayList<>();
-
-        for (Comment comment : myComments) {
-            Long postId = comment.getPost().getPostId();
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            CommentForUserDTO commentDTO = new CommentForUserDTO(comment, postFileDTOS);
-            postedComments.add(commentDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", postedComments.size());
-        result.put("comments", postedComments);
-
-        return result;
-    }
 }
