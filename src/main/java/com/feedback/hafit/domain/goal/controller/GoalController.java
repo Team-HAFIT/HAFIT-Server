@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.goal.controller;
 
 
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
+import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.service.GoalService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class GoalController {
 
     private final GoalService goalService;
 
-    @PostMapping("/goals")
+    @PostMapping
     public void createGoal(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
         goalService.createGoal(goalRequestDTO, principal.getName());
     }
@@ -37,6 +38,11 @@ public class GoalController {
     @GetMapping("/all")
     public List<GoalResponseDTO> getMyGoals(Principal principal) {
         return goalService.getGoalsByUser(principal.getName());
+    }
+
+    @GetMapping("/my")
+    public GoalForDdayDTO getMyGoal(Principal principal) {
+        return goalService.getMyGoal(principal.getName());
     }
 
 }

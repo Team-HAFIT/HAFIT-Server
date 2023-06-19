@@ -1,12 +1,15 @@
 package com.feedback.hafit.domain.goal.service;
 
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
+import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.repository.KeywordRepository;
+import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +31,7 @@ public class GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
+    private final PlanRepository planRepository;
 
     public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
         User user = userRepository.findByEmail(email)
@@ -82,4 +89,19 @@ public class GoalService {
         goalRepository.delete(goal);
     }
 
+    public GoalForDdayDTO getMyGoal(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
+
+        Goal goal = goalRepository.findFirstByUserUserIdOrderByCreatedAtDesc(user.getUserId())
+                .orElseThrow(() -> new NotFoundException("Goal not found"));
+
+        LocalDateTime today = LocalDateTime.now();
+        LocalDate targetDate = goal.getGoal_target_date();
+        long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+
+        String goalContent = goal.getGoal_content();
+
+        return new GoalForDdayDTO(goalContent, daysRemaining);
+    }
 }
