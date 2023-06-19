@@ -26,7 +26,6 @@ public class ExerciseSetService {
     // 운동 한 세트 종료 후 저장 메서드
     @Transactional
     public ExerciseSetResponseDTO save(ExerciseSetRequestDTO execSetDTO) {
-        try {
             Long planId = execSetDTO.getPlan();
             Plan plan = planRepository.findById(planId)
                     .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
@@ -44,11 +43,10 @@ public class ExerciseSetService {
                     .build();
 
             ExerciseSet savedExerciseSet = exerciseSetRepository.save(execSet);
-            return new ExerciseSetResponseDTO(savedExerciseSet);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("운동 세트 저장에 실패하였습니다.");
-        }
+            ExerciseSetResponseDTO exerciseSetResponseDTO = new ExerciseSetResponseDTO(savedExerciseSet);
+            exerciseSetResponseDTO.setSetId(savedExerciseSet.getSetId());
+
+            return exerciseSetResponseDTO;
     }
 
     // 휴식 시간 종료 후 휴식 시간 저장 메서드 (휴식 시간 -> 운동 화면 / 휴식 시간 -> 결과 화면)
