@@ -24,7 +24,7 @@ import java.util.*;
 
 @Entity
 @Getter
-@Builder
+
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -105,6 +105,31 @@ public class User extends BaseEntity implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Category> categories = new ArrayList<>();
+
+    @Builder
+    public User(
+            Long userId,
+            String email,
+            String password,
+            String name,
+            String carrier,
+            String phone,
+            Role role,
+            SocialType socialType,
+            String socialId,
+            String imageUrl
+    ) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.carrier = carrier;
+        this.phone = phone;
+        this.name = name;
+        this.role = Role.USER;
+        this.socialType = socialType;
+        this.socialId = socialId;
+        this.imageUrl = imageUrl;
+    }
 
     public UserLoginDTO toLoginDTO() {
         return UserLoginDTO.builder()
