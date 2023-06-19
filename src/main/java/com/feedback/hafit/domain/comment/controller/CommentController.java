@@ -71,7 +71,7 @@ public class CommentController {
     public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
         try {
             String email = principal.getName();
-            Map<String, Object> result = userService.getMyComments(email);
+            Map<String, Object> result = commentService.getMyComments(email);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             e.printStackTrace();
