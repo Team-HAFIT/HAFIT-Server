@@ -11,9 +11,10 @@ import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.post.service.PostService;
 import com.feedback.hafit.domain.postLike.entity.PostLike;
 import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
-import com.feedback.hafit.domain.user.dto.UserChangePasswordDTO;
-import com.feedback.hafit.domain.user.dto.UserDTO;
-import com.feedback.hafit.domain.user.dto.UserFormDTO;
+import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
+import com.feedback.hafit.domain.user.dto.request.UserDTO;
+import com.feedback.hafit.domain.user.dto.request.UserFormDTO;
+import com.feedback.hafit.domain.user.dto.response.UserResponseDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -36,83 +40,53 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final PostService postService;
 
-    public boolean signup(UserFormDTO userFormDTO) {
+    public void signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        User savedUser = userRepository.save(user);
-        return savedUser != null;
+        userRepository.save(user);
     }
 
-    public boolean deleteUser(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) { // Optional에서 User를 가져올 수 있는지 확인
-            User user = userOptional.get();
-            userRepository.delete(user);
-            return true; // 삭제 성공을 나타내는 true 반환
-        } else {
-            return false; // 삭제 실패를 나타내는 false 반환
-        }
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        userRepository.delete(user);
     }
 
     public int emailCheck(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        return userOptional.isPresent() ? 1 : 0;
+        boolean exists = userRepository.existsByEmail(email);
+        return exists ? 1 : 0;
     }
 
-    public boolean updateUser(String email, UserDTO userDTO) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setCarrier(user.getCarrier());
-            user.setPhone(userDTO.getPhone());
-            user.setHeight(userDTO.getHeight());
-            user.setWeight(userDTO.getWeight());
-            user.setSex(userDTO.getSex());
-            user.setBirthday(userDTO.getBirthday());
-            user.setImageUrl(userDTO.getImageUrl());
-            userRepository.save(user);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean changePassword(String email, UserChangePasswordDTO changePasswordDTO) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
-                String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
-                // 비밀번호 유효성 검사 이후에 암호화 및 저장을 수행합니다.
-                user.setPassword(encodedNewPassword);
-                userRepository.save(user);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public UserDTO getUserInfoByEmail(String email) {
+    public void updateUser(String email, UserDTO userDTO) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-        return mapToUserDTO(user);
+        user.setCarrier(user.getCarrier());
+        user.setPhone(userDTO.getPhone());
+        user.setHeight(userDTO.getHeight());
+        user.setWeight(userDTO.getWeight());
+        user.setSex(userDTO.getSex());
+        user.setBirthday(userDTO.getBirthday());
+        user.setImageUrl(userDTO.getImageUrl());
+        userRepository.save(user);
     }
 
-    private UserDTO mapToUserDTO(User user) {
-        return UserDTO.builder()
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .carrier(user.getCarrier())
-                .phone(user.getPhone())
-                .sex(user.getSex())
-                .imageUrl(user.getImageUrl())
-                .weight(user.getWeight())
-                .height(user.getHeight())
-                .birthday(user.getBirthday())
-                .role(user.getRole())
-                .build();
+    public void changePassword(String email, UserChangePasswordDTO changePasswordDTO) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+            String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
+            user.setPassword(encodedNewPassword);
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Invalid old password");
+        }
+    }
+
+    public UserResponseDTO getUserInfoByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        return new UserResponseDTO(user);
     }
 
     // 내가 좋아요한 게시글
