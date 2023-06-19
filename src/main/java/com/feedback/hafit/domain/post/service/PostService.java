@@ -28,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -153,6 +155,12 @@ public class PostService {
         Long totalLikes = postLikeRepository.countLikesByPost(post);
         List<CommentWithLikesDTO> commentDTOs = commentService.getCommentsByPostId(postId, email);
 
+        for (CommentWithLikesDTO commentDTO : commentDTOs) {
+            LocalDateTime commentTime = commentDTO.getModifiedAt();
+            String timeAgo = getTimeAgo(commentTime);
+            commentDTO.setUser_lastCommentTime(timeAgo);
+        }
+
         return new PostWithCommentsDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount, commentDTOs);
     }
 
@@ -162,4 +170,27 @@ public class PostService {
                 .map(PostFileDTO::new)
                 .collect(Collectors.toList());
     }
+
+    private String getTimeAgo(LocalDateTime commentTime) {
+        Duration duration = Duration.between(commentTime, LocalDateTime.now());
+
+        long minutes = duration.toMinutes();
+        long hours = duration.toHours();
+        long days = duration.toDays();
+        long months = days / 30;
+        long years = days / 365;
+
+        if (minutes < 60) {
+            return minutes + "분 전";
+        } else if (hours < 24) {
+            return hours + "시간 전";
+        } else if (days < 30) {
+            return days + "일 전";
+        } else if (months < 12) {
+            return months + "달 전";
+        } else {
+            return years + "년 전";
+        }
+    }
+
 }
