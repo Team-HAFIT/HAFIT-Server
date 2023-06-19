@@ -28,55 +28,34 @@ public class CommentController {
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Boolean> create(@PathVariable Long postId, @RequestBody CommentCreateDTO commentCreateDTO, Principal principal) {
-        boolean isCommentCreated = commentService.writeComment(postId, commentCreateDTO, principal.getName());
-        if (isCommentCreated) {
+         commentService.writeComment(postId, commentCreateDTO, principal.getName());
             return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
     }
 
     @GetMapping // 전체 댓글 조회
     public ResponseEntity<List<CommentWithLikesDTO>> getAllComments(Principal principal) {
         List<CommentWithLikesDTO> commentDTOs = commentService.getAllComments(principal.getName());
-        if (!commentDTOs.isEmpty()) {
             return ResponseEntity.ok(commentDTOs);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @PutMapping("/{commentId}") // 댓글 수정
     public ResponseEntity<Boolean> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateDTO commentUpdateDTO) {
-        boolean isCommentUpdated = commentService.update(commentId, commentUpdateDTO.getComment_content());
-        if (isCommentUpdated) {
+        commentService.update(commentId, commentUpdateDTO.getComment_content());
             return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
     }
 
     @DeleteMapping("/{commentId}") // 댓글 삭제
     public ResponseEntity<Boolean> deleteComment(@PathVariable Long commentId) {
-        boolean isCommentDeleted = commentService.deleteById(commentId);
-        if (isCommentDeleted) {
+         commentService.deleteById(commentId);
             return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
     }
 
     // 작성한 댓글 조회
     @GetMapping("/my")
     public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
-        try {
             String email = principal.getName();
             Map<String, Object> result = userService.getMyComments(email);
             return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
     }
 
 }
