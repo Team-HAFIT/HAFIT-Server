@@ -1,12 +1,15 @@
 package com.feedback.hafit.domain.goal.service;
 
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
+import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.repository.KeywordRepository;
+import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,30 +31,23 @@ public class GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
+    private final PlanRepository planRepository;
 
-    public boolean createGoal(GoalRequestDTO goalRequestDTO, String email) {
-        try {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
-            Long keywordId = goalRequestDTO.getKeywordId();
-            Keyword keyword = keywordRepository.findById(keywordId)
-                    .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+    public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
+        Long keywordId = goalRequestDTO.getKeywordId();
+        Keyword keyword = keywordRepository.findById(keywordId)
+                .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+        Goal goal = Goal.builder()
+                .user(user)
+                .keyword(keyword)
+                .goal_target_date(goalRequestDTO.getGoal_target_date())
+                .goal_content(goalRequestDTO.getGoal_content())
+                .build();
 
-            Goal goal = Goal.builder()
-                    .user(user)
-                    .keyword(keyword)
-                    .goal_target_date(goalRequestDTO.getGoal_target_date())
-                    .goal_content(goalRequestDTO.getGoal_content())
-                    .build();
-
-            goalRepository.save(goal);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        goalRepository.save(goal);
     }
-
 
     public List<GoalResponseDTO> getGoalsByUser(String email) {
         User user = userRepository.findByEmail(email)
@@ -67,7 +66,7 @@ public class GoalService {
         return goalResponseDTOs;
     }
 
-    public GoalResponseDTO updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
+    public void updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
 
@@ -80,18 +79,29 @@ public class GoalService {
         goal.setGoal_content(goalRequestDTO.getGoal_content());
         goal.setKeyword(keyword);
 
-        Goal updatedGoal = goalRepository.save(goal);
-
-        return new GoalResponseDTO(updatedGoal, keyword);
+        goalRepository.save(goal);
     }
 
-    public boolean deleteGoal(Long goalId) {
+    public void deleteGoal(Long goalId) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
 
         goalRepository.delete(goal);
-
-        return true;
     }
 
+    public GoalForDdayDTO getMyGoal(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
+
+        Goal goal = goalRepository.findFirstByUserUserIdOrderByCreatedAtDesc(user.getUserId())
+                .orElseThrow(() -> new NotFoundException("Goal not found"));
+
+        LocalDateTime today = LocalDateTime.now();
+        LocalDate targetDate = goal.getGoal_target_date();
+        long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+
+        String goalContent = goal.getGoal_content();
+
+        return new GoalForDdayDTO(goalContent, daysRemaining);
+    }
 }
