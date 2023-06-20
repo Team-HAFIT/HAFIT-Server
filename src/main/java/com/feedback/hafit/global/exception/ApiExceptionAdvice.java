@@ -1,5 +1,6 @@
 package com.feedback.hafit.global.exception;
 
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,5 +31,13 @@ public class ApiExceptionAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(AmazonS3Exception.class)
+    public ResponseEntity<String> AmazonS3Exception(
+            AmazonS3Exception e
+    ) {
+        log.error("AmazonS3Exception 발생!");
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 
 }
