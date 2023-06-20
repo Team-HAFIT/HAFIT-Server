@@ -122,4 +122,13 @@ public class ExerciseSetService {
         }
     }
 
+    @Transactional
+    public ExerciseSetResponseDTO getLastestPlan(Long planId) {
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
+
+        ExerciseSet exerciseSets = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
+        ExerciseSetResponseDTO setDTO = new ExerciseSetResponseDTO(exerciseSets);
+        return setDTO;
+    }
 }

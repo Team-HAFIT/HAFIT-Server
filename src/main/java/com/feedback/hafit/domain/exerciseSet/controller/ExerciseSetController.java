@@ -27,9 +27,14 @@ public class ExerciseSetController {
         return ResponseEntity.ok(exerciseSetService.update(dto));
     }
 
-    @GetMapping("/{planId}") // 하나의 계획에 해당하는 모든 운동 기록 조회
+    @GetMapping("/all/{planId}") // 하나의 계획에 해당하는 모든 운동 기록 조회
     public ResponseEntity<List<ExerciseSetResponseDTO>> getPlan(@PathVariable Long planId) {
         return ResponseEntity.ok(exerciseSetService.getByPlanId(planId));
+    }
+
+    @GetMapping("/{planId}") // 이전 운동 세트의 정보 조회
+    public ResponseEntity<ExerciseSetResponseDTO> getLastestPlan(@PathVariable Long planId) {
+        return ResponseEntity.ok(exerciseSetService.getLastestPlan(planId));
     }
 
     @GetMapping // 모든 운동 기록 조회
