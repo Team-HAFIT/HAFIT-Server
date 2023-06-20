@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/api/my/email/**").permitAll()
                 .antMatchers("/api/my/**", "/api/posts/**", "/api/plans/**", "/api/sets/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/api/category/**").hasRole("ADMIN")
+                .antMatchers("/api/category/**", "/api/admin/**").hasRole("ADMIN")
                 .antMatchers("/api/category/**/posts").hasAnyRole("USER", "ADMIN")
 
                 // 아이콘, css, js 관련

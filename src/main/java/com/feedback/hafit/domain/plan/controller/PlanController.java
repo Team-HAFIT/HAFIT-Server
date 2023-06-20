@@ -17,13 +17,8 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping // 운동 시작 전 세팅
-    public ResponseEntity<Boolean> createPlan(@RequestBody PlanRequestDTO planRequestDTO, Principal principal) {
-        boolean isCreated = planService.settingPlan(planRequestDTO, principal.getName());
-        if (isCreated) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
+    public ResponseEntity<Long> createPlan(@RequestBody PlanRequestDTO planRequestDTO, Principal principal) {
+        return ResponseEntity.ok(planService.settingPlan(planRequestDTO, principal.getName()));
     }
 
     @GetMapping("/{planId}") // 계획 조회

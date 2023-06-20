@@ -1,18 +1,19 @@
-package com.feedback.hafit.domain.user.dto;
+package com.feedback.hafit.domain.user.dto.request;
 
-import com.feedback.hafit.global.enumerate.Role;
 import com.feedback.hafit.domain.user.entity.User;
+import com.feedback.hafit.global.enumerate.Role;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class UserFormDTO {
 
@@ -47,13 +48,4 @@ public class UserFormDTO {
         return user;
     }
 
-    @Builder
-    public UserFormDTO(String email, String password, String name, String carrier, String phone, Role role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.carrier = carrier;
-        this.phone = phone;
-        this.role = role;
-    }
 }

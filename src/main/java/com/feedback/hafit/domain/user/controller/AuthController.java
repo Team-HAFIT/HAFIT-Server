@@ -1,7 +1,7 @@
 package com.feedback.hafit.domain.user.controller;
 
-import com.feedback.hafit.domain.user.dto.UserDTO;
-import com.feedback.hafit.domain.user.dto.UserFormDTO;
+import com.feedback.hafit.domain.user.dto.request.UserDTO;
+import com.feedback.hafit.domain.user.dto.request.UserFormDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.domain.user.service.UserService;
@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -31,23 +30,13 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseEntity<Boolean> updateUser(Principal principal, @RequestBody UserDTO userDTO) {
-        boolean isUpdated = userService.updateUser(principal.getName(), userDTO);
-        if (isUpdated) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
+    public void updateUser(Principal principal, @RequestBody UserDTO userDTO) {
+        userService.updateUser(principal.getName(), userDTO);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Boolean> signup(@RequestBody UserFormDTO userFormDTO) {
-        boolean isSaved = userService.signup(userFormDTO);;
-        if (isSaved) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.badRequest().body(false);
-        }
+    public void signup(@RequestBody UserFormDTO userFormDTO) {
+        userService.signup(userFormDTO);
     }
 
     // 이메일 중복 확인

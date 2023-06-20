@@ -1,19 +1,9 @@
 package com.feedback.hafit.domain.user.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
-import com.feedback.hafit.domain.comment.dto.response.CommentForUserDTO;
-import com.feedback.hafit.domain.comment.entity.Comment;
-import com.feedback.hafit.domain.comment.repository.CommentRepository;
-import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
-import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
-import com.feedback.hafit.domain.post.entity.Post;
-import com.feedback.hafit.domain.post.repository.PostRepository;
-import com.feedback.hafit.domain.post.service.PostService;
-import com.feedback.hafit.domain.postLike.entity.PostLike;
-import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
-import com.feedback.hafit.domain.user.dto.UserChangePasswordDTO;
-import com.feedback.hafit.domain.user.dto.UserDTO;
-import com.feedback.hafit.domain.user.dto.UserFormDTO;
+import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
+import com.feedback.hafit.domain.user.dto.request.UserDTO;
+import com.feedback.hafit.domain.user.dto.request.UserFormDTO;
+import com.feedback.hafit.domain.user.dto.response.UserResponseDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
@@ -25,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.*;
 
 @Service
 @Slf4j
@@ -33,161 +22,61 @@ import java.util.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PostLikeRepository postLikeRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PostService postService;
 
     private final S3Service s3Service;
 
-    public boolean signup(UserFormDTO userFormDTO) {
+    public void signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
-        User savedUser = userRepository.save(user);
-        return savedUser != null;
+        userRepository.save(user);
     }
 
-    public boolean deleteUser(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) { // Optional에서 User를 가져올 수 있는지 확인
-            User user = userOptional.get();
-            userRepository.delete(user);
-            return true; // 삭제 성공을 나타내는 true 반환
-        } else {
-            return false; // 삭제 실패를 나타내는 false 반환
-        }
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        userRepository.delete(user);
     }
 
     public int emailCheck(String email) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        return userOptional.isPresent() ? 1 : 0;
+        boolean exists = userRepository.existsByEmail(email);
+        return exists ? 1 : 0;
     }
 
-    public boolean updateUser(String email, UserDTO userDTO) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setCarrier(user.getCarrier());
-            user.setPhone(userDTO.getPhone());
-            user.setHeight(userDTO.getHeight());
-            user.setWeight(userDTO.getWeight());
-            user.setSex(userDTO.getSex());
-            user.setBirthday(userDTO.getBirthday());
-            user.setImageUrl(userDTO.getImageUrl());
+    public void updateUser(String email, UserDTO userDTO) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        user.setCarrier(user.getCarrier());
+        user.setPhone(userDTO.getPhone());
+        user.setHeight(userDTO.getHeight());
+        user.setWeight(userDTO.getWeight());
+        user.setSex(userDTO.getSex());
+        user.setBirthday(userDTO.getBirthday());
+        user.setImageUrl(userDTO.getImageUrl());
+        userRepository.save(user);
+    }
+
+    public void changePassword(String email, UserChangePasswordDTO changePasswordDTO) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
+            String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
+            user.setPassword(encodedNewPassword);
             userRepository.save(user);
-            return true;
         } else {
-            return false;
+            throw new IllegalArgumentException("Invalid old password");
         }
     }
 
-    public boolean changePassword(String email, UserChangePasswordDTO changePasswordDTO) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())) {
-                String encodedNewPassword = passwordEncoder.encode(changePasswordDTO.getNewPassword());
-                // 비밀번호 유효성 검사 이후에 암호화 및 저장을 수행합니다.
-                user.setPassword(encodedNewPassword);
-                userRepository.save(user);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public UserDTO getUserInfoByEmail(String email) {
+    public UserResponseDTO getUserInfo(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-        return mapToUserDTO(user);
+        return new UserResponseDTO(user);
     }
-
-    private UserDTO mapToUserDTO(User user) {
-        return UserDTO.builder()
-                .userId(user.getUserId())
-                .email(user.getEmail())
-                .name(user.getName())
-                .carrier(user.getCarrier())
-                .phone(user.getPhone())
-                .sex(user.getSex())
-                .imageUrl(user.getImageUrl())
-                .weight(user.getWeight())
-                .height(user.getHeight())
-                .birthday(user.getBirthday())
-                .role(user.getRole())
-                .build();
-    }
-
-    // 내가 좋아요한 게시글
-    public Map<String, Object> getLikedPostsByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-        List<PostLike> postLikes = postLikeRepository.findByUser(user);
-        List<PostForUserDTO> likedPosts = new ArrayList<>();
-
-        for (PostLike postLike : postLikes) {
-            Post post = postLike.getPost();
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            likedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", likedPosts.size());
-        result.put("posts", likedPosts);
-
-        return result;
-    }
-
-    // 내가 작성한 게시글
-    public Map<String, Object> getMyPosts(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-
-        List<Post> myPosts = postRepository.findByUser(user);
-        List<PostForUserDTO> postedPosts = new ArrayList<>();
-
-        for (Post post : myPosts) {
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            postedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", postedPosts.size());
-        result.put("posts", postedPosts);
-
-        return result;
-    }
-
-    public Map<String, Object> getMyComments(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-
-        List<Comment> myComments = commentRepository.findByUser(user);
-        List<CommentForUserDTO> postedComments = new ArrayList<>();
-
-        for (Comment comment : myComments) {
-            Long postId = comment.getPost().getPostId();
-            Post post = postRepository.findById(postId)
-                    .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
-            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            CommentForUserDTO commentDTO = new CommentForUserDTO(comment, postFileDTOS);
-            postedComments.add(commentDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", postedComments.size());
-        result.put("comments", postedComments);
-
-        return result;
-    }
-
     public String uploadProfileImage(MultipartFile profileImage, String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("Could not find user with email: " + email));
 
         String s3Path = s3Service.upload(profileImage, "profiles");
 
@@ -244,5 +133,4 @@ public class UserService {
 
         return user.getImageUrl();
     }
-
 }

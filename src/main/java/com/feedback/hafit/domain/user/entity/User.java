@@ -7,7 +7,7 @@ import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.postLike.entity.PostLike;
-import com.feedback.hafit.domain.user.dto.UserLoginDTO;
+import com.feedback.hafit.domain.user.dto.request.UserLoginDTO;
 import com.feedback.hafit.global.enumerate.Role;
 import com.feedback.hafit.global.enumerate.SocialType;
 import lombok.AllArgsConstructor;
