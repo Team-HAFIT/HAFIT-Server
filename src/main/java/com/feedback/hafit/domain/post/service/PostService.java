@@ -7,9 +7,7 @@ import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
-import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
-import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
-import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
+import com.feedback.hafit.domain.post.dto.response.*;
 import com.feedback.hafit.domain.post.entity.Post;
 import com.feedback.hafit.domain.post.entity.PostFile;
 import com.feedback.hafit.domain.post.repository.FileImageRepository;
@@ -30,9 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -192,45 +188,68 @@ public class PostService {
         }
     }
 
-    // 내가 작성한 게시글
-//    public Map<String, Object> getMyPosts(String email) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-//
-//        List<Post> myPosts = postRepository.findByUser(user);
-//        List<PostForUserDTO> postedPosts = new ArrayList<>();
-//
-//        for (Post post : myPosts) {
-//            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-//            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-//            postedPosts.add(postDTO);
-//        }
-//
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("count", postedPosts.size());
-//        result.put("posts", postedPosts);
-//
-//        return result;
-//    }
+    // 카테고리 별 게시글 조회
+    public List<PostWithLikesDTO> getPostsByCategory(Long lastPostId, int size, Long categoryId, String email) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + categoryId));
+        PageRequest pageRequest = PageRequest.of(0, size);
+        Page<Post> pagePosts = postRepository.findByPostIdLessThanAndCategoryOrderByPostIdDesc(lastPostId, category, pageRequest);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        List<PostWithLikesDTO> postWithLikesDTOs = new ArrayList<>();
+        for (Post post : pagePosts) {
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            Long totalLikes = postLikeRepository.countLikesByPost(post);
+            Long commentCount = commentRepository.countByPost(post);
+            boolean likedByUser = checkIfPostLikedByUser(post, user);
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes,
+                    commentCount);
+            postWithLikesDTOs.add(postWithLikesDTO);
+        }
+
+        return postWithLikesDTOs;
+    }
+
+//     내가 작성한 게시글
+    public Map<String, Object> getMyPosts(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Could not find user with email: " + email));
+
+        List<Post> myPosts = postRepository.findByUser(user);
+        List<PostForUserDTO> postedPosts = new ArrayList<>();
+
+        for (Post post : myPosts) {
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
+            postedPosts.add(postDTO);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", postedPosts.size());
+        result.put("posts", postedPosts);
+
+        return result;
+    }
 
     // 내가 좋아요한 게시글
-//    public Map<String, Object> getLikedPostsByEmail(String email) {
-//        User user = userRepository.findByEmail(email)
-//                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-//        List<PostLike> postLikes = postLikeRepository.findByUser(user);
-//        List<PostForUserDTO> likedPosts = new ArrayList<>();
-//
-//        for (PostLike postLike : postLikes) {
-//            Post post = postLike.getPost();
-//            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-//            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-//            likedPosts.add(postDTO);
-//        }
-//
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("count", likedPosts.size());
-//        result.put("posts", likedPosts);
-//
-//        return result;
-//    }
+    public Map<String, Object> getLikedPostsByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+        List<PostLike> postLikes = postLikeRepository.findByUser(user);
+        List<PostForUserDTO> likedPosts = new ArrayList<>();
+
+        for (PostLike postLike : postLikes) {
+            Post post = postLike.getPost();
+            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
+            likedPosts.add(postDTO);
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", likedPosts.size());
+        result.put("posts", likedPosts);
+
+        return result;
+    }
 }

@@ -3,7 +3,6 @@ package com.feedback.hafit.domain.category.controller;
 import com.feedback.hafit.domain.category.dto.request.CategoryRequestDTO;
 import com.feedback.hafit.domain.category.dto.response.CategoryResponseDTO;
 import com.feedback.hafit.domain.category.service.CategoryService;
-import com.feedback.hafit.domain.post.dto.response.PostDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -65,15 +64,4 @@ public class CategoryController {
         }
     }
 
-    // 카테고리별 게시글 조회
-    @GetMapping("/{categoryId}/posts")
-    public ResponseEntity<List<PostDTO>> getPostsByCategory(@PathVariable Long categoryId) {
-        log.info(String.valueOf(categoryId));
-        List<PostDTO> posts = categoryService.getPostsByCategory(categoryId);
-        if (!posts.isEmpty()) {
-            return ResponseEntity.ok(posts);
-        } else {
-            return ResponseEntity.noContent().build();
-        }
-    }
 }

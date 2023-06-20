@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -57,15 +58,23 @@ public class PostController {
         return postService.getAllPosts(lastPostId, size, principal.getName());
     }
 
-//    // 내가 작성한 글 조회
-//    @GetMapping("/my")
-//    public Map<String, Object> getMyPosts(Principal principal) {
-//        return postService.getMyPosts(principal.getName());
-//    }
-//
-//    // 내가 좋아요 표시한 글 조회
-//    @GetMapping("/my/liked-posts")
-//    public Map<String, Object> getLikedPostsByEmail(Principal principal) {
-//        return postService.getLikedPostsByEmail(principal.getName());
-//    }
+    // 카테고리별 게시글 조회
+    @GetMapping("/category/{categoryId}")
+    public List<PostWithLikesDTO> getPostsByCategory(@RequestParam Long lastPostId,
+                                            @RequestParam int size,
+                                            @PathVariable Long categoryId, Principal principal) {
+        return postService.getPostsByCategory(lastPostId, size, categoryId, principal.getName());
+    }
+
+    // 내가 작성한 글 조회
+    @GetMapping("/my")
+    public Map<String, Object> getMyPosts(Principal principal) {
+        return postService.getMyPosts(principal.getName());
+    }
+
+    // 내가 좋아요 표시한 글 조회
+    @GetMapping("/my/liked-posts")
+    public Map<String, Object> getLikedPostsByEmail(Principal principal) {
+        return postService.getLikedPostsByEmail(principal.getName());
+    }
 }
