@@ -34,7 +34,7 @@ public class UserController {
     // 회원 정보 가져오기
     @GetMapping
     public UserResponseDTO getUserInfo(Principal principal) {
-        return userService.getUserInfoByEmail(principal.getName());
+        return userService.getUserInfo(principal.getName());
     }
 
 }

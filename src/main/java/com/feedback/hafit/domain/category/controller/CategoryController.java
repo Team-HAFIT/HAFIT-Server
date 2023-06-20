@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/category")
@@ -36,10 +35,7 @@ public class CategoryController {
 
     @GetMapping // 카테고리 목록 조회
     public List<CategoryResponseDTO> getAllCategories() {
-        return categoryService.getAllCategories()
-                .stream()
-                .map(CategoryResponseDTO::new)
-                .collect(Collectors.toList());
+        return categoryService.getAllCategories();
     }
 
 }

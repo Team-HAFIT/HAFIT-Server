@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.category.service;
 
 import com.feedback.hafit.domain.category.dto.request.CategoryRequestDTO;
+import com.feedback.hafit.domain.category.dto.response.CategoryResponseDTO;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.user.entity.User;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,8 +45,16 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<CategoryResponseDTO> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryResponseDTO> categoryDTOs = new ArrayList<>();
+
+        for (Category category : categories) {
+            CategoryResponseDTO userDTO = new CategoryResponseDTO(category);
+            categoryDTOs.add(userDTO);
+        }
+
+        return categoryDTOs;
     }
 
 }

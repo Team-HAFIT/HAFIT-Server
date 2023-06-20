@@ -28,7 +28,7 @@ public class AdminService {
         return userDTOs;
     }
 
-    public void updateUser(Long userId) {
+    public void updateUserRole(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));
         user.setRole(Role.ADMIN);

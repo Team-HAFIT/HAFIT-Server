@@ -64,7 +64,7 @@ public class UserService {
         }
     }
 
-    public UserResponseDTO getUserInfoByEmail(String email) {
+    public UserResponseDTO getUserInfo(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
         return new UserResponseDTO(user);
