@@ -24,7 +24,6 @@ import java.util.*;
 
 @Entity
 @Getter
-
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor

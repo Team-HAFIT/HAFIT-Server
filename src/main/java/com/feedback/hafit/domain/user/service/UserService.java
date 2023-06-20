@@ -16,12 +16,15 @@ import com.feedback.hafit.domain.user.dto.UserDTO;
 import com.feedback.hafit.domain.user.dto.UserFormDTO;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
+import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -35,6 +38,8 @@ public class UserService {
     private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostService postService;
+
+    private final S3Service s3Service;
 
     public boolean signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
@@ -179,4 +184,65 @@ public class UserService {
 
         return result;
     }
+
+    public String uploadProfileImage(MultipartFile profileImage, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+
+        String s3Path = s3Service.upload(profileImage, "profiles");
+
+        user.setImageUrl(s3Path);
+
+        userRepository.save(user);
+        // 프로필 이미지 업로드
+        return s3Path;
+    }
+
+    @Transactional
+    public boolean updateProfileImage(MultipartFile profileImage, String email) {
+        if (profileImage == null) {
+            throw new IllegalArgumentException("profileImage is null");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
+
+        // 이전 프로필 이미지 삭제
+        String previousProfileImage = user.getImageUrl();
+
+        if (previousProfileImage != null) {
+            s3Service.delete(previousProfileImage);
+        }
+
+        // 프로필 이미지 업로드
+        String s3Path = s3Service.upload(profileImage, "profiles");
+        user.setImageUrl(s3Path);
+        userRepository.save(user);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteProfileImage(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
+
+        String previousProfileImage = user.getImageUrl();
+
+        if (previousProfileImage != null) {
+            s3Service.delete(previousProfileImage);
+            user.setImageUrl(null); // 이미지 URL을 null로 설정하여 프로필 이미지 제거
+            userRepository.save(user);
+        }
+        return true;
+    }
+
+
+    public String getProfileImageByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
+
+        return user.getImageUrl();
+    }
+
 }
