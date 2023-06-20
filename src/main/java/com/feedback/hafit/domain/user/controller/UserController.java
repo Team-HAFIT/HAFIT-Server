@@ -56,8 +56,10 @@ public class UserController {
 
     @GetMapping("/profile/{userId}") // 프로필 이미지 조회
     @ResponseBody
-    public void getProfileImage(@PathVariable("userId") Long userId) {
+    public String getProfileImage(@PathVariable("userId") Long userId) {
         String imageUrl = userService.getProfileImageByUserId(userId);
+
+        return imageUrl;
     }
 
 
