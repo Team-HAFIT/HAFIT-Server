@@ -38,4 +38,14 @@ public class CommentForUserDTO {
         this.modifiedAt = comment.getModifiedAt();
         this.files = files;
     }
+//    public CommentForUserDTO(Comment comment) {
+//        this.commentId = comment.getCommentId();
+//        this.user_imageUrl = comment.getUser().getImageUrl();
+//        this.postId = comment.getPost().getPostId();
+//        this.post_content = comment.getPost().getPost_content();
+//        this.comment_content = comment.getComment_content();
+//        this.user_name = comment.getUser().getName();
+//        this.createAt = comment.getCreatedAt();
+//        this.modifiedAt = comment.getModifiedAt();
+//    }
 }

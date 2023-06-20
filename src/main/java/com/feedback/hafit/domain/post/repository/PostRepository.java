@@ -14,11 +14,13 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    List<Post> findByCategory(Category category);
+//    List<Post> findByCategory(Category category);
 
     List<Post> findByUser(User user);
 
     // 무한 스크롤
     @Query(value = "SELECT p FROM Post p WHERE p.postId < ?1 ORDER BY p.postId DESC")
     Page<Post> findByPostIdLessThanOrderByPostIdDesc(Long lastPostId, PageRequest pageRequest);
+
+    Page<Post> findByPostIdLessThanAndCategoryOrderByPostIdDesc(Long lastPostId, Category category, PageRequest pageRequest);
 }
