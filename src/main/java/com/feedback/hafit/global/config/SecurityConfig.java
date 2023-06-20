@@ -64,10 +64,8 @@ public class SecurityConfig {
 
                 // == URL별 권한 관리 옵션 ==//
                 .authorizeRequests()
-                .antMatchers("/", "/api/my/email/**").permitAll()
                 .antMatchers("/api/my/**", "/api/posts/**", "/api/plans/**", "/api/sets/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/category/**", "/api/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/category/**/posts").hasAnyRole("USER", "ADMIN")
 
                 // 아이콘, css, js 관련
                 // 기본 페이지, css, image, js 하위 폴더에 있는 자료들은 모두 접근 가능, h2-console에 접근 가능
@@ -76,7 +74,7 @@ public class SecurityConfig {
                 .antMatchers("/swagger-ui.html", "/swagger/**", "/swagger-ui/**", "/swagger-resources/**",
                         "/v3/api-docs")
                 .permitAll()
-                .antMatchers("/api/signup", "/index").permitAll() // 회원가입 접근 가능
+                .antMatchers("/api/signup", "/index", "/api/my/email/**").permitAll() // 회원가입 접근 가능
                 .antMatchers("/api/**", "/login/**", "/oauth2/**").permitAll()
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
 
