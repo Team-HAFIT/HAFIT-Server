@@ -7,7 +7,9 @@ import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.commentLike.entity.CommentLike;
 import com.feedback.hafit.domain.commentLike.repository.CommentLikeRepository;
+import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
 import com.feedback.hafit.domain.post.entity.Post;
+import com.feedback.hafit.domain.post.entity.PostFile;
 import com.feedback.hafit.domain.post.repository.PostRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -112,8 +115,11 @@ public class CommentService {
             Long postId = comment.getPost().getPostId();
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new EntityNotFoundException("Post not found with id: " + postId));
-//            List<PostFileDTO> postFileDTOS = postService.getFileImageDTOsForPost(post);
-            CommentForUserDTO commentDTO = new CommentForUserDTO(comment);
+            List<PostFile> postFiles = post.getPostFiles();
+            List<PostFileDTO> postFileDTOS = postFiles.stream()
+                    .map(PostFileDTO::new)
+                    .collect(Collectors.toList());
+            CommentForUserDTO commentDTO = new CommentForUserDTO(comment, postFileDTOS);
             postedComments.add(commentDTO);
         }
 
