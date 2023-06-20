@@ -2,7 +2,6 @@ package com.feedback.hafit.domain.routine.controller;
 
 import com.feedback.hafit.domain.routine.dto.PRoutineDTO;
 import com.feedback.hafit.domain.routine.dto.RoutineDTO;
-import com.feedback.hafit.domain.routine.entity.Routine;
 import com.feedback.hafit.domain.routine.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,25 +35,26 @@ public class RoutineController {
 
     @GetMapping // 한 회원에 모든 루틴 조회
     public ResponseEntity<List<RoutineDTO>> getUserRoutine(Principal principal) {
-       return ResponseEntity.ok(routineService.getUserRoutine(principal.getName()));
+        return ResponseEntity.ok(routineService.getUserRoutine(principal.getName()));
     }
 
     @PostMapping // 루틴 추가
     public ResponseEntity<RoutineDTO> createRoutine(@RequestBody PRoutineDTO pRoutine, Principal principal) {
-        Routine createdRoutine = routineService.createRoutine(pRoutine, principal.getName());
+        RoutineDTO createdRoutine = routineService.createRoutine(pRoutine, principal.getName());
         return new ResponseEntity(createdRoutine, HttpStatus.CREATED);
     }
 
-//    @PutMapping("/{routineId}") // 루틴 수정
-//    public ResponseEntity<RoutineDTO> updateRoutine(@PathVariable Long routineId, @RequestBody Routine routine) {
-//
-//        routineService.updateRoutine(routineId, routine);
-//
-//    }
-//
-//    @DeleteMapping("/{routineId}") // 루틴 삭제
-//    public ResponseEntity<Void> deleteRoutine(@PathVariable Long routineId) {
-//        routineService.deleteRoutine(routineId);
-//        return new ResponseEntity(HttpStatus.NO_CONTENT);
-//    }
+    @PutMapping("/{routineId}") // 루틴 수정
+    public ResponseEntity<RoutineDTO> updateRoutine(@PathVariable Long routineId, @RequestBody PRoutineDTO pRoutineDTO, Principal principal) {
+
+        return ResponseEntity.ok(routineService.updateRoutine(routineId, pRoutineDTO, principal.getName()));
+
+    }
+
+    @DeleteMapping("/{routineId}") // 루틴 삭제
+    public ResponseEntity<Void> deleteRoutine(@PathVariable Long routineId) {
+        routineService.deleteRoutine(routineId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 }
