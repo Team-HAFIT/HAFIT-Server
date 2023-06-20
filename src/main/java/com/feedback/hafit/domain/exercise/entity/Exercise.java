@@ -27,7 +27,7 @@ public class Exercise extends BaseEntity {
     private String exercise_name; // 이름
 
     @Column
-    private Long exercise_calorie; // 칼로리
+    private int exercise_calorie; // 칼로리
 
     @Column
     private String exercise_description; // 설명
@@ -47,7 +47,7 @@ public class Exercise extends BaseEntity {
         this.exercise_name = exercise_name;
     }
 
-    public void setExercise_calorie(Long exercise_calorie) {
+    public void setExercise_calorie(int exercise_calorie) {
         this.exercise_calorie = exercise_calorie;
     }
 
