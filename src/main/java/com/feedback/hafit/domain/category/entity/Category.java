@@ -30,6 +30,10 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_category_user"))
     private User user;
 
+    public Category(String category_name) {
+        this.category_name = category_name;
+    }
+
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
