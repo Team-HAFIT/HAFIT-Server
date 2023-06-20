@@ -17,9 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -77,7 +80,7 @@ public class RoutineService {
         return routines;
     }
 
-    public Routine createRoutine(PRoutineDTO pRoutineDTO, String email) {
+    public RoutineDTO createRoutine(PRoutineDTO pRoutineDTO, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
@@ -89,32 +92,94 @@ public class RoutineService {
         routine.setRoutineSet(pRoutineDTO.getRoutineSet());
         routine.setRoutineWeight(pRoutineDTO.getRoutineWeight());
         routine.setUser(user);
-        routine.setGoal(goal.get());
-        routine.setExercise(exercise.get());
+        routine.setGoal(goal.orElse(null));
+        routine.setExercise(exercise.orElse(null));
         routine.setStartDate(pRoutineDTO.getStartDate());
+        routine.setRepeatDays(pRoutineDTO.getRepeatDays());
 
-        LocalDate endDate = goal.get().getGoal_target_date();
-        List<DayOfWeek> targetDayOfWeek = pRoutineDTO.getRepeatDays();
+        LocalDate endDate = goal.map(Goal::getGoal_target_date).orElse(null);
+        List<DayOfWeek> targetDayOfWeek = routine.getRepeatDays();
 
-        LocalDate current = routine.getStartDate();
+        RoutineDTO routineDTO = new RoutineDTO(routineRepository.save(routine));
 
-        int i = 0;
-        while (!current.isAfter(endDate)) {
-            if (current.getDayOfWeek().equals(targetDayOfWeek.get(i))) {
-                RoutineDate routineDate = new RoutineDate();
-                routineDate.setDays(current);
-                routineDate.setRoutine(routine);
-                routine.getRoutineDates().add(routineDate);
+        if (endDate != null && targetDayOfWeek != null) {
+            List<RoutineDate> routineDates = new ArrayList<>();
+            LocalDate current = routine.getStartDate();
+
+
+            while (!current.isAfter(endDate)) {
+                java.time.DayOfWeek dayOfWeek = current.getDayOfWeek();
+                String weekDay = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
+                DayOfWeek convertedDayOfWeek = DayOfWeek.valueOf(weekDay.toUpperCase());
+                if (targetDayOfWeek.contains(convertedDayOfWeek)) {
+                    RoutineDate routineDate = new RoutineDate();
+                    routineDate.setDays(current);
+                    routineDate.setRoutine(routine);
+                    routineDate.setPerform("N");
+                    routineDates.add(routineDate);
+                }
+                current = current.plusDays(1);
             }
-
-            current = current.plusDays(1);  // 다음 날짜로 이동
-            i++;
-            if (i >= targetDayOfWeek.size()) {
-                i = 0;  // i 값이 리스트의 인덱스 범위를 벗어났을 경우 0으로 초기화
-            }
+            routineDateRepository.saveAll(routineDates);
         }
 
-        return routine;
-
+        return routineDTO;
     }
+
+    @Transactional
+    public RoutineDTO updateRoutine(Long routineId, PRoutineDTO pRoutineDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        Optional<Routine> routine = routineRepository.findById(routineId);
+        Optional<Goal> goal = goalRepository.findById(pRoutineDTO.getGoalId());
+        Optional<Exercise> exercise = exerciseRepository.findById(pRoutineDTO.getExerciseId());
+        Routine routines = routine.get();
+        routines.setRoutineCount(pRoutineDTO.getRoutineCount());
+        routines.setRoutineSet(pRoutineDTO.getRoutineSet());
+        routines.setRoutineWeight(pRoutineDTO.getRoutineWeight());
+        routines.setRepeatDays(pRoutineDTO.getRepeatDays());
+        routines.setGoal(goal.get());
+        routines.setExercise(exercise.get());
+        routines.setUser(user);
+        routines.setStartDate(pRoutineDTO.getStartDate());
+
+        RoutineDTO routineDTO = new RoutineDTO(routineRepository.save(routines));
+
+        routineDateRepository.deleteAllByroutine(routine.get());
+
+        LocalDate endDate = goal.map(Goal::getGoal_target_date).orElse(null);
+        List<DayOfWeek> targetDayOfWeek = routines.getRepeatDays();
+
+        if (endDate != null && targetDayOfWeek != null) {
+            List<RoutineDate> routineDates = new ArrayList<>();
+            LocalDate current = routines.getStartDate();
+
+
+            while (!current.isAfter(endDate)) {
+                java.time.DayOfWeek dayOfWeek = current.getDayOfWeek();
+                String weekDay = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
+                DayOfWeek convertedDayOfWeek = DayOfWeek.valueOf(weekDay.toUpperCase());
+                if (targetDayOfWeek.contains(convertedDayOfWeek)) {
+                    RoutineDate routineDate = new RoutineDate();
+                    routineDate.setDays(current);
+                    routineDate.setRoutine(routines);
+                    routineDate.setPerform("N");
+                    routineDates.add(routineDate);
+                }
+                current = current.plusDays(1);
+            }
+            routineDateRepository.saveAll(routineDates);
+        }
+
+        return routineDTO;
+    }
+
+    @Transactional
+    public void deleteRoutine(Long routineId) {
+        Optional<Routine> routine = routineRepository.findById(routineId);
+        routineDateRepository.deleteAllByroutine(routine.get());
+        routineRepository.deleteById(routineId);
+    }
+
 }
