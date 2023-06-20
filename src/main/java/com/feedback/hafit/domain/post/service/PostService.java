@@ -82,19 +82,26 @@ public class PostService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
 
+        // 삭제할 기존 파일 조회
         List<Long> deleteImageIds = postDTO.getDeleteImageIds();
         if (deleteImageIds != null) {
+            // postId에 해당하는 Image들을 조회
             List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
             postFiles.forEach(postFile -> {
+                // s3 파일 삭제
                 s3Service.delete(postFile.getFile_name());
+                // db에서 삭제
                 fileImageRepository.deleteById(postFile.getImageId());
             });
         }
 
+        // 프론트에서 넘어온 새로운 파일 등록
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
+                // 신규 파일 업로드
                 String uploadUrl = s3Service.upload(file, "posts");
                 log.info("uploadUrl: {}", uploadUrl);
+                // db 저장
                 fileImageRepository.save(
                         PostFile.builder()
                                 .post(post)
@@ -102,7 +109,6 @@ public class PostService {
                                 .build());
             }
         }
-
         post.update(postComment, category);
         postRepository.save(post);
     }
