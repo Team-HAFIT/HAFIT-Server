@@ -169,13 +169,16 @@ public class PostService {
     private String getTimeAgo(LocalDateTime commentTime) {
         Duration duration = Duration.between(commentTime, LocalDateTime.now());
 
+        long seconds = duration.getSeconds();
         long minutes = duration.toMinutes();
         long hours = duration.toHours();
         long days = duration.toDays();
         long months = days / 30;
         long years = days / 365;
 
-        if (minutes < 60) {
+        if (seconds < 60) {
+            return seconds + "초 전";
+        } else if (minutes < 60) {
             return minutes + "분 전";
         } else if (hours < 24) {
             return hours + "시간 전";
@@ -187,6 +190,7 @@ public class PostService {
             return years + "년 전";
         }
     }
+
 
     // 카테고리 별 게시글 조회
     public List<PostWithLikesDTO> getPostsByCategory(Long lastPostId, int size, Long categoryId, String email) {
