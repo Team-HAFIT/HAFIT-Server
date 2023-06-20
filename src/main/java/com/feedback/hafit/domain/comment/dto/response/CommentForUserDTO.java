@@ -27,7 +27,18 @@ public class CommentForUserDTO {
     private LocalDateTime modifiedAt;
 
     // [user] 작성한 댓글 조회에 사용
-    public CommentForUserDTO(Comment comment, List<PostFileDTO> files) {
+//    public CommentForUserDTO(Comment comment, List<PostFileDTO> files) {
+//        this.commentId = comment.getCommentId();
+//        this.user_imageUrl = comment.getUser().getImageUrl();
+//        this.postId = comment.getPost().getPostId();
+//        this.post_content = comment.getPost().getPost_content();
+//        this.comment_content = comment.getComment_content();
+//        this.user_name = comment.getUser().getName();
+//        this.createAt = comment.getCreatedAt();
+//        this.modifiedAt = comment.getModifiedAt();
+//        this.files = files;
+//    }
+    public CommentForUserDTO(Comment comment) {
         this.commentId = comment.getCommentId();
         this.user_imageUrl = comment.getUser().getImageUrl();
         this.postId = comment.getPost().getPostId();
@@ -36,6 +47,5 @@ public class CommentForUserDTO {
         this.user_name = comment.getUser().getName();
         this.createAt = comment.getCreatedAt();
         this.modifiedAt = comment.getModifiedAt();
-        this.files = files;
     }
 }

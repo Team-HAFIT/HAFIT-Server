@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,17 +43,10 @@ public class CommentController {
         commentService.deleteById(commentId);
     }
 
-//    // 작성한 댓글 조회
-//    @GetMapping("/my")
-//    public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
-//        try {
-//            String email = principal.getName();
-//            Map<String, Object> result = commentService.getMyComments(email);
-//            return ResponseEntity.ok(result);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    // 작성한 댓글 조회
+    @GetMapping("/my")
+    public Map<String, Object> getMyComments(Principal principal) {
+        return commentService.getMyComments(principal.getName());
+    }
 
 }
