@@ -9,4 +9,5 @@ import java.util.List;
 public interface RoutineDateRepository extends JpaRepository<RoutineDate, Long> {
 
     List<RoutineDate> findByroutine(Routine routineId);
+    void deleteAllByroutine(Routine routineId);
 }
