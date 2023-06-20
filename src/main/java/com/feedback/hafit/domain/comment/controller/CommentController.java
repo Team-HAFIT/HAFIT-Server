@@ -4,7 +4,6 @@ import com.feedback.hafit.domain.comment.dto.request.CommentCreateDTO;
 import com.feedback.hafit.domain.comment.dto.request.CommentUpdateDTO;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
 import com.feedback.hafit.domain.comment.service.CommentService;
-import com.feedback.hafit.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +19,6 @@ import java.util.Map;
 public class CommentController {
 
     private final CommentService commentService;
-    private final UserService userService;
 
     @Operation(summary = "댓글 추가")
     @PostMapping("/{postId}")
@@ -66,17 +63,17 @@ public class CommentController {
         }
     }
 
-    // 작성한 댓글 조회
-    @GetMapping("/my")
-    public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
-        try {
-            String email = principal.getName();
-            Map<String, Object> result = commentService.getMyComments(email);
-            return ResponseEntity.ok(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    // 작성한 댓글 조회
+//    @GetMapping("/my")
+//    public ResponseEntity<Map<String, Object>> getMyComments(Principal principal) {
+//        try {
+//            String email = principal.getName();
+//            Map<String, Object> result = commentService.getMyComments(email);
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 }

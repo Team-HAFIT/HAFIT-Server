@@ -4,9 +4,7 @@ import com.feedback.hafit.domain.user.dto.response.UserResponseDTO;
 import com.feedback.hafit.domain.user.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,5 +18,15 @@ public class AdminController {
     @GetMapping("/users")
     public List<UserResponseDTO> getAllUsers() {
         return adminService.getAllUsers();
+    }
+
+    @PutMapping("/{userId}")
+    public void updateUser(@PathVariable Long userId) {
+        adminService.updateUser(userId);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Long userId) {
+        adminService.deleteUser(userId);
     }
 }

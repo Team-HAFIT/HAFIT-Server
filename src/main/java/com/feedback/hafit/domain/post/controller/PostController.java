@@ -5,7 +5,6 @@ import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.service.PostService;
-import com.feedback.hafit.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -23,7 +21,6 @@ import java.util.Map;
 public class PostController {
 
     private final PostService postService;
-    private final UserService userService;
 
     @PostMapping
     public void createPost(@RequestParam(value="files", required = false) List<MultipartFile> files,
@@ -60,15 +57,15 @@ public class PostController {
         return postService.getAllPosts(lastPostId, size, principal.getName());
     }
 
-    // 내가 작성한 글 조회
-    @GetMapping("/my")
-    public Map<String, Object> getMyPosts(Principal principal) {
-        return postService.getMyPosts(principal.getName());
-    }
-
-    // 내가 좋아요 표시한 글 조회
-    @GetMapping("/my/liked-posts")
-    public Map<String, Object> getLikedPostsByEmail(Principal principal) {
-        return postService.getLikedPostsByEmail(principal.getName());
-    }
+//    // 내가 작성한 글 조회
+//    @GetMapping("/my")
+//    public Map<String, Object> getMyPosts(Principal principal) {
+//        return postService.getMyPosts(principal.getName());
+//    }
+//
+//    // 내가 좋아요 표시한 글 조회
+//    @GetMapping("/my/liked-posts")
+//    public Map<String, Object> getLikedPostsByEmail(Principal principal) {
+//        return postService.getLikedPostsByEmail(principal.getName());
+//    }
 }
