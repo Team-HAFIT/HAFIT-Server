@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,11 +23,12 @@ public class PostWithCommentsDTO {
     private Long comment_count;
     private boolean post_likedByUser;
     private List<CommentWithLikesDTO> comments = Collections.emptyList();
-    private LocalDateTime modifiedAt;
-    private LocalDateTime createdAt;
+    private String modifiedAt;
+    private String createdAt;
 
     // 게시글 1개 조회할 때 사용
     public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean post_likedByUser, Long post_totalLikes, Long comment_count, List<CommentWithLikesDTO> comments) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.postId = post.getPostId();
         this.category_name = post.getCategory().getCategory_name();
         this.user_name = post.getUser().getName();
@@ -36,8 +37,8 @@ public class PostWithCommentsDTO {
         this.comment_count = comment_count;
         this.post_likedByUser = post_likedByUser;
         this.files = files;
-        this.modifiedAt = post.getModifiedAt();
-        this.createdAt = post.getCreatedAt();
+        this.modifiedAt = post.getModifiedAt().format(formatter);
+        this.createdAt = post.getCreatedAt().format(formatter);
         this.comments = comments;
     }
 
