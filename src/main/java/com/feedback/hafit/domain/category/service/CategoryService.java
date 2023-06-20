@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,8 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    public boolean createCategory(CategoryRequestDTO categoryRequestDTO, String email) {
-        try {
+    public void createCategory(CategoryRequestDTO categoryRequestDTO, String email) {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
@@ -31,46 +29,23 @@ public class CategoryService {
             category.setUser(user);
             categoryRepository.save(category);
 
-            return true;
-        } catch (Exception e) {
-            log.error("Failed to create category", e);
-            e.printStackTrace();
-            return false;
-        }
     }
 
-    public boolean updateCategory(CategoryRequestDTO categoryFormDTO) {
-        try {
-            Category category = categoryRepository.findById(categoryFormDTO.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryFormDTO.getCategoryId()));
-            category.setCategory_name(categoryFormDTO.getCategory_name());
-            categoryRepository.save(category);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void updateCategory(CategoryRequestDTO categoryFormDTO) {
+        Category category = categoryRepository.findById(categoryFormDTO.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryFormDTO.getCategoryId()));
+        category.setCategory_name(categoryFormDTO.getCategory_name());
+        categoryRepository.save(category);
     }
 
-    public boolean deleteCategory(Long categoryId) {
-        try {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryId));
-            categoryRepository.delete(category);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with categoryId: " + categoryId));
+        categoryRepository.delete(category);
     }
 
     public List<Category> getAllCategories() {
-        try {
-            return categoryRepository.findAll();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        return categoryRepository.findAll();
     }
 
 }
