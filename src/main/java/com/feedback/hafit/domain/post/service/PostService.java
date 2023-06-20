@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.post.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.comment.dto.response.CommentWithLikesDTO;
@@ -9,7 +8,6 @@ import com.feedback.hafit.domain.comment.service.CommentService;
 import com.feedback.hafit.domain.post.dto.request.PostCreateDTO;
 import com.feedback.hafit.domain.post.dto.request.PostUpdateDTO;
 import com.feedback.hafit.domain.post.dto.response.PostFileDTO;
-import com.feedback.hafit.domain.post.dto.response.PostForUserDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithCommentsDTO;
 import com.feedback.hafit.domain.post.dto.response.PostWithLikesDTO;
 import com.feedback.hafit.domain.post.entity.Post;
@@ -32,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -193,44 +193,44 @@ public class PostService {
     }
 
     // 내가 작성한 게시글
-    public Map<String, Object> getMyPosts(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
-
-        List<Post> myPosts = postRepository.findByUser(user);
-        List<PostForUserDTO> postedPosts = new ArrayList<>();
-
-        for (Post post : myPosts) {
-            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            postedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", postedPosts.size());
-        result.put("posts", postedPosts);
-
-        return result;
-    }
+//    public Map<String, Object> getMyPosts(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new NotFoundException("Could not find user with email: " + email));
+//
+//        List<Post> myPosts = postRepository.findByUser(user);
+//        List<PostForUserDTO> postedPosts = new ArrayList<>();
+//
+//        for (Post post : myPosts) {
+//            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+//            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
+//            postedPosts.add(postDTO);
+//        }
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("count", postedPosts.size());
+//        result.put("posts", postedPosts);
+//
+//        return result;
+//    }
 
     // 내가 좋아요한 게시글
-    public Map<String, Object> getLikedPostsByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
-        List<PostLike> postLikes = postLikeRepository.findByUser(user);
-        List<PostForUserDTO> likedPosts = new ArrayList<>();
-
-        for (PostLike postLike : postLikes) {
-            Post post = postLike.getPost();
-            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
-            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
-            likedPosts.add(postDTO);
-        }
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("count", likedPosts.size());
-        result.put("posts", likedPosts);
-
-        return result;
-    }
+//    public Map<String, Object> getLikedPostsByEmail(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + email));
+//        List<PostLike> postLikes = postLikeRepository.findByUser(user);
+//        List<PostForUserDTO> likedPosts = new ArrayList<>();
+//
+//        for (PostLike postLike : postLikes) {
+//            Post post = postLike.getPost();
+//            List<PostFileDTO> postFileDTOS = getFileImageDTOsForPost(post);
+//            PostForUserDTO postDTO = new PostForUserDTO(post, postFileDTOS);
+//            likedPosts.add(postDTO);
+//        }
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("count", likedPosts.size());
+//        result.put("posts", likedPosts);
+//
+//        return result;
+//    }
 }

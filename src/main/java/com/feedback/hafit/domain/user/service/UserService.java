@@ -1,9 +1,5 @@
 package com.feedback.hafit.domain.user.service;
 
-import com.feedback.hafit.domain.comment.repository.CommentRepository;
-import com.feedback.hafit.domain.post.repository.PostRepository;
-import com.feedback.hafit.domain.post.service.PostService;
-import com.feedback.hafit.domain.postLike.repository.PostLikeRepository;
 import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.request.UserDTO;
 import com.feedback.hafit.domain.user.dto.request.UserFormDTO;
@@ -23,11 +19,7 @@ import javax.persistence.EntityNotFoundException;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PostLikeRepository postLikeRepository;
-    private final PostRepository postRepository;
-    private final CommentRepository commentRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PostService postService;
 
     public void signup(UserFormDTO userFormDTO) {
         User user = userFormDTO.toEntity();
