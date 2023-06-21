@@ -32,10 +32,12 @@ public class S3Service {
 
     /**
      * S3 파일 업로드
+     *
      * @param multipartFile 실제 파일
-     * @param dirName 폴더 명
+     * @param dirName       폴더 명
      * @return s3 파일 url
      */
+
     public String upload(MultipartFile multipartFile, String dirName) {
         // 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -87,14 +89,16 @@ public class S3Service {
     // 3. 로컬에 생성된 파일삭제
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
-            log.info("PostFile delete success");
+            log.info("File delete success");
             return;
         }
         log.info("PostFile delete fail");
     }
 
     public void delete(String fileName) {
-        log.info("PostFile Delete: " + fileName);
-        amazonS3.deleteObject(bucket, fileName);
+        log.info("File Delete: " + fileName); // url
+        log.info("File : " + fileName.substring(61)); // https://feedback-file-bucket.s3.ap-northeast-2.amazonaws.com/ 잘라냄
+        amazonS3.deleteObject(bucket, fileName.substring(61));
+        System.out.println(fileName);
     }
 }

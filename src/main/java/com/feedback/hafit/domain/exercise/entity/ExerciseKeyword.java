@@ -16,7 +16,7 @@ public class ExerciseKeyword { // 키워드_운동 연결
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exercise_keywords_id;
+    private Long exerciseKeywordsId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id", foreignKey = @ForeignKey(name = "fk_exercise_keyword_keyword"))
@@ -26,8 +26,8 @@ public class ExerciseKeyword { // 키워드_운동 연결
     @JoinColumn(name = "exercise_id", foreignKey = @ForeignKey(name = "fk_exercise_keyword_exercise"))
     private Exercise exercise;
 
-    public void setExercise_keywords_id(Long exercise_keywords_id) {
-        this.exercise_keywords_id = exercise_keywords_id;
+    public void setExerciseKeywordsId(Long exerciseKeywordsId) {
+        this.exerciseKeywordsId = exerciseKeywordsId;
     }
 
     public void setKeyword(Keyword keyword) {

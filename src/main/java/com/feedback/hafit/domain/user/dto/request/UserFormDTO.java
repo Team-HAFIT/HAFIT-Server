@@ -19,7 +19,7 @@ public class UserFormDTO {
 
     @NotNull
     @Id
-    private Long user_id;
+    private Long userId;
     @NotNull
     @Email
     private String email;

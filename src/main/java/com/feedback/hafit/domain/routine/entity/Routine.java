@@ -8,12 +8,15 @@ import com.feedback.hafit.global.enumerate.DayOfWeek;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "routines")
@@ -24,13 +27,16 @@ public class Routine extends BaseEntity {
     private Long routineId; // auto_increment
 
     @Column
-    private int routine_count; // 개수
+    private Long routineCount; // 개수
 
     @Column
-    private int routine_set; // 세트
+    private Long routineSet; // 세트
 
     @Column
-    private int routine_weight; // 무게
+    private Long routineWeight; // 무게
+
+    @OneToMany(mappedBy = "routine", fetch = FetchType.LAZY)
+    private List<RoutineDate> routineDates;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goal_id", foreignKey = @ForeignKey(name = "fk_routine_goal"))
@@ -50,4 +56,6 @@ public class Routine extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private List<DayOfWeek> repeatDays;
 
+    @Column
+    private LocalDate startDate;
 }
