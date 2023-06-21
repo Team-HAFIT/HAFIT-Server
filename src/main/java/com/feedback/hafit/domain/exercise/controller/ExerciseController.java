@@ -1,6 +1,7 @@
 package com.feedback.hafit.domain.exercise.controller;
 
 import com.feedback.hafit.domain.exercise.dto.request.ExerciseRequestDTO;
+import com.feedback.hafit.domain.exercise.dto.response.ExerciseForKeywordDTO;
 import com.feedback.hafit.domain.exercise.dto.response.ExerciseResponseDTO;
 import com.feedback.hafit.domain.exercise.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,10 @@ public class ExerciseController { // 운동 컨트롤러
     @GetMapping
     public List<ExerciseResponseDTO> getAllExercises() {
         return exerciseService.getAllExercises();
+    }
+
+    @GetMapping("/keyword/{keywordId}")
+    public List<ExerciseForKeywordDTO> getGroupsByKeywordId(@PathVariable Long keywordId) {
+        return exerciseService.getGroupsByKeywordId(keywordId);
     }
 }
