@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -18,67 +17,43 @@ public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
-    public boolean createExercise(ExerciseRequestDTO exerciseRequestDTO) {
-        try {
-            Exercise exercise = Exercise.builder()
-                    .exercise_name(exerciseRequestDTO.getExercise_name())
-                    .exercise_calorie(exerciseRequestDTO.getExercise_calorie())
-                    .exercise_description(exerciseRequestDTO.getExercise_description())
-                    .exercise_img(exerciseRequestDTO.getExercise_img())
-                    .build();
-            exerciseRepository.save(exercise);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
+    public void createExercise(ExerciseRequestDTO exerciseRequestDTO) {
+        Exercise exercise = Exercise.builder()
+                .exercise_name(exerciseRequestDTO.getExercise_name())
+                .exercise_calorie(exerciseRequestDTO.getExercise_calorie())
+                .exercise_description(exerciseRequestDTO.getExercise_description())
+                .exercise_img(exerciseRequestDTO.getExercise_img())
+                .build();
+        exerciseRepository.save(exercise);
     }
 
-    public boolean updateExercise(Long exerciseId, ExerciseRequestDTO exerciseRequestDTO) {
-        try {
-            Exercise exercise = exerciseRepository.findById(exerciseId)
-                    .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
-            exercise.setExercise_description(exerciseRequestDTO.getExercise_description());
-            exercise.setExercise_img(exerciseRequestDTO.getExercise_img());
-            exercise.setExercise_calorie(exerciseRequestDTO.getExercise_calorie());
-            exercise.setExercise_name(exerciseRequestDTO.getExercise_name());
-            exerciseRepository.save(exercise);
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void updateExercise(Long exerciseId, ExerciseRequestDTO exerciseRequestDTO) {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
+        exercise.setExercise_description(exerciseRequestDTO.getExercise_description());
+        exercise.setExercise_img(exerciseRequestDTO.getExercise_img());
+        exercise.setExercise_calorie(exerciseRequestDTO.getExercise_calorie());
+        exercise.setExercise_name(exerciseRequestDTO.getExercise_name());
+        exerciseRepository.save(exercise);
     }
 
 
-    public boolean deleteExercise(Long exerciseId) {
-        try {
-            Exercise exercise = exerciseRepository.findById(exerciseId)
-                    .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
-            exerciseRepository.delete(exercise);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void deleteExercise(Long exerciseId) {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
+        exerciseRepository.delete(exercise);
     }
 
     public List<ExerciseResponseDTO> getAllExercises() {
-        try {
-            List<Exercise> exercises = exerciseRepository.findAll();
-            List<ExerciseResponseDTO> exerciseDTOs = new ArrayList<>();
+        List<Exercise> exercises = exerciseRepository.findAll();
+        List<ExerciseResponseDTO> exerciseDTOs = new ArrayList<>();
 
-            for (Exercise exercise : exercises) {
-                ExerciseResponseDTO exerciseDTO = new ExerciseResponseDTO(exercise);
-                exerciseDTOs.add(exerciseDTO);
-            }
-
-            return exerciseDTOs;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+        for (Exercise exercise : exercises) {
+            ExerciseResponseDTO exerciseDTO = new ExerciseResponseDTO(exercise);
+            exerciseDTOs.add(exerciseDTO);
         }
+
+        return exerciseDTOs;
     }
 
 }

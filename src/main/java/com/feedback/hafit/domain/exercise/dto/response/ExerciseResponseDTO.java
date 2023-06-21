@@ -15,7 +15,7 @@ public class ExerciseResponseDTO {
 
     private String exercise_name; // 이름
 
-    private Long exercise_calorie; // 칼로리
+    private int exercise_calorie; // 칼로리
 
     private String exercise_description; // 설명
 
@@ -37,7 +37,7 @@ public class ExerciseResponseDTO {
         this.exercise_name = exercise_name;
     }
 
-    public void setExercise_calorie(Long exercise_calorie) {
+    public void setExercise_calorie(int exercise_calorie) {
         this.exercise_calorie = exercise_calorie;
     }
 

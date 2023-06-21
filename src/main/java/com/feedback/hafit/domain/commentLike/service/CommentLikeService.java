@@ -1,6 +1,5 @@
 package com.feedback.hafit.domain.commentLike.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.comment.entity.Comment;
 import com.feedback.hafit.domain.comment.repository.CommentRepository;
 import com.feedback.hafit.domain.commentLike.entity.CommentLike;
@@ -21,43 +20,31 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public boolean insertCommentLike(Long commentId, String userEmail) {
-        try {
-            User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
-            Comment comment = commentRepository.findById(commentId)
-                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
+    public void insertCommentLike(Long commentId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
 
-            CommentLike commentLike = CommentLike.builder()
-                    .comment(comment)
-                    .user(user)
-                    .build();
+        CommentLike commentLike = CommentLike.builder()
+                .comment(comment)
+                .user(user)
+                .build();
 
-            commentLikeRepository.save(commentLike);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        commentLikeRepository.save(commentLike);
     }
 
     @Transactional
-    public boolean deleteCommentLike(Long commentId, String userEmail) {
-        try {
-            User user = userRepository.findByEmail(userEmail)
-                    .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
-            Comment comment = commentRepository.findById(commentId)
-                    .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
+    public void deleteCommentLike(Long commentId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + userEmail));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("Comment not found with id: " + commentId));
 
-            CommentLike commentLike = commentLikeRepository.findByUserAndComment(user, comment)
-                    .orElseThrow(() -> new NotFoundException("Could not find CommentLike"));
+        CommentLike commentLike = commentLikeRepository.findByUserAndComment(user, comment)
+                .orElseThrow(() -> new EntityNotFoundException("Could not find CommentLike"));
 
-            commentLikeRepository.delete(commentLike);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        commentLikeRepository.delete(commentLike);
     }
 
 }

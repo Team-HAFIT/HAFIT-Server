@@ -21,8 +21,8 @@ public class AdminController {
     }
 
     @PutMapping("/{userId}")
-    public void updateUser(@PathVariable Long userId) {
-        adminService.updateUser(userId);
+    public void updateUserRole(@PathVariable Long userId) {
+        adminService.updateUserRole(userId);
     }
 
     @DeleteMapping("/{userId}")
