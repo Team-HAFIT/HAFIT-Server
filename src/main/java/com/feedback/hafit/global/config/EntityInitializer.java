@@ -148,7 +148,7 @@ public class EntityInitializer implements ApplicationRunner {
         keywordExerciseMap.put(3L, new Long[]{5L, 3L, 2L, 1L, 6L});
         keywordExerciseMap.put(4L, new Long[]{3L, 5L, 7L, 8L});
         keywordExerciseMap.put(5L, new Long[]{1L, 9L, 10L, 11L});
-        keywordExerciseMap.put(6L, new Long[]{12L, 4L, 16L, 17L, 14L});
+        keywordExerciseMap.put(6L, new Long[]{12L, 4L, 13L, 14L});
         keywordExerciseMap.put(7L, new Long[]{15L, 16L, 17L});
 
         // 매핑된 키워드와 운동을 데이터베이스에 저장

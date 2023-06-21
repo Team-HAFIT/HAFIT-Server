@@ -1,8 +1,10 @@
 package com.feedback.hafit.domain.exercise.service;
 
 import com.feedback.hafit.domain.exercise.dto.request.ExerciseRequestDTO;
+import com.feedback.hafit.domain.exercise.dto.response.ExerciseForKeywordDTO;
 import com.feedback.hafit.domain.exercise.dto.response.ExerciseResponseDTO;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
+import com.feedback.hafit.domain.exercise.repository.ExerciseKeywordRepository;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseKeywordRepository exerciseKeywordRepository;
 
     public void createExercise(ExerciseRequestDTO exerciseRequestDTO) {
         Exercise exercise = Exercise.builder()
@@ -56,4 +59,16 @@ public class ExerciseService {
         return exerciseDTOs;
     }
 
+    public List<ExerciseForKeywordDTO> getGroupsByKeywordId(Long keywordId) {
+        List<Exercise> exercises = exerciseRepository.findByKeywordId(keywordId);
+
+        List<ExerciseForKeywordDTO> exerciseDTOs = new ArrayList<>();
+
+        for (Exercise exercise : exercises) {
+            ExerciseForKeywordDTO exerciseDTO = new ExerciseForKeywordDTO(exercise);
+            exerciseDTOs.add(exerciseDTO);
+        }
+
+        return exerciseDTOs;
+    }
 }
