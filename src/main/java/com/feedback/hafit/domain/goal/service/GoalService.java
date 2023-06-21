@@ -1,7 +1,6 @@
 package com.feedback.hafit.domain.goal.service;
 
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
@@ -21,7 +20,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -89,19 +90,26 @@ public class GoalService {
         goalRepository.delete(goal);
     }
 
-    public GoalForDdayDTO getMyGoal(String email) {
+    public Map<String, Object> getMyGoals(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
 
-        Goal goal = goalRepository.findFirstByUserUserIdOrderByCreatedAtDesc(user.getUserId())
-                .orElseThrow(() -> new NotFoundException("Goal not found"));
+        List<Goal> goals = goalRepository.findByUserUserIdOrderByCreatedAtDesc(user.getUserId());
 
         LocalDateTime today = LocalDateTime.now();
-        LocalDate targetDate = goal.getGoal_target_date();
-        long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+        List<GoalForDdayDTO> goalDTOs = new ArrayList<>();
 
-        String goalContent = goal.getGoal_content();
+        for (Goal goal : goals) {
+            LocalDate targetDate = goal.getGoal_target_date();
+            long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+            goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining));
+        }
 
-        return new GoalForDdayDTO(goalContent, daysRemaining);
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", goalDTOs.size());
+        result.put("goals", goalDTOs);
+
+        return result;
     }
+
 }
