@@ -26,27 +26,31 @@ public class ExerciseSetService {
     // 운동 한 세트 종료 후 저장 메서드
     @Transactional
     public ExerciseSetResponseDTO save(ExerciseSetRequestDTO execSetDTO) {
-            Long planId = execSetDTO.getPlan();
-            Plan plan = planRepository.findById(planId)
-                    .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
+        Long planId = execSetDTO.getPlan();
+        Plan plan = planRepository.findById(planId)
+                .orElseThrow(() -> new EntityNotFoundException("Plan not found with planId: " + planId));
 
-            ExerciseSet execSet = ExerciseSet.builder()
-                    .restTime(execSetDTO.getRestTime())
-                    .weight(execSetDTO.getWeight())
-                    .score(execSetDTO.getScore())
-                    .realCount(execSetDTO.getRealCount())
-                    .realSet(execSetDTO.getRealSet())
-                    .startTime(execSetDTO.getStartTime())
-                    .limitTime(execSetDTO.getLimitTime())
-                    .realTime(execSetDTO.getRealTime())
-                    .plan(plan)
-                    .build();
+        if (plan.getPlan_target_set() == execSetDTO.getRealSet()) {
+            plan.setPlan_perform_status("Y");
+            planRepository.save(plan);
+        }
 
-            ExerciseSet savedExerciseSet = exerciseSetRepository.save(execSet);
-            ExerciseSetResponseDTO exerciseSetResponseDTO = new ExerciseSetResponseDTO(savedExerciseSet);
-            exerciseSetResponseDTO.setSetId(savedExerciseSet.getSetId());
+        ExerciseSet execSet = ExerciseSet.builder()
+                .weight(execSetDTO.getWeight())
+                .score(execSetDTO.getScore())
+                .realCount(execSetDTO.getRealCount())
+                .realSet(execSetDTO.getRealSet())
+                .startTime(execSetDTO.getStartTime())
+                .limitTime(execSetDTO.getLimitTime())
+                .realTime(execSetDTO.getRealTime())
+                .plan(plan)
+                .build();
 
-            return exerciseSetResponseDTO;
+        ExerciseSet savedExerciseSet = exerciseSetRepository.save(execSet);
+        ExerciseSetResponseDTO exerciseSetResponseDTO = new ExerciseSetResponseDTO(savedExerciseSet);
+        exerciseSetResponseDTO.setSetId(savedExerciseSet.getSetId());
+
+        return exerciseSetResponseDTO;
     }
 
     // 휴식 시간 종료 후 휴식 시간 저장 메서드 (휴식 시간 -> 운동 화면 / 휴식 시간 -> 결과 화면)
@@ -63,8 +67,6 @@ public class ExerciseSetService {
             ExerciseSet updatedExerciseSet = exerciseSetRepository.save(exerciseSets);
 
             ExerciseSetResponseDTO exerciseDTO = new ExerciseSetResponseDTO(updatedExerciseSet);
-            exerciseDTO.setRealSet(updatedExerciseSet.getRealSet() + 1);
-            exerciseDTO.setWeight(exerciseSetDTO.getWeight());
 
             return exerciseDTO;
         } catch (Exception e) {
