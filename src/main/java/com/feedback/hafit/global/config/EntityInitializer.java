@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.feedback.hafit.domain.category.entity.Category;
 import com.feedback.hafit.domain.category.repository.CategoryRepository;
 import com.feedback.hafit.domain.exercise.entity.Exercise;
+import com.feedback.hafit.domain.exercise.entity.ExerciseKeyword;
+import com.feedback.hafit.domain.exercise.repository.ExerciseKeywordRepository;
 import com.feedback.hafit.domain.exercise.repository.ExerciseRepository;
 import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.KeywordRepository;
@@ -13,8 +15,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +24,8 @@ public class EntityInitializer implements ApplicationRunner {
 
     private final KeywordRepository keywordRepository;
     private final CategoryRepository categoryRepository;
-
     private final ExerciseRepository exerciseRepository;
+    private final ExerciseKeywordRepository exerciseKeywordRepository;
 
     private final AmazonS3 amazonS3;
 
@@ -132,12 +134,43 @@ public class EntityInitializer implements ApplicationRunner {
             String exercise_img = initialExerciseImg.get(i);
 
             Exercise newExercise = Exercise.builder()
-                    .exercise_name(exercise_name)
-                    .exercise_description(exercise_description)
-                    .exercise_img(exercise_img)
+                    .exerciseName(exercise_name)
+                    .exerciseDescription(exercise_description)
+                    .exerciseImg(exercise_img)
                     .build();
             exerciseRepository.save(newExercise);
         }
 
+        // 키워드와 운동의 매핑 관계 정의
+        Map<Long, Long[]> keywordExerciseMap = new HashMap<>();
+        keywordExerciseMap.put(1L, new Long[]{1L, 2L, 9L, 15L, 12L, 14L});
+        keywordExerciseMap.put(2L, new Long[]{2L, 1L, 4L});
+        keywordExerciseMap.put(3L, new Long[]{5L, 3L, 2L, 1L, 6L});
+        keywordExerciseMap.put(4L, new Long[]{3L, 5L, 7L, 8L});
+        keywordExerciseMap.put(5L, new Long[]{1L, 9L, 10L, 11L});
+        keywordExerciseMap.put(6L, new Long[]{12L, 4L, 16L, 17L, 14L});
+        keywordExerciseMap.put(7L, new Long[]{15L, 16L, 17L});
+
+        // 매핑된 키워드와 운동을 데이터베이스에 저장
+        for (Map.Entry<Long, Long[]> entry : keywordExerciseMap.entrySet()) {
+            Long keywordId = entry.getKey();
+            Long[] exerciseIds = entry.getValue();
+
+            Keyword keyword = keywordRepository.findById(keywordId)
+                    .orElseThrow(() -> new EntityNotFoundException("Keyword not found with id: " + keywordId));
+
+
+            for (Long exerciseId : exerciseIds) {
+                Exercise exercise = exerciseRepository.findById(exerciseId)
+                        .orElseThrow(() -> new EntityNotFoundException("Exercise not found with id: " + exerciseId));
+
+                if (exercise != null) {
+                    ExerciseKeyword exerciseKeyword = new ExerciseKeyword();
+                    exerciseKeyword.setKeyword(keyword);
+                    exerciseKeyword.setExercise(exercise);
+                    exerciseKeywordRepository.save(exerciseKeyword);
+                }
+            }
+        }
     }
 }
