@@ -32,7 +32,7 @@ public class EntityInitializer implements ApplicationRunner {
     @Value("${cloud.aws.s3.bucket.directory-name:static}")
     private String S3_BUCKET_DIRECTORY_NAME = "static";
 
-    String path = S3_BUCKET_DIRECTORY_NAME + "/exercises/";
+    String path = "https://feedback-file-bucket.s3.ap-northeast-2.amazonaws.com/"+S3_BUCKET_DIRECTORY_NAME + "/exercises/";
     @Override
     public void run(ApplicationArguments args) {
         // 이미 초기화가 수행되었는지 확인
