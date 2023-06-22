@@ -1,7 +1,6 @@
 package com.feedback.hafit.domain.goal.service;
 
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
@@ -9,7 +8,6 @@ import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.repository.KeywordRepository;
-import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -31,7 +30,6 @@ public class GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
-    private final PlanRepository planRepository;
 
     public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
         User user = userRepository.findByEmail(email)
@@ -42,7 +40,7 @@ public class GoalService {
         Goal goal = Goal.builder()
                 .user(user)
                 .keyword(keyword)
-                .goal_target_date(goalRequestDTO.getGoal_target_date())
+                .goalTargetDate(goalRequestDTO.getGoal_target_date())
                 .goal_content(goalRequestDTO.getGoal_content())
                 .build();
 
@@ -89,19 +87,28 @@ public class GoalService {
         goalRepository.delete(goal);
     }
 
-    public GoalForDdayDTO getMyGoal(String email) {
+    public Map<String, Object> getMyGoals(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
 
-        Goal goal = goalRepository.findFirstByUserUserIdOrderByCreatedAtDesc(user.getUserId())
-                .orElseThrow(() -> new NotFoundException("Goal not found"));
+        LocalDate today = LocalDate.now();
 
-        LocalDateTime today = LocalDateTime.now();
-        LocalDate targetDate = goal.getGoal_target_date();
-        long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+        List<Goal> goals = goalRepository.findByUserUserIdAndGoalTargetDateAfter(user.getUserId(), today);
 
-        String goalContent = goal.getGoal_content();
+        List<GoalForDdayDTO> goalDTOs = new ArrayList<>();
 
-        return new GoalForDdayDTO(goalContent, daysRemaining);
+        for (Goal goal : goals) {
+            LocalDate targetDate = goal.getGoalTargetDate();
+            long daysRemaining = ChronoUnit.DAYS.between(today, targetDate);
+            goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining));
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("count", goalDTOs.size());
+        result.put("goals", goalDTOs);
+
+        return result;
     }
+
+
 }

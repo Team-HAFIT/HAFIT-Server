@@ -27,7 +27,7 @@ public class Goal extends BaseEntity {
     @Column(length = 300)
     private String goal_content; // 목표 내용
 
-    private LocalDate goal_target_date; // 종료일
+    private LocalDate goalTargetDate; // 종료일
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_goal_user"))
@@ -45,8 +45,8 @@ public class Goal extends BaseEntity {
         this.goal_content = goal_content;
     }
 
-    public void setGoal_target_date(LocalDate goal_target_date) {
-        this.goal_target_date = goal_target_date;
+    public void setGoal_target_date(LocalDate goalTargetDate) {
+        this.goalTargetDate = goalTargetDate;
     }
 
     public void setUser(User user) {

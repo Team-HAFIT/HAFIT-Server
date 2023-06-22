@@ -2,7 +2,6 @@ package com.feedback.hafit.domain.goal.controller;
 
 
 import com.feedback.hafit.domain.goal.dto.request.GoalRequestDTO;
-import com.feedback.hafit.domain.goal.dto.response.GoalForDdayDTO;
 import com.feedback.hafit.domain.goal.dto.response.GoalResponseDTO;
 import com.feedback.hafit.domain.goal.service.GoalService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,13 +36,13 @@ public class GoalController {
     }
 
     @GetMapping("/all")
-    public List<GoalResponseDTO> getMyGoals(Principal principal) {
+    public List<GoalResponseDTO> getGoalsByUser(Principal principal) {
         return goalService.getGoalsByUser(principal.getName());
     }
 
     @GetMapping("/my")
-    public GoalForDdayDTO getMyGoal(Principal principal) {
-        return goalService.getMyGoal(principal.getName());
+    public Map<String, Object> getMyGoal(Principal principal) {
+        return goalService.getMyGoals(principal.getName());
     }
 
 }

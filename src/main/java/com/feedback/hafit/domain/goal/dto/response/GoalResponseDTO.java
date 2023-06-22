@@ -25,7 +25,7 @@ public class GoalResponseDTO {
         this.goalId = goal.getGoalId();
         this.goal_content = goal.getGoal_content();
         this.keyword_name = keyword.getKeyword_name();
-        this.goal_target_date = goal.getGoal_target_date();
+        this.goal_target_date = goal.getGoalTargetDate();
         this.goal_start_date = goal.getCreatedAt();
     }
 

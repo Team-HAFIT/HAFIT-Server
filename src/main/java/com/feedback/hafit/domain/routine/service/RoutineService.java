@@ -97,7 +97,7 @@ public class RoutineService {
         routine.setStartDate(pRoutineDTO.getStartDate());
         routine.setRepeatDays(pRoutineDTO.getRepeatDays());
 
-        LocalDate endDate = goal.map(Goal::getGoal_target_date).orElse(null);
+        LocalDate endDate = goal.map(Goal::getGoalTargetDate).orElse(null);
         List<DayOfWeek> targetDayOfWeek = routine.getRepeatDays();
 
         RoutineDTO routineDTO = new RoutineDTO(routineRepository.save(routine));
@@ -148,7 +148,7 @@ public class RoutineService {
 
         routineDateRepository.deleteAllByroutine(routine.get());
 
-        LocalDate endDate = goal.map(Goal::getGoal_target_date).orElse(null);
+        LocalDate endDate = goal.map(Goal::getGoalTargetDate).orElse(null);
         List<DayOfWeek> targetDayOfWeek = routines.getRepeatDays();
 
         if (endDate != null && targetDayOfWeek != null) {
