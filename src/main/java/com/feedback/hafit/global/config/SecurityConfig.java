@@ -64,7 +64,7 @@ public class SecurityConfig {
 
                 // == URL별 권한 관리 옵션 ==//
                 .authorizeRequests()
-                .antMatchers("/api/my/**", "/api/posts/**", "/api/plans/**", "/api/sets/**", "/api/exercises/keyword/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/my/**", "/api/posts/**", "/api/plans/**", "/api/sets/**", "/api/exercises/keyword/**", "/api/category", "/api/comments/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/api/category/**", "/api/admin/**", "/api/routines/all", "/api/exercises/**").hasRole("ADMIN")
 
                 // 아이콘, css, js 관련
