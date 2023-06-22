@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface FileImageRepository extends JpaRepository<PostFile, Long> {
-    List<PostFile> findAllByPost_PostIdAndImageIdIn(Long postId, List<Long> ids);
+    List<PostFile> findAllByPost_PostIdAndFileIdIn(Long postId, List<Long> ids);
     List<PostFile> findAllBypost(Post postId);
 }
