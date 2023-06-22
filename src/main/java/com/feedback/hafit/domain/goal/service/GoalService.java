@@ -91,7 +91,7 @@ public class GoalService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now().minusDays(1);
 
         List<Goal> goals = goalRepository.findByUserUserIdAndGoalTargetDateAfter(user.getUserId(), today);
 
@@ -100,7 +100,7 @@ public class GoalService {
         for (Goal goal : goals) {
             LocalDate targetDate = goal.getGoalTargetDate();
             long daysRemaining = ChronoUnit.DAYS.between(today, targetDate);
-            goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining));
+            goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining-1));
         }
 
         Map<String, Object> result = new HashMap<>();
