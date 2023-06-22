@@ -15,7 +15,7 @@ public class PostFile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imageId;
+    private Long fileId;
 
     @Column(name = "file_name")
     private String file_name;
