@@ -8,7 +8,6 @@ import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.entity.Keyword;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.goal.repository.KeywordRepository;
-import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +30,6 @@ public class GoalService {
     private final UserRepository userRepository;
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
-    private final PlanRepository planRepository;
 
     public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
         User user = userRepository.findByEmail(email)
@@ -43,7 +40,7 @@ public class GoalService {
         Goal goal = Goal.builder()
                 .user(user)
                 .keyword(keyword)
-                .goal_target_date(goalRequestDTO.getGoal_target_date())
+                .goalTargetDate(goalRequestDTO.getGoal_target_date())
                 .goal_content(goalRequestDTO.getGoal_content())
                 .build();
 
@@ -94,14 +91,15 @@ public class GoalService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
 
-        List<Goal> goals = goalRepository.findByUserUserIdOrderByCreatedAtDesc(user.getUserId());
+        LocalDate today = LocalDate.now();
 
-        LocalDateTime today = LocalDateTime.now();
+        List<Goal> goals = goalRepository.findByUserUserIdAndGoalTargetDateAfter(user.getUserId(), today);
+
         List<GoalForDdayDTO> goalDTOs = new ArrayList<>();
 
         for (Goal goal : goals) {
-            LocalDate targetDate = goal.getGoal_target_date();
-            long daysRemaining = ChronoUnit.DAYS.between(today.toLocalDate(), targetDate);
+            LocalDate targetDate = goal.getGoalTargetDate();
+            long daysRemaining = ChronoUnit.DAYS.between(today, targetDate);
             goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining));
         }
 
@@ -111,5 +109,6 @@ public class GoalService {
 
         return result;
     }
+
 
 }
