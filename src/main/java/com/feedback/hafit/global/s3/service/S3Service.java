@@ -131,7 +131,7 @@ public class S3Service {
     public Date getExpiration() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.HOUR, 5); // 5시간 후로 설정
+        calendar.add(Calendar.HOUR, 1); // 1시간 후로 설정
 
         return calendar.getTime();
     }
