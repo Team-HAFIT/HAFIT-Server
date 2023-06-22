@@ -10,7 +10,7 @@ import java.security.Principal;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/post-like")
+@RequestMapping("/api/posts/like")
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
