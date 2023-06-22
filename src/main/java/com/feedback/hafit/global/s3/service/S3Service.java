@@ -1,9 +1,7 @@
 package com.feedback.hafit.global.s3.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +9,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 @Component
@@ -100,5 +102,37 @@ public class S3Service {
         log.info("File : " + fileName.substring(61)); // https://feedback-file-bucket.s3.ap-northeast-2.amazonaws.com/ 잘라냄
         amazonS3.deleteObject(bucket, fileName.substring(61));
         System.out.println(fileName);
+    }
+
+    public byte[] downloadImage(String objectKey) {
+        try {
+            S3Object s3Object = amazonS3.getObject(bucket, objectKey);
+            S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = objectInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            log.error("Error occurred during image download: {}", e.getMessage());
+            throw new RuntimeException("Error occurred during image download", e);
+        }
+    }
+
+    public URL generatePresignedUrl(GeneratePresignedUrlRequest urlRequest) {
+        return amazonS3.generatePresignedUrl(urlRequest);
+    }
+
+    // 제한 시간을 두는 코드, 이미지를 파일로 받아오기 위한 코드라 필요 x, 혹시 몰라 남겨둠
+    public Date getExpiration() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.HOUR, 5); // 5시간 후로 설정
+
+        return calendar.getTime();
     }
 }
