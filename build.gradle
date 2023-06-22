@@ -29,6 +29,10 @@ dependencies {
 
     // AWS (S3 사용 중)
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'commons-io:commons-io:2.10.0' // FileUtils
+    implementation 'org.springframework:spring-core:5.3.20'
+
+
 
     // mariadb
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.4.1'
