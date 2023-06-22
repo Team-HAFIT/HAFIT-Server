@@ -75,7 +75,7 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long postId, PostUpdateDTO postDTO, List<MultipartFile> files) {
-        String postComment = postDTO.getPost_content();
+        String postContent = postDTO.getPost_content();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
         Long categoryId = postDTO.getCategoryId();
@@ -87,12 +87,12 @@ public class PostService {
         if (deleteImageIds != null) {
             // postId에 해당하는 Image들을 조회
             List<PostFile> postFiles = fileImageRepository.findAllByPost_PostIdAndImageIdIn(postId, deleteImageIds);
-            postFiles.forEach(postFile -> {
+            for (PostFile postFile : postFiles) {
                 // s3 파일 삭제
                 s3Service.delete(postFile.getFile_name());
                 // db에서 삭제
-                fileImageRepository.deleteById(postFile.getImageId());
-            });
+                fileImageRepository.delete(postFile);
+            }
         }
 
         // 프론트에서 넘어온 새로운 파일 등록
@@ -109,9 +109,11 @@ public class PostService {
                                 .build());
             }
         }
-        post.update(postComment, category);
+        post.setPost_content(postContent);
+        post.setCategory(category);
         postRepository.save(post);
     }
+
 
     public List<PostWithLikesDTO> getAllPosts(Long lastPostId, int size, String email) {
         PageRequest pageRequest = PageRequest.of(0, size);
@@ -141,6 +143,11 @@ public class PostService {
     public void deletePostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found with postId: " + postId));
+        List<PostFile> postFiles = fileImageRepository.findAllBypost(post);
+        for (int i = 0; i < postFiles.size(); i++) {
+            s3Service.delete(postFiles.get(i).getFile_name());
+        }
+        fileImageRepository.deleteAll(postFiles);
         postRepository.delete(post);
     }
 
@@ -221,7 +228,7 @@ public class PostService {
         return postWithLikesDTOs;
     }
 
-//     내가 작성한 게시글
+    //     내가 작성한 게시글
     public Map<String, Object> getMyPosts(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Could not find user with email: " + email));
