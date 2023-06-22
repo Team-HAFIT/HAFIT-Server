@@ -52,19 +52,17 @@ public class PostController {
     }
 
     // 1개 게시글 조회
-//    @GetMapping("/{postId}")
-//    public PostWithCommentsDTO getPostById(@PathVariable Long postId, Principal principal) {
-//        return postService.getPostById(postId, principal.getName());
-//    }
     @GetMapping("/{postId}")
-    public ResponseEntity<InputStreamResource> getPostById(@PathVariable Long postId, Principal principal) {
-        // postId를 사용하여 S3에서 미디어 URL을 가져온다.
-        PostWithCommentsDTO mediaUrl = postService.getPostById(postId, principal.getName());
+    public PostWithCommentsDTO getPostById(@PathVariable Long postId, Principal principal) {
+        return postService.getPostById(postId, principal.getName());
+    }
 
+    @GetMapping("/img/{fileId}")
+    public ResponseEntity<InputStreamResource> getPostImageById(@PathVariable Long fileId, Principal principal) {
+        String fileName = postService.getFileName(fileId);
         try {
-//            for (int i = 0; i < mediaUrl.getFiles().size(); i++) {
             // URL에 연결하여 미디어 다운로드
-            URL url = new URL(mediaUrl.getFiles().get(0).getFile_name());
+            URL url = new URL(fileName);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 

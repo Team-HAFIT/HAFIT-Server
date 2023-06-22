@@ -245,5 +245,9 @@ public class PostService {
         return result;
     }
 
+    public String getFileName(Long id) {
+        Optional<PostFile> postFile = fileImageRepository.findById(id);
+        return postFile.get().getFile_name();
+    }
 
 }
