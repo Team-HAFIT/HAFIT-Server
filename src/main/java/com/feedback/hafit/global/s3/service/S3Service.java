@@ -127,7 +127,6 @@ public class S3Service {
         return amazonS3.generatePresignedUrl(urlRequest);
     }
 
-    // 제한 시간을 두는 코드, 이미지를 파일로 받아오기 위한 코드라 필요 x, 혹시 몰라 남겨둠
     public Date getExpiration() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
