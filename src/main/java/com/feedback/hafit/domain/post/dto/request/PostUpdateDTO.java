@@ -19,7 +19,7 @@ public class PostUpdateDTO {
         this.categoryId = categoryId;
     }
 
-    public void setPostContent(String post_content) {
+    public void setPost_content(String post_content) {
         this.post_content = post_content;
     }
 
