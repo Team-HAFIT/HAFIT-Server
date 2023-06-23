@@ -22,6 +22,7 @@ import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,9 @@ public class PostService {
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 // 신규 파일 업로드
-                String uploadUrl = s3Service.upload(file, "posts");
+                String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
+                String uploadUrl = s3Service.upload(file, "posts." + fileExtension);
+
                 log.info("uploadUrl: {}", uploadUrl);
                 // db 저장
                 fileImageRepository.save(PostFile.builder().post(post).file_name(uploadUrl).build());
