@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostWithCommentsDTO {
     private Long postId;
+    private Long categoryId;
     private String category_name;
     private String user_name;
     private String post_content;
@@ -30,6 +31,7 @@ public class PostWithCommentsDTO {
     public PostWithCommentsDTO(Post post, List<PostFileDTO> files, boolean post_likedByUser, Long post_totalLikes, Long comment_count, List<CommentWithLikesDTO> comments) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.postId = post.getPostId();
+        this.categoryId = post.getCategory().getCategoryId();
         this.category_name = post.getCategory().getCategory_name();
         this.user_name = post.getUser().getName();
         this.post_content = post.getPost_content();
