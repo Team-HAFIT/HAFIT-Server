@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.python.google.common.io.Files.getFileExtension;
+
 @Component
 @RequiredArgsConstructor
 public class S3Service {
@@ -48,15 +50,49 @@ public class S3Service {
 
         // 실제 S3 bucket 디렉토리명 설정
         // 파일명 중복을 방지하기 위한 UUID 추가
-
-        // 경로가 "//"인 경우 replace로 "/"로 변경
         String path = S3_BUCKET_DIRECTORY_NAME + "/" + dirName + "/" + UUID.randomUUID();
         path = path.replace("//", "/");
-        String fileName = path + "." + UUID.randomUUID();//multipartFile.getOriginalFilename();
+        String fileExtension = getFileExtension(multipartFile.getOriginalFilename());
+        String fileName = path + "." + fileExtension;
 
-        //        removeNewFile(multipartFile);
-        return putS3(multipartFile, objectMetadata, fileName);
+        // 파일 타입에 따라 ACL 설정
+        CannedAccessControlList acl = determineFileACL(fileExtension);
+
+        return putS3(multipartFile, objectMetadata, fileName, acl);
     }
+
+    private CannedAccessControlList determineFileACL(String fileExtension) {
+        if (isImageFile(fileExtension) || isGifFile(fileExtension)) {
+            return CannedAccessControlList.PublicRead; // 이미지 및 움짤은 PublicRead ACL 설정
+        } else {
+            return CannedAccessControlList.Private; // 동영상은 Private ACL 설정
+        }
+    }
+
+    private boolean isImageFile(String fileExtension) {
+        // 이미지 파일 확장자 체크
+        return fileExtension.equalsIgnoreCase("jpg") || fileExtension.equalsIgnoreCase("jpeg") ||
+                fileExtension.equalsIgnoreCase("png") || fileExtension.equalsIgnoreCase("gif");
+    }
+
+    private boolean isGifFile(String fileExtension) {
+        // 움짤 파일 확장자 체크
+        return fileExtension.equalsIgnoreCase("gif");
+    }
+
+    private String putS3(MultipartFile uploadFile, ObjectMetadata objectMetadata, String fileName, CannedAccessControlList acl) {
+        String res = "";
+        try (InputStream inputStream = uploadFile.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+                    .withCannedAcl(acl));
+            res = amazonS3.getUrl(bucket, fileName).toString();
+        } catch (IOException e) {
+            log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage());
+            throw new IllegalStateException("S3 파일 업로드에 실패했습니다.");
+        }
+        return res;
+    }
+
 
     // 1. 로컬에 파일생성
     private File convert(MultipartFile file) throws IOException {
@@ -73,19 +109,6 @@ public class S3Service {
         }
 
         throw new IOException("파일을 서버에 저장하는데 실패했습니다.");
-    }
-
-    private String putS3(MultipartFile uploadFile, ObjectMetadata objectMetadata, String fileName) {
-        String res = "";
-        try (InputStream inputStream = uploadFile.getInputStream()) {
-            amazonS3.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-            res = amazonS3.getUrl(bucket, fileName).toString();
-        } catch (IOException e) {
-            log.error("S3 파일 업로드에 실패했습니다. {}", e.getMessage());
-            throw new IllegalStateException("S3 파일 업로드에 실패했습니다.");
-        }
-        return res;
     }
 
     // 3. 로컬에 생성된 파일삭제
