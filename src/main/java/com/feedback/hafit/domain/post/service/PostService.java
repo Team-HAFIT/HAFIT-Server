@@ -22,7 +22,6 @@ import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -74,7 +73,6 @@ public class PostService {
         Long categoryId = postDTO.getCategoryId();
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new EntityNotFoundException("Category not found with category: " + categoryId));
 
-        // 해당 게시글의 파일(이미지,영상 등등..) 조회
         List<PostFile> postFiles = fileImageRepository.findAllBypost(post);
         if (postFiles != null) {
             for (PostFile postFile : postFiles) {
@@ -86,15 +84,12 @@ public class PostService {
         }
 
         // 프론트에서 넘어온 새로운 파일 등록
-        if (files != null && !files.isEmpty()) {
+        if (files != null) {
+            List<PostFileDTO> postFileDTOS = new ArrayList<>();
             for (MultipartFile file : files) {
-                // 신규 파일 업로드
-                String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-                String uploadUrl = s3Service.upload(file, "posts." + fileExtension);
-
-                log.info("uploadUrl: {}", uploadUrl);
-                // db 저장
-                fileImageRepository.save(PostFile.builder().post(post).file_name(uploadUrl).build());
+                String uploadUrl = s3Service.upload(file, "posts");
+                PostFileDTO postFileDTO = new PostFileDTO(fileImageRepository.save(PostFile.builder().post(post).file_name(uploadUrl).build()));
+                postFileDTOS.add(postFileDTO);
             }
         }
 
@@ -102,7 +97,6 @@ public class PostService {
         post.setCategory(category);
         postRepository.save(post); // 내용을 DB에 저장
     }
-
 
     public List<PostWithLikesDTO> getAllPosts(Long lastPostId, int size, String email) {
         PageRequest pageRequest = PageRequest.of(0, size);
@@ -185,7 +179,6 @@ public class PostService {
             return years + "년 전";
         }
     }
-
 
     // 카테고리 별 게시글 조회
     public List<PostWithLikesDTO> getPostsByCategory(Long lastPostId, int size, Long categoryId, String email) {

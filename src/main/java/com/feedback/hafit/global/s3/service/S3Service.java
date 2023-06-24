@@ -18,8 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.python.google.common.io.Files.getFileExtension;
-
 @Component
 @RequiredArgsConstructor
 public class S3Service {
@@ -52,7 +50,8 @@ public class S3Service {
         // 파일명 중복을 방지하기 위한 UUID 추가
         String path = S3_BUCKET_DIRECTORY_NAME + "/" + dirName + "/" + UUID.randomUUID();
         path = path.replace("//", "/");
-        String fileExtension = getFileExtension(multipartFile.getOriginalFilename());
+        String originalFilename  = objectMetadata.getContentType();
+        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("/") + 1);
         String fileName = path + "." + fileExtension;
 
         // 파일 타입에 따라 ACL 설정
