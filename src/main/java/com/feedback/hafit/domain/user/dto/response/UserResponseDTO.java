@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor
@@ -27,12 +27,13 @@ public class UserResponseDTO {
     private int height;
     private int weight;
     private String imageUrl;
-    private LocalDateTime modifiedAt;
-    private LocalDateTime createdAt;
+    private String modifiedAt;
+    private String createdAt;
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
 
     public UserResponseDTO(User user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.userId = user.getUserId();
         this.email = user.getEmail();
         this.carrier = user.getCarrier();
@@ -46,7 +47,7 @@ public class UserResponseDTO {
         this.imageUrl = user.getImageUrl();
         this.socialId = user.getSocialId();
         this.socialType = user.getSocialType();
-        this.modifiedAt = user.getModifiedAt();
-        this.createdAt = user.getCreatedAt();
+        this.modifiedAt = user.getModifiedAt().format(formatter);
+        this.createdAt = user.getCreatedAt().format(formatter);
     }
 }
