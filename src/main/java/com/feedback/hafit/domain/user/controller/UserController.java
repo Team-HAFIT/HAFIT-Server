@@ -1,5 +1,6 @@
 package com.feedback.hafit.domain.user.controller;
 
+import com.feedback.hafit.domain.exerciseSet.dto.response.ExerciseSetResponseDTO;
 import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.request.UserDTO;
 import com.feedback.hafit.domain.user.dto.response.UserResponseDTO;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -70,5 +72,9 @@ public class UserController {
 
     }
 
-
+    @GetMapping("/sets")
+    public List<ExerciseSetResponseDTO> findAllSets(Principal principal) {
+        List<ExerciseSetResponseDTO> setDTO = userService.findAllSets(principal.getName());
+        return setDTO;
+    }
 }

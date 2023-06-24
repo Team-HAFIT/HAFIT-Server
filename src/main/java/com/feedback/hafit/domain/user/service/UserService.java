@@ -1,5 +1,9 @@
 package com.feedback.hafit.domain.user.service;
 
+import com.feedback.hafit.domain.exerciseSet.dto.response.ExerciseSetResponseDTO;
+import com.feedback.hafit.domain.exerciseSet.service.ExerciseSetService;
+import com.feedback.hafit.domain.plan.entity.Plan;
+import com.feedback.hafit.domain.plan.repository.PlanRepository;
 import com.feedback.hafit.domain.user.dto.request.UserChangePasswordDTO;
 import com.feedback.hafit.domain.user.dto.request.UserDTO;
 import com.feedback.hafit.domain.user.dto.request.UserFormDTO;
@@ -15,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -23,6 +30,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PlanRepository planRepository;
+    private final ExerciseSetService exerciseSetService;
 
     private final S3Service s3Service;
 
@@ -133,4 +142,18 @@ public class UserService {
 
         return user.getImageUrl();
     }
+
+    public List<ExerciseSetResponseDTO> findAllSets(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 사용자를 찾을 수 없습니다."));
+
+        List<Plan> plans = planRepository.findByUser(user);
+
+        List<ExerciseSetResponseDTO> sets = plans.stream()
+                .flatMap(plan -> exerciseSetService.getByPlanId(plan.getPlanId()).stream())
+                .collect(Collectors.toList());
+
+        return sets;
+    }
+
 }
