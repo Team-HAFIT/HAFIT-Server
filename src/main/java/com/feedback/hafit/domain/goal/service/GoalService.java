@@ -100,7 +100,9 @@ public class GoalService {
         for (Goal goal : goals) {
             LocalDate targetDate = goal.getGoalTargetDate();
             long daysRemaining = ChronoUnit.DAYS.between(today, targetDate);
-            goalDTOs.add(new GoalForDdayDTO(goal, daysRemaining-1));
+            daysRemaining -= 1;
+            String dDay = (daysRemaining == 0) ? "D-Day" : "D-" + daysRemaining;
+            goalDTOs.add(new GoalForDdayDTO(goal, dDay));
         }
 
         Map<String, Object> result = new HashMap<>();

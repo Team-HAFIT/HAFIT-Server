@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 public class GoalForDdayDTO {
     private Long goalId;
     private String goal_content;
-    private long d_day;
+    private String d_day;
 
-    public GoalForDdayDTO(Goal goal, long d_day) {
+    public GoalForDdayDTO(Goal goal, String d_day) {
         this.goalId = goal.getGoalId();
         this.goal_content = goal.getGoal_content();
         this.d_day = d_day;
@@ -21,7 +21,7 @@ public class GoalForDdayDTO {
         this.goal_content = goal_content;
     }
 
-    public void setD_day(long d_day) {
+    public void setD_day(String d_day) {
         this.d_day = d_day;
     }
 }
