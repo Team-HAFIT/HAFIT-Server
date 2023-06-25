@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.routine.controller;
 
 import com.feedback.hafit.domain.routine.dto.PRoutineDTO;
 import com.feedback.hafit.domain.routine.dto.RoutineDTO;
+import com.feedback.hafit.domain.routine.dto.response.RoutineForCalendarDTO;
 import com.feedback.hafit.domain.routine.service.RoutineService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +35,8 @@ public class RoutineController {
     }
 
     @GetMapping // 한 회원에 모든 루틴 조회
-    public ResponseEntity<List<RoutineDTO>> getUserRoutine(Principal principal) {
-        return ResponseEntity.ok(routineService.getUserRoutine(principal.getName()));
+    public List<RoutineForCalendarDTO> getUserRoutine(Principal principal) {
+        return routineService.getUserRoutine(principal.getName());
     }
 
     @PostMapping // 루틴 추가

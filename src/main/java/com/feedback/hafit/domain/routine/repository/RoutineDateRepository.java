@@ -10,4 +10,6 @@ public interface RoutineDateRepository extends JpaRepository<RoutineDate, Long> 
 
     List<RoutineDate> findByroutine(Routine routineId);
     void deleteAllByroutine(Routine routineId);
+
+    List<RoutineDate> findByRoutine(Routine routine);
 }

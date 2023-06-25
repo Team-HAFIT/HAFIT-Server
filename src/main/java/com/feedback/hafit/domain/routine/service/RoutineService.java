@@ -6,6 +6,7 @@ import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.routine.dto.PRoutineDTO;
 import com.feedback.hafit.domain.routine.dto.RoutineDTO;
+import com.feedback.hafit.domain.routine.dto.response.RoutineForCalendarDTO;
 import com.feedback.hafit.domain.routine.entity.Routine;
 import com.feedback.hafit.domain.routine.entity.RoutineDate;
 import com.feedback.hafit.domain.routine.repository.RoutineDateRepository;
@@ -41,20 +42,25 @@ public class RoutineService {
 
     private final ExerciseRepository exerciseRepository;
 
-    public List<RoutineDTO> getUserRoutine(String email) {
+    public List<RoutineForCalendarDTO> getUserRoutine(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-        List<Routine> userRoutine = routineRepository.findByuser(user);
-        List<RoutineDTO> userRoutines = new ArrayList<>();
+        List<Routine> userRoutine = routineRepository.findByUser(user);
+
+        List<RoutineForCalendarDTO> userRoutines = new ArrayList<>();
 
         for (Routine routine : userRoutine) {
-            RoutineDTO routineDTO = new RoutineDTO(routine);
-            userRoutines.add(routineDTO);
+            List<RoutineDate> routineDates = routineDateRepository.findByRoutine(routine);
+
+            for (RoutineDate routineDate : routineDates) {
+                RoutineForCalendarDTO routineDTO = new RoutineForCalendarDTO(routine, routineDate);
+                userRoutines.add(routineDTO);
+            }
         }
 
         return userRoutines;
-
     }
+
 
     public List<RoutineDTO> getAllRoutines() {
         List<Routine> routine = routineRepository.findAll();
