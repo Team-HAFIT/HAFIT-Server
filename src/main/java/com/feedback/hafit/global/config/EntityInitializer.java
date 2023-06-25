@@ -47,7 +47,6 @@ public class EntityInitializer implements ApplicationRunner {
                 "상체 강화",
                 "하체 강화",
                 "복근 만들기",
-                "성취감 향상",
                 "넓은 어깨 만들기",
                 "기타"
         );
@@ -60,7 +59,8 @@ public class EntityInitializer implements ApplicationRunner {
         List<String> initialCategories = Arrays.asList(
                 "오운완",
                 "자세 피드백",
-                "운동 Q&A"
+                "운동 Q&A",
+                "자유게시판"
         );
 
         for (String category : initialCategories) {
@@ -143,12 +143,12 @@ public class EntityInitializer implements ApplicationRunner {
 
         // 키워드와 운동의 매핑 관계 정의
         Map<Long, Long[]> keywordExerciseMap = new HashMap<>();
-        keywordExerciseMap.put(1L, new Long[]{1L, 2L, 9L, 15L, 12L, 14L});
-        keywordExerciseMap.put(2L, new Long[]{2L, 1L, 4L});
-        keywordExerciseMap.put(3L, new Long[]{5L, 3L, 2L, 1L, 6L});
+        keywordExerciseMap.put(1L, new Long[]{1L, 3L, 4L});
+        keywordExerciseMap.put(2L, new Long[]{1L, 2L, 4L});
+        keywordExerciseMap.put(3L, new Long[]{1L, 2L, 3L, 5L, 6L});
         keywordExerciseMap.put(4L, new Long[]{3L, 5L, 7L, 8L});
         keywordExerciseMap.put(5L, new Long[]{1L, 9L, 10L, 11L});
-        keywordExerciseMap.put(6L, new Long[]{12L, 4L, 13L, 14L});
+        keywordExerciseMap.put(6L, new Long[]{4L, 12L, 13L, 14L});
         keywordExerciseMap.put(7L, new Long[]{15L, 16L, 17L});
 
         // 매핑된 키워드와 운동을 데이터베이스에 저장
