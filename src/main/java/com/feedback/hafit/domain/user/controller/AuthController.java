@@ -46,6 +46,12 @@ public class AuthController {
         return userService.emailCheck(email);
     }
 
+    @GetMapping("/phone/{phone}")
+    @ResponseBody
+    public int checkPhoneAvailability(@PathVariable("phone") String phone) {
+        return userService.phoneCheck(phone);
+    }
+
     @PostMapping("/refresh")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

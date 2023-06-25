@@ -64,7 +64,6 @@ public class UserController {
         return imageUrl;
     }
 
-
     @DeleteMapping("/profile") // 프로필 이미지 삭제
     @ResponseBody
     public void deleteProfileImage(Principal principal) {
