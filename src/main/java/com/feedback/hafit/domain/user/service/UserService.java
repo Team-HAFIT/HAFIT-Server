@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +49,11 @@ public class UserService {
 
     public int emailCheck(String email) {
         boolean exists = userRepository.existsByEmail(email);
+        return exists ? 1 : 0;
+    }
+
+    public int phoneCheck(String phone) {
+        boolean exists = userRepository.existsByPhone(phone);
         return exists ? 1 : 0;
     }
 
