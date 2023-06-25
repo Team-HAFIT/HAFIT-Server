@@ -193,7 +193,7 @@ public class PostService {
             Long totalLikes = postLikeRepository.countLikesByPost(post);
             Long commentCount = commentRepository.countByPost(post);
             boolean likedByUser = checkIfPostLikedByUser(post, user);
-            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, totalLikes, commentCount);
+            PostWithLikesDTO postWithLikesDTO = new PostWithLikesDTO(post, postFileDTOS, likedByUser, commentCount, totalLikes);
             postWithLikesDTOs.add(postWithLikesDTO);
         }
 
