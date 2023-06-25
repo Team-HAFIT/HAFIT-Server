@@ -16,6 +16,7 @@ public class PostWithLikesDTO {
     private Long postId;
     private String category_name;
     private String user_name;
+    private String imageUrl;
     private String post_content;
     private List<PostFileDTO> files = Collections.emptyList();
     private Long post_totalLikes;
@@ -30,6 +31,7 @@ public class PostWithLikesDTO {
         this.postId = post.getPostId();
         this.category_name = post.getCategory().getCategory_name();
         this.user_name = post.getUser().getName();
+        this.imageUrl = post.getUser().getImageUrl();
         this.post_content = post.getPost_content();
         this.post_totalLikes = post_totalLikes;
         this.comment_count = comment_count;

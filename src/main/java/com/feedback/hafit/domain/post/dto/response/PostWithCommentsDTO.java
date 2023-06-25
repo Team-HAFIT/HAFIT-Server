@@ -18,6 +18,7 @@ public class PostWithCommentsDTO {
     private Long categoryId;
     private String category_name;
     private String user_name;
+    private String imageUrl;
     private String post_content;
     private List<PostFileDTO> files = Collections.emptyList();
     private Long post_totalLikes;
@@ -34,6 +35,7 @@ public class PostWithCommentsDTO {
         this.categoryId = post.getCategory().getCategoryId();
         this.category_name = post.getCategory().getCategory_name();
         this.user_name = post.getUser().getName();
+        this.imageUrl = post.getUser().getImageUrl();
         this.post_content = post.getPost_content();
         this.post_totalLikes = post_totalLikes;
         this.comment_count = comment_count;

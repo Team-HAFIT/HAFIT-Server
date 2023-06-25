@@ -17,8 +17,8 @@ public class CommentWithLikesDTO {
     private Long commentId; // 댓글 ID
     private Long postId; // 게시글 ID
     private String comment_content; // 댓글 내용
-    private String user_name; // 유저 ID
-    private String user_imageUrl; // 프로필 사진
+    private String comment_user_name; // 유저 ID
+    private String comment_user_imageUrl; // 프로필 사진
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private String user_LastCommentTime;
@@ -27,10 +27,10 @@ public class CommentWithLikesDTO {
 
     public CommentWithLikesDTO(Comment comment, boolean comment_likedByUser, Long comment_totalLikes) {
         this.commentId = comment.getCommentId();
-        this.user_imageUrl = comment.getUser().getImageUrl();
         this.postId = comment.getPost().getPostId();
         this.comment_content = comment.getComment_content();
-        this.user_name = comment.getUser().getName();
+        this.comment_user_name = comment.getUser().getName();
+        this.comment_user_imageUrl = comment.getUser().getImageUrl();
         this.comment_totalLikes = comment_totalLikes;
         this.comment_likedByUser = comment_likedByUser;
         this.createAt = comment.getCreatedAt();
@@ -50,11 +50,11 @@ public class CommentWithLikesDTO {
     }
 
     public void setUser_name(String user_name) {
-        this.user_name = user_name;
+        this.comment_user_name = user_name;
     }
 
     public void setUser_imageUrl(String user_imageUrl) {
-        this.user_imageUrl = user_imageUrl;
+        this.comment_user_imageUrl = user_imageUrl;
     }
 
     public void setCreateAt(LocalDateTime createAt) {
