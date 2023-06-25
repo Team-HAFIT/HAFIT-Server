@@ -3,8 +3,6 @@ package com.feedback.hafit.domain.goal.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Getter
 @NoArgsConstructor
 public class GoalRequestDTO {
@@ -14,7 +12,7 @@ public class GoalRequestDTO {
 
     private String goal_content;
 
-    private LocalDate goal_target_date;
+    private String goal_target_date;
 
     private String user_email;
 
@@ -26,7 +24,7 @@ public class GoalRequestDTO {
         this.goal_content = goal_content;
     }
 
-    public void setGoal_target_date(LocalDate goal_target_date) {
+    public void setGoal_target_date(String goal_target_date) {
         this.goal_target_date = goal_target_date;
     }
 

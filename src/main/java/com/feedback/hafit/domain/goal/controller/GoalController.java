@@ -25,10 +25,10 @@ public class GoalController {
         goalService.createGoal(goalRequestDTO, principal.getName());
     }
 
-    @PutMapping("/{goalId}")
-    public void updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
-        goalService.updateGoal(goalId, goalRequestDTO);
-    }
+//    @PutMapping("/{goalId}")
+//    public void updateGoal(@PathVariable Long goalId, @RequestBody GoalRequestDTO goalRequestDTO) {
+//        goalService.updateGoal(goalId, goalRequestDTO);
+//    }
 
     @DeleteMapping("/{goalId}")
     public void deleteGoal(@PathVariable Long goalId) {

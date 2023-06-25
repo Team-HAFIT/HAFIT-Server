@@ -18,4 +18,6 @@ public class ExerciseForKeywordDTO {
         this.exerciseId = exercise.getExerciseId();
         this.exerciseName = exercise.getExerciseName();
     }
+
+
 }
