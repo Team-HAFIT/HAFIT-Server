@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -57,5 +58,6 @@ public class Routine extends BaseEntity {
     private List<DayOfWeek> repeatDays;
 
     @Column
+    @CreatedDate
     private LocalDate startDate;
 }

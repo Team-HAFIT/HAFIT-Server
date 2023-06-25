@@ -39,9 +39,8 @@ public class RoutineController {
     }
 
     @PostMapping // 루틴 추가
-    public ResponseEntity<RoutineDTO> createRoutine(@RequestBody PRoutineDTO pRoutine, Principal principal) {
-        RoutineDTO createdRoutine = routineService.createRoutine(pRoutine, principal.getName());
-        return new ResponseEntity(createdRoutine, HttpStatus.CREATED);
+    public void createRoutine(@RequestBody PRoutineDTO pRoutine, Principal principal) {
+        routineService.createRoutine(pRoutine, principal.getName());
     }
 
     @PutMapping("/{routineId}") // 루틴 수정

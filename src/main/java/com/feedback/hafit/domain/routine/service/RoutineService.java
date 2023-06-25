@@ -14,6 +14,7 @@ import com.feedback.hafit.domain.user.entity.User;
 import com.feedback.hafit.domain.user.repository.UserRepository;
 import com.feedback.hafit.global.enumerate.DayOfWeek;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +28,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RoutineService {
 
     private final RoutineRepository routineRepository;
@@ -80,32 +82,30 @@ public class RoutineService {
         return routines;
     }
 
-    public RoutineDTO createRoutine(PRoutineDTO pRoutineDTO, String email) {
+    public void createRoutine(PRoutineDTO pRoutineDTO, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
-
-        Optional<Goal> goal = goalRepository.findById(pRoutineDTO.getGoalId());
-        Optional<Exercise> exercise = exerciseRepository.findById(pRoutineDTO.getExerciseId());
+        Goal goal = goalRepository.findById(pRoutineDTO.getGoalId())
+                .orElseThrow(() -> new EntityNotFoundException("Goal not found with GoalId: " + pRoutineDTO.getGoalId()));
+        Exercise exercise = exerciseRepository.findById(pRoutineDTO.getExerciseId())
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with ExerciseId: " + pRoutineDTO.getExerciseId()));
 
         Routine routine = new Routine();
         routine.setRoutineCount(pRoutineDTO.getRoutineCount());
         routine.setRoutineSet(pRoutineDTO.getRoutineSet());
         routine.setRoutineWeight(pRoutineDTO.getRoutineWeight());
         routine.setUser(user);
-        routine.setGoal(goal.orElse(null));
-        routine.setExercise(exercise.orElse(null));
-        routine.setStartDate(pRoutineDTO.getStartDate());
+        routine.setGoal(goal);
+        routine.setExercise(exercise);
         routine.setRepeatDays(pRoutineDTO.getRepeatDays());
-
-        LocalDate endDate = goal.map(Goal::getGoalTargetDate).orElse(null);
-        List<DayOfWeek> targetDayOfWeek = routine.getRepeatDays();
+        List<DayOfWeek> targetDayOfWeek = pRoutineDTO.getRepeatDays();
 
         RoutineDTO routineDTO = new RoutineDTO(routineRepository.save(routine));
 
+        LocalDate endDate = routineDTO.getEndDate();
         if (endDate != null && targetDayOfWeek != null) {
             List<RoutineDate> routineDates = new ArrayList<>();
-            LocalDate current = routine.getStartDate();
-
+            LocalDate current = LocalDate.from(routine.getStartDate());
 
             while (!current.isAfter(endDate)) {
                 java.time.DayOfWeek dayOfWeek = current.getDayOfWeek();
@@ -123,7 +123,6 @@ public class RoutineService {
             routineDateRepository.saveAll(routineDates);
         }
 
-        return routineDTO;
     }
 
     @Transactional
@@ -154,7 +153,6 @@ public class RoutineService {
         if (endDate != null && targetDayOfWeek != null) {
             List<RoutineDate> routineDates = new ArrayList<>();
             LocalDate current = routines.getStartDate();
-
 
             while (!current.isAfter(endDate)) {
                 java.time.DayOfWeek dayOfWeek = current.getDayOfWeek();

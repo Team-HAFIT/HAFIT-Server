@@ -21,8 +21,8 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping
-    public void createGoal(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
-        goalService.createGoal(goalRequestDTO, principal.getName());
+    public Long createGoal(@RequestBody GoalRequestDTO goalRequestDTO, Principal principal) {
+        return goalService.createGoal(goalRequestDTO, principal.getName());
     }
 
 //    @PutMapping("/{goalId}")
