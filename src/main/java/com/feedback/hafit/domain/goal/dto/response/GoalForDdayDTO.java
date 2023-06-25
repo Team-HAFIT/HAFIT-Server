@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 public class GoalForDdayDTO {
     private Long goalId;
     private String goal_content;
-    private String d_day;
+    private String goal_target_date;
 
     public GoalForDdayDTO(Goal goal, String d_day) {
         this.goalId = goal.getGoalId();
         this.goal_content = goal.getGoal_content();
-        this.d_day = d_day;
+        this.goal_target_date = d_day;
     }
 
     public void setGoal_content(String goal_content) {
         this.goal_content = goal_content;
     }
 
-    public void setD_day(String d_day) {
-        this.d_day = d_day;
+    public void setGoal_target_date(String goal_target_date) {
+        this.goal_target_date = goal_target_date;
     }
 }

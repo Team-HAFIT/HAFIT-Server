@@ -37,10 +37,12 @@ public class GoalService {
         Long keywordId = goalRequestDTO.getKeywordId();
         Keyword keyword = keywordRepository.findById(keywordId)
                 .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+        LocalDate goalTargetDate = LocalDate.parse(goalRequestDTO.getGoal_target_date());
+
         Goal goal = Goal.builder()
                 .user(user)
                 .keyword(keyword)
-                .goalTargetDate(goalRequestDTO.getGoal_target_date())
+                .goalTargetDate(goalTargetDate)
                 .goal_content(goalRequestDTO.getGoal_content())
                 .build();
 
@@ -64,21 +66,21 @@ public class GoalService {
         return goalResponseDTOs;
     }
 
-    public void updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
-        Goal goal = goalRepository.findById(goalId)
-                .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
-
-        Long keywordId = goalRequestDTO.getKeywordId();
-        Keyword keyword = keywordRepository.findById(keywordId)
-                .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
-
-        // Update the goal properties based on the goalRequestDTO
-        goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
-        goal.setGoal_content(goalRequestDTO.getGoal_content());
-        goal.setKeyword(keyword);
-
-        goalRepository.save(goal);
-    }
+//    public void updateGoal(Long goalId, GoalRequestDTO goalRequestDTO) {
+//        Goal goal = goalRepository.findById(goalId)
+//                .orElseThrow(() -> new EntityNotFoundException("Goal not found with ID: " + goalId));
+//
+//        Long keywordId = goalRequestDTO.getKeywordId();
+//        Keyword keyword = keywordRepository.findById(keywordId)
+//                .orElseThrow(() -> new EntityNotFoundException("Keyword not found with ID: " + keywordId));
+//
+//        // Update the goal properties based on the goalRequestDTO
+//        goal.setGoal_target_date(goalRequestDTO.getGoal_target_date());
+//        goal.setGoal_content(goalRequestDTO.getGoal_content());
+//        goal.setKeyword(keyword);
+//
+//        goalRepository.save(goal);
+//    }
 
     public void deleteGoal(Long goalId) {
         Goal goal = goalRepository.findById(goalId)
