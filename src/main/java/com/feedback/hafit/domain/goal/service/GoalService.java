@@ -31,7 +31,7 @@ public class GoalService {
     private final GoalRepository goalRepository;
     private final KeywordRepository keywordRepository;
 
-    public void createGoal(GoalRequestDTO goalRequestDTO, String email) {
+    public Long createGoal(GoalRequestDTO goalRequestDTO, String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with Email: " + email));
         Long keywordId = goalRequestDTO.getKeywordId();
@@ -46,7 +46,8 @@ public class GoalService {
                 .goal_content(goalRequestDTO.getGoal_content())
                 .build();
 
-        goalRepository.save(goal);
+        Goal savedGoal = goalRepository.save(goal);
+        return savedGoal.getGoalId();
     }
 
     public List<GoalResponseDTO> getGoalsByUser(String email) {

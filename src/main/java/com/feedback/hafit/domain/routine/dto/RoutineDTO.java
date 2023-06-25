@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -28,8 +29,7 @@ public class RoutineDTO {
     private Long goalId;
 
     private List<DayOfWeek> repeatDays;
-
-
+    private LocalDate endDate;
 
     public RoutineDTO(Routine routine) {
         this.routineId = routine.getRoutineId();
@@ -40,5 +40,6 @@ public class RoutineDTO {
         this.goalId = routine.getGoal().getGoalId();
         this.exerciseId = routine.getExercise().getExerciseId();
         this.repeatDays = routine.getRepeatDays();
+        this.endDate = routine.getGoal().getGoalTargetDate();
     }
 }
