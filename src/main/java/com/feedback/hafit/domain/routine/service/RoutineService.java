@@ -6,6 +6,7 @@ import com.feedback.hafit.domain.goal.entity.Goal;
 import com.feedback.hafit.domain.goal.repository.GoalRepository;
 import com.feedback.hafit.domain.routine.dto.PRoutineDTO;
 import com.feedback.hafit.domain.routine.dto.RoutineDTO;
+import com.feedback.hafit.domain.routine.dto.request.PerformRoutineRequestDTO;
 import com.feedback.hafit.domain.routine.dto.response.RoutineForCalendarDTO;
 import com.feedback.hafit.domain.routine.entity.Routine;
 import com.feedback.hafit.domain.routine.entity.RoutineDate;
@@ -131,6 +132,32 @@ public class RoutineService {
 
     }
 
+    public void createOneRoutine(PRoutineDTO pRoutineDTO, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        Goal goal = goalRepository.findById(pRoutineDTO.getGoalId())
+                .orElseThrow(() -> new EntityNotFoundException("Goal not found with GoalId: " + pRoutineDTO.getGoalId()));
+        Exercise exercise = exerciseRepository.findById(pRoutineDTO.getExerciseId())
+                .orElseThrow(() -> new EntityNotFoundException("Exercise not found with ExerciseId: " + pRoutineDTO.getExerciseId()));
+
+        Routine routine = new Routine();
+        routine.setRoutineCount(pRoutineDTO.getRoutineCount());
+        routine.setRoutineSet(pRoutineDTO.getRoutineSet());
+        routine.setRoutineWeight(pRoutineDTO.getRoutineWeight());
+        routine.setUser(user);
+        routine.setGoal(goal);
+        routine.setExercise(exercise);
+        Routine savedRoutine = routineRepository.save(routine);
+
+        RoutineDate routineDate = new RoutineDate();
+        routineDate.setDays(pRoutineDTO.getDays());
+        routineDate.setRoutine(savedRoutine);
+        routineDate.setPerform("N");
+
+        routineDateRepository.save(routineDate);
+
+    }
+
     @Transactional
     public RoutineDTO updateRoutine(Long routineId, PRoutineDTO pRoutineDTO, String email) {
         User user = userRepository.findByEmail(email)
@@ -186,4 +213,13 @@ public class RoutineService {
         routineRepository.deleteById(routineId);
     }
 
+    public void updateRoutinePerform(PerformRoutineRequestDTO requestDTO) {
+        Long routineId = requestDTO.getRoutineId();
+        LocalDate days = requestDTO.getDays();
+
+        RoutineDate routineDate = routineDateRepository.findByRoutine_RoutineIdAndDays(routineId, days)
+                .orElseThrow(() -> new EntityNotFoundException("RoutineDate not found with routineId: " + requestDTO.getRoutineId()));
+        routineDate.setPerform("Y");
+        routineDateRepository.save(routineDate);
+    }
 }

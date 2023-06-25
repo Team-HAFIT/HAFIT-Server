@@ -2,6 +2,7 @@ package com.feedback.hafit.domain.routine.controller;
 
 import com.feedback.hafit.domain.routine.dto.PRoutineDTO;
 import com.feedback.hafit.domain.routine.dto.RoutineDTO;
+import com.feedback.hafit.domain.routine.dto.request.PerformRoutineRequestDTO;
 import com.feedback.hafit.domain.routine.dto.response.RoutineForCalendarDTO;
 import com.feedback.hafit.domain.routine.service.RoutineService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,11 @@ public class RoutineController {
         routineService.createRoutine(pRoutine, principal.getName());
     }
 
+    @PostMapping("/one") // 루틴 추가
+    public void createOneRoutine(@RequestBody PRoutineDTO pRoutine, Principal principal) {
+        routineService.createOneRoutine(pRoutine, principal.getName());
+    }
+
     @PutMapping("/{routineId}") // 루틴 수정
     public ResponseEntity<RoutineDTO> updateRoutine(@PathVariable Long routineId, @RequestBody PRoutineDTO pRoutineDTO, Principal principal) {
 
@@ -57,4 +63,8 @@ public class RoutineController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
+    @PostMapping("/perform")
+    public void performRoutine(@RequestBody PerformRoutineRequestDTO request) {
+        routineService.updateRoutinePerform(request);
+    }
 }
