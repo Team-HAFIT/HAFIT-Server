@@ -1,4 +1,4 @@
-> #### Hafit - 서버 Repository
+> #### Hafit - 백엔드 Repository
 # 👋 영진전문대학교 3학년 WD-A반 6조(feedback) @ 캡스톤 프로젝트  
 ![hafit_logo](https://github.com/Team-HAFIT/HAFIT-Client/assets/103083251/6077c313-5d90-437c-8b62-e09cce3e8d0f)  
 
