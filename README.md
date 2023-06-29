@@ -1,3 +1,4 @@
+> #### Hafit - 서버 Repository
 # 👋 영진전문대학교 3학년 WD-A반 6조(feedback) @ 캡스톤 프로젝트  
 ![hafit_logo](https://github.com/Team-HAFIT/HAFIT-Client/assets/103083251/6077c313-5d90-437c-8b62-e09cce3e8d0f)  
 
@@ -41,12 +42,12 @@
            <td align="center" colspan = "2"><b>Front-end</b></td>
        </tr>
        <tr>
-           <td align="center"><b>전종훈</b></td>
-           <td align="center"><b>곽유진</b></td>
-           <td align="center"><b>유다연</b></td>
-           <td align="center"><b>이지환</b></td>
-           <td align="center"><b>백정훈</b></td>
-           <td align="center"><b>장준규</b></td>
+           <td align="center"><a href="https://github.com/WDJJH"><b>전종훈</b></a></td>
+           <td align="center"><a href="https://github.com/ooyniz"><b>곽유진</b></a></td>
+           <td align="center"><a href="https://github.com/da-pri"><b>유다연</b></a></td>
+           <td align="center"><a href="https://github.com/LJH-3410"><b>이지환</b></a></td>
+           <td align="center"><a href="https://github.com/baegjhoon"><b>백정훈</b></a></td>
+           <td align="center"><a href="https://github.com/jjun9"><b>장준규</b></a></td>
        </tr>
        <tr>
             <td width="16%" style="padding:0;">
