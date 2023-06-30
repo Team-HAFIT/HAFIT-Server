@@ -6,14 +6,20 @@ import com.feedback.hafit.domain.exerciseSet.entity.ExerciseSet;
 import com.feedback.hafit.domain.exerciseSet.repository.ExerciseSetRepository;
 import com.feedback.hafit.domain.plan.entity.Plan;
 import com.feedback.hafit.domain.plan.repository.PlanRepository;
+import com.feedback.hafit.domain.user.entity.User;
+import com.feedback.hafit.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -22,6 +28,7 @@ public class ExerciseSetService {
 
     private final ExerciseSetRepository exerciseSetRepository;
     private final PlanRepository planRepository;
+    private final UserRepository userRepository;
 
     // 운동 한 세트 종료 후 저장 메서드
     @Transactional
@@ -132,5 +139,43 @@ public class ExerciseSetService {
         ExerciseSet exerciseSets = exerciseSetRepository.findFirstByplanOrderBySetIdDesc(plan);
         ExerciseSetResponseDTO setDTO = new ExerciseSetResponseDTO(exerciseSets);
         return setDTO;
+    }
+
+    @Transactional
+    public List<ExerciseSetResponseDTO> findYearSets(String email, LocalDateTime current) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        LocalDateTime currentDateTime = current;
+        LocalDateTime oneYearAgo = currentDateTime.minusYears(1);
+
+        // plans 테이블을 기준으로 최근 1년간의 plan들을 조회
+        List<Plan> plans = planRepository.findByUserAndCreatedAtBetween(user, oneYearAgo, currentDateTime, Sort.by(Sort.Direction.ASC, "createdAt"));
+
+        List<ExerciseSetResponseDTO> sets = plans.stream()
+                .flatMap(plan -> exerciseSetRepository.findByplan(plan).stream())
+                .map(ExerciseSetResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return sets;
+    }
+
+    @Transactional
+    public List<ExerciseSetResponseDTO> findMonthSets(String email, LocalDateTime current) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+
+        LocalDateTime currentDateTime = current;
+        LocalDateTime oneMonthAgo = currentDateTime.minusMonths(1);
+
+        // plans 테이블을 기준으로 최근 1달간의 plan들을 조회
+        List<Plan> plans = planRepository.findByUserAndCreatedAtBetween(user, oneMonthAgo, currentDateTime, Sort.by(Sort.Direction.ASC, "createdAt"));
+
+        List<ExerciseSetResponseDTO> sets = plans.stream()
+                .flatMap(plan -> exerciseSetRepository.findByplan(plan).stream())
+                .map(ExerciseSetResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return sets;
     }
 }
