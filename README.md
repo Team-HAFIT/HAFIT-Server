@@ -135,7 +135,7 @@
                     <li>AWS S3 스토리지 구축</li>
                     <li>커뮤니티 CRUD 구현</li>
                     <li>Swagger 세팅</li>
-                    <li>개발 관련 자문 요청</li>
+                    <li>각종 예외 처리(Exception Handling)</li>
                 </ul>
             </td>
             <td align="center"><span style="color:#999999;">1801219</span><br /><b>이지환</b></td>
