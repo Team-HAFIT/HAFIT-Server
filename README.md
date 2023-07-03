@@ -22,7 +22,7 @@
 
 - 6조 `백엔드` Repository입니다.
 - [프론트엔드 Repository는 `여기`를 클릭해 주세요 ! 🔥](https://github.com/Team-HAFIT/HAFIT-Client)
-- [HaFit을 체험해 보고 싶다면 `여기`를 클릭해 주세요 ! 🔥 (실행 방법 설명) (링크 동작 X, 통합 빌드 버전 구현 후 추가하겠습니다!)]()  
+
   <br />
 
 ## 👨‍💻 TEAM˚ Feedback 👩‍💻
