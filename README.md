@@ -1,3 +1,4 @@
+![contents](https://img.shields.io/badge/좌측%20상단%20'목차'%20버튼을%20눌러%20원하시는%20메뉴로%20빠르게%20이동하실%20수%20있습니다!-ffffff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iMWVtIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+PCEtLSEgRm9udCBBd2Vzb21lIEZyZWUgNi40LjAgYnkgQGZvbnRhd2Vzb21lIC0gaHR0cHM6Ly9mb250YXdlc29tZS5jb20gTGljZW5zZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tL2xpY2Vuc2UgKENvbW1lcmNpYWwgTGljZW5zZSkgQ29weXJpZ2h0IDIwMjMgRm9udGljb25zLCBJbmMuIC0tPjxwYXRoIGQ9Ik02NCAxNDRhNDggNDggMCAxIDAgMC05NiA0OCA0OCAwIDEgMCAwIDk2ek0xOTIgNjRjLTE3LjcgMC0zMiAxNC4zLTMyIDMyczE0LjMgMzIgMzIgMzJINDgwYzE3LjcgMCAzMi0xNC4zIDMyLTMycy0xNC4zLTMyLTMyLTMySDE5MnptMCAxNjBjLTE3LjcgMC0zMiAxNC4zLTMyIDMyczE0LjMgMzIgMzIgMzJINDgwYzE3LjcgMCAzMi0xNC4zIDMyLTMycy0xNC4zLTMyLTMyLTMySDE5MnptMCAxNjBjLTE3LjcgMC0zMiAxNC4zLTMyIDMyczE0LjMgMzIgMzIgMzJINDgwYzE3LjcgMCAzMi0xNC4zIDMyLTMycy0xNC4zLTMyLTMyLTMySDE5MnpNNjQgNDY0YTQ4IDQ4IDAgMSAwIDAtOTYgNDggNDggMCAxIDAgMCA5NnptNDgtMjA4YTQ4IDQ4IDAgMSAwIC05NiAwIDQ4IDQ4IDAgMSAwIDk2IDB6Ii8+PC9zdmc+)
 > #### Hafit : 백엔드 Repository
 
 # 👋 영진전문대학교 3학년 WD-A반 6조(feedback) @ 캡스톤 프로젝트
@@ -13,7 +14,7 @@
 ## 🏋️ 주요 서비스
 
 1. **실시간 운동 자세 분석**을 통해 불안정한 운동 자세로 인한 `부상 위험 감지`
-2. 올바른 자세를 유도하기 위한 `시각적•청각적 피드백` 제공
+2. 올바른 자세를 유도하기 위한 `시각적・청각적 피드백` 제공
 3. 반복 횟수 & 세트 수 `자동 카운트`
 
 <br />
@@ -22,7 +23,7 @@
 
 - 6조 `백엔드` Repository입니다.
 - [프론트엔드 Repository는 `여기`를 클릭해 주세요 ! 🔥](https://github.com/Team-HAFIT/HAFIT-Client)
-- [HaFit을 체험해 보고 싶다면 `여기`를 클릭해 주세요 ! 🔥 (실행 방법 설명) (링크 동작 X, 통합 빌드 버전 구현 후 추가하겠습니다!)]()  
+
   <br />
 
 ## 👨‍💻 TEAM˚ Feedback 👩‍💻
@@ -135,7 +136,7 @@
                     <li>AWS S3 스토리지 구축</li>
                     <li>커뮤니티 CRUD 구현</li>
                     <li>Swagger 세팅</li>
-                    <li>개발 관련 자문 요청</li>
+                    <li>각종 예외 처리(Exception Handling)</li>
                 </ul>
             </td>
             <td align="center"><span style="color:#999999;">1801219</span><br /><b>이지환</b></td>
@@ -155,8 +156,8 @@
                     <li>프론트엔드 팀장</li>
                     <li>프론트엔드 개발 총괄</li>
                     <li>협업툴 세팅 및 관리</li>
-                    <li>UI/UX 디자인</li>
-                    <li>발표 PPT 제작 총괄</li>
+                    <li>UI/UX 디자인 및 스토리보드 작성</li>
+                    <li>프로젝트 로고 및 포스터 제작</li>
                 </ul>
             </td>
             <td align="center"><span style="color:#999999;">1801243</span><br /><b>장준규</b></td>
@@ -262,6 +263,26 @@
 ---
 
 <br />
+  
+## 🪄 실행 방법
+
+1. 먼저 [**`서버 Repository`**](https://github.com/Team-HAFIT/HAFIT-Server) 에서 clone 받은 프로젝트를 **`run`** 합니다.
+   
+2. [**`클라이언트 Repository`**](https://github.com/Team-HAFIT/HAFIT-Client) 도 clone 후, 폴더를 열어주세요.
+  
+3. `/3WDA-HaFit-Client/hafit-fe` 경로에서 아래 명령어를 실행합니다.
+```
+npm install
+```
+  
+4. **`HAFIT`**을 체험할 준비가 완료되었습니다! 아래 명령어를 실행합니다.
+```
+npm start
+```  
+  
+- 웹페이지가 자동으로 열리지 않을 경우, 브라우저 주소창에 **`http://localhost:3000/`** 을 입력해주세요! 😆
+
+<br />
 
 ## ⚙️ 개발 환경
 
@@ -360,3 +381,9 @@
     <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
     <img src="https://img.shields.io/badge/notion-EFEBF8?style=for-the-badge&logo=notion&logoColor=black">
 </div>
+
+<br />
+
+---
+
+![해핏_설명포스터](https://github.com/Team-HAFIT/HAFIT-Server/assets/103083251/8531d2bf-8df3-42a5-8ddc-f6e1875f55e8)
