@@ -14,7 +14,7 @@
 ## 🏋️ 주요 서비스
 
 1. **실시간 운동 자세 분석**을 통해 불안정한 운동 자세로 인한 `부상 위험 감지`
-2. 올바른 자세를 유도하기 위한 `시각적•청각적 피드백` 제공
+2. 올바른 자세를 유도하기 위한 `시각적・청각적 피드백` 제공
 3. 반복 횟수 & 세트 수 `자동 카운트`
 
 <br />
@@ -156,8 +156,8 @@
                     <li>프론트엔드 팀장</li>
                     <li>프론트엔드 개발 총괄</li>
                     <li>협업툴 세팅 및 관리</li>
-                    <li>UI/UX 디자인</li>
-                    <li>발표 PPT 제작 총괄</li>
+                    <li>UI/UX 디자인 및 스토리보드 작성</li>
+                    <li>프로젝트 로고 및 포스터 제작</li>
                 </ul>
             </td>
             <td align="center"><span style="color:#999999;">1801243</span><br /><b>장준규</b></td>
@@ -381,3 +381,9 @@ npm start
     <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
     <img src="https://img.shields.io/badge/notion-EFEBF8?style=for-the-badge&logo=notion&logoColor=black">
 </div>
+
+<br />
+
+---
+
+![해핏_설명포스터](https://github.com/Team-HAFIT/HAFIT-Server/assets/103083251/8531d2bf-8df3-42a5-8ddc-f6e1875f55e8)
