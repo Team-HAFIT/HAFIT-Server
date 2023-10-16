@@ -357,8 +357,8 @@ npm start
     <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
     <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
     <br />
-    <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white">
     <img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white">
+    <img src="https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white">
     <img src="https://img.shields.io/badge/Ant Design-0170FE?style=for-the-badge&logo=ant-design&logoColor=white">
     <br />
 </div>
@@ -374,7 +374,7 @@ npm start
 
 <br />
 
-<div align=center><h3>🚀 협업 툴</h3></div>
+<div align=center><h3>🚀 Collaboration & Tools</h3></div>
 <div align=center> 
     <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
     <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
