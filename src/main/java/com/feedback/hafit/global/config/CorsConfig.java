@@ -10,7 +10,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("https://www.hafit.net/", "http://www.hafit.net/", "http://localhost:3000/", "http://www.hafit-ser.com/", "https://www.hafit-ser.com/")
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .maxAge(3600);
