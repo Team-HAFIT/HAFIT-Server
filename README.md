@@ -266,16 +266,58 @@
   
 ## 🪄 실행 방법
 
-1. 먼저 [**`서버 Repository`**](https://github.com/Team-HAFIT/HAFIT-Server) 에서 clone 받은 프로젝트를 **`run`** 합니다.
-   
-2. [**`클라이언트 Repository`**](https://github.com/Team-HAFIT/HAFIT-Client) 도 clone 후, 폴더를 열어주세요.
-  
-3. `/3WDA-HaFit-Client/hafit-fe` 경로에서 아래 명령어를 실행합니다.
+- [`https://hafit.net/`](https://hafit.net/) (AWS 과금 문제로 배포를 임시 중단한 상태입니다.)
+- 현재는 로컬 환경에 프로젝트를 세팅하여 테스트해 보실 수 있습니다.
+
+<br />
+
+1. [`서버 Repository`](https://github.com/Team-HAFIT/HAFIT-Server) 를 복제합니다.  
+```
+git clone https://github.com/Team-HAFIT/HAFIT-Server.git
+```
+<br />  
+
+2. **MariaDB** 또는 **MySQL**에서 DB를 생성합니다.
+```
+CREATE DATABASE HAFIT_DB DEFAULT CHARACTER SET utfmb8 COLLATE utfmb8_general_ci;
+```
+
+<details>
+    <summary><span>&nbspDB 관리 툴로 생성하고 싶다면? &nbsp🕶️</span></summary>
+    <div markdown="1">
+<code>- Database Name: <b>HAFIT_DB</b>
+- Database Encoding: <b>utfmb8</b>
+- Database Collation: <b>utfmb8_general_ci</b>
+✅ 위와 같이 세팅해주세요!
+</code>
+    </div>
+</details>
+<br />  
+
+3. 복제한 `HAFIT-Server` 를 열고, **src/main/java/com/feedback/hafit 경로의 `FeedbackApplication.java`를 실행**합니다.
+
+<br />  
+
+4. [`클라이언트 Repository`](https://github.com/Team-HAFIT/HAFIT-Client) 를 복제합니다.
+```
+git clone https://github.com/Team-HAFIT/HAFIT-Client.git
+```
+<br />  
+
+5. 복제한 `HAFIT-Client` 를 열고 작업 디렉토리를 이동합니다.
+```
+cd hafit-fe
+```
+<br />  
+
+6. `'HAFIT-Client/hafit-fe'`경로에서 **아래 명령어를 실행**합니다. (프로젝트에 필요한 패키지 설치)
 ```
 npm install
 ```
-  
-4. **`HAFIT`**을 체험할 준비가 완료되었습니다! 아래 명령어를 실행합니다.
+
+<br />  
+
+7. `HAFIT`을 체험할 준비가 완료되었습니다! **아래 명령어를 실행**합니다.
 ```
 npm start
 ```  
